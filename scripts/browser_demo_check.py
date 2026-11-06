@@ -150,6 +150,15 @@ def main() -> None:
         page.get_by_role("button", name="닫기").click()
         log.append("Brief history opened read-only")
 
+        # project deletion (DEVIATIONS D-04)
+        page.goto(args.base)
+        page.get_by_role("button", name=f"{project['name']} 삭제").first.click()
+        expect(page.get_by_role("alertdialog")).to_contain_text("되돌릴 수 없습니다")
+        before = page.locator(".pcard").count()
+        page.get_by_role("alertdialog").get_by_role("button", name="삭제", exact=True).click()
+        expect(page.locator(".pcard")).to_have_count(before - 1, timeout=TIMEOUT)
+        log.append("project deleted from the dashboard after confirmation")
+
         if errors:
             raise SystemExit("page errors: " + " | ".join(errors))
         browser.close()

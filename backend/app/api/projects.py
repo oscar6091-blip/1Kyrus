@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 
 from ..schemas.domain import ProjectCreate
 from ..services import workflow
@@ -19,6 +19,13 @@ def create_project(body: ProjectCreate):
 @router.get("/projects/{project_id}")
 def get_project(project_id: str):
     return workflow.project_detail(project_id)
+
+
+@router.delete("/projects/{project_id}", status_code=204)
+def delete_project(project_id: str):
+    """DEVIATIONS D-04: not in contracts/api.openapi.json."""
+    workflow.delete_project(project_id)
+    return Response(status_code=204)
 
 
 @router.get("/projects/{project_id}/decisions")

@@ -1,6 +1,6 @@
 // API client for http://127.0.0.1:8000/api. Never touches server secrets.
 import type {
-  ApiErrorBody, ArtifactView, DecisionRecord, DecisionResponse, ExperimentRun, Health, JobView, Payload,
+  ApiErrorBody, ArtifactView, DecisionRecord, DecisionResponse, ExperimentRun, Health, JobView, Mode, Payload,
   ProjectDetail, ProjectSummary, StageDetail,
 } from "./types";
 
@@ -48,6 +48,7 @@ async function request<T>(path: string, init?: RequestInit, retryOnNetwork = fal
     });
   }
   if (!res.ok) throw await parseError(res);
+  if (res.status === 204) return undefined as T;
   return (await res.json()) as T;
 }
 
@@ -60,7 +61,10 @@ const json = (body: unknown): RequestInit => ({
 export const api = {
   health: () => request<Health>("/health"),
   listProjects: () => request<ProjectSummary[]>("/projects"),
-  createProject: (name: string, idea: string) => request<ProjectSummary>("/projects", json({ name, idea })),
+  createProject: (name: string, idea: string, mode?: Mode) =>
+    request<ProjectSummary>("/projects", json(mode ? { name, idea, mode } : { name, idea })),
+  /** DEVIATIONS D-04: deletes the project and everything stored for it. */
+  deleteProject: (id: string) => request<void>(`/projects/${id}`, { method: "DELETE" }),
   project: (id: string) => request<ProjectDetail>(`/projects/${id}`),
   stage: (id: string, n: number) => request<StageDetail>(`/projects/${id}/stages/${n}`),
   artifact: (id: string, artifactId: string) => request<ArtifactView>(`/projects/${id}/artifacts/${artifactId}`),

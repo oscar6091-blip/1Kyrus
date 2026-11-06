@@ -19,6 +19,8 @@ class Req(BaseModel):
 class ProjectCreate(Req):
     name: Text(120)
     idea: Text(8000)
+    # DEVIATIONS D-05: optional per-project mode chosen at creation; omitted = APP_MODE.
+    mode: Literal["demo", "live"] | None = None
 
 
 class RunRequest(Req):

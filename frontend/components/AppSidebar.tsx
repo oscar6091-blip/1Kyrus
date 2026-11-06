@@ -6,8 +6,9 @@ import { api } from "@/lib/api";
 import type { Health, Mode, ProjectSummary } from "@/lib/types";
 
 /** Left sidebar card from the UI/UX plan (Sidebar.dc.html): brand, new project, my projects, research stages. */
-export default function AppSidebar({ activeProjectId, mode, children }: {
+export default function AppSidebar({ activeProjectId, mode, refreshKey, children }: {
   activeProjectId?: string;
+  refreshKey?: number;
   mode?: Mode;
   children?: React.ReactNode;
 }) {
@@ -17,7 +18,7 @@ export default function AppSidebar({ activeProjectId, mode, children }: {
   useEffect(() => {
     api.listProjects().then(setProjects).catch(() => setProjects([]));
     api.health().then(setHealth).catch(() => setHealth(null));
-  }, [activeProjectId]);
+  }, [activeProjectId, refreshKey]);
 
   const shownMode = mode ?? health?.default_mode;
 
@@ -54,7 +55,7 @@ export default function AppSidebar({ activeProjectId, mode, children }: {
               <span className="ico">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="1.5"><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1" /></svg>
               </span>
-              <span style={{ flex: 1 }}>{shownMode === "demo" ? "demo 모드" : "live 모드"}</span>
+              <span style={{ flex: 1 }}>{mode ? `${shownMode} 모드` : `기본 ${shownMode}`}</span>
               {health && <span className="small muted">live 설정 {health.live_configured ? "있음" : "없음"}</span>}
             </div>
           )}

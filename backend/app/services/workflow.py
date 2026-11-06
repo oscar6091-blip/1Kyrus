@@ -6,15 +6,16 @@ Network calls never happen here (jobs run them after commit).
 from __future__ import annotations
 
 import json
+import logging
 
-from sqlalchemy import select
+from sqlalchemy import delete, select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from ..config import settings
-from ..db import tx
+from ..db import compact, tx
 from ..errors import AppError
-from ..models import Decision, Job, Project, Stage
+from ..models import ArtifactVersion, Decision, ExperimentRun, Job, Project, Stage
 from ..schemas.domain import DecisionRequest, EditRequest, ProjectCreate, RunRequest
 from . import jobs
 from .context import build_snapshot, snapshot_is_current, validation_context
@@ -22,6 +23,8 @@ from .repository import (EMPTY_USAGE, active_job, add_artifact, artifact_view, d
                          fingerprint, get_artifact, get_project, get_run, get_stage, get_stages, job_view,
                          new_id, now, project_summary, stage_view, touch)
 from .validation import validate_payload
+
+log = logging.getLogger("workflow")
 
 BUSY_MSG = "이 프로젝트에서 작업이 진행 중입니다. 완료된 뒤 다시 시도하세요. 조회와 화면 이동은 가능합니다."
 STALE_MSG = "상위 단계가 새로 승인되어 이 결과는 오래됨(stale) 상태입니다. 수정·승인할 수 없으니 재생성하세요."
@@ -68,13 +71,42 @@ def approval_block_reason(s: Session, st: Stage, stages: list[Stage], job: Job |
 def create_project(body: ProjectCreate) -> dict:
     with tx() as s:
         ts = now()
-        p = Project(id=new_id(), name=body.name, idea=body.idea, mode=settings.app_mode,
+        mode = body.mode or settings.app_mode
+        # Only an explicit choice is checked here; an APP_MODE=live default keeps the contract (run -> 503).
+        if body.mode == "live" and not jobs.live_available():
+            raise AppError("LIVE_NOT_CONFIGURED", "서버에 ANTHROPIC_API_KEY 또는 LLM_MODEL이 설정되지 않아 live 프로젝트를 만들 수 없습니다.")
+        p = Project(id=new_id(), name=body.name, idea=body.idea, mode=mode,
                     current_brief_artifact_id=None, created_at=ts, updated_at=ts)
         s.add(p)
         s.flush()
         for n in range(1, 7):
             s.add(Stage(project_id=p.id, stage_no=n, status="pending"))
         return project_summary(p)
+
+
+def delete_project(project_id: str) -> None:
+    """DEVIATIONS D-04: remove a project and every row that belongs to it.
+
+    Refused while a job is queued or running, so the worker never writes into a deleted project.
+    Pointers are cleared first because the schema has no ON DELETE CASCADE.
+    """
+    with tx() as s:
+        p = get_project(s, project_id)
+        if active_job(s, project_id):
+            raise AppError("PROJECT_BUSY", "진행 중인 작업이 끝난 뒤에 삭제할 수 있습니다.")
+        p.current_brief_artifact_id = None
+        s.execute(update(Stage).where(Stage.project_id == project_id)
+                  .values(current_artifact_id=None, approved_artifact_id=None))
+        s.flush()
+        for model in (Decision, Job, ArtifactVersion, ExperimentRun, Stage):
+            s.execute(delete(model).where(model.project_id == project_id))
+        s.delete(p)
+    # The delete is committed. Clean the file so the deleted text does not stay in free pages or the WAL.
+    # A failure here (e.g. the DB is busy for more than 5 s) leaves the delete in place and is only logged.
+    try:
+        compact()
+    except Exception:  # noqa: BLE001
+        log.warning("project %s deleted, but VACUUM/WAL checkpoint failed", project_id, exc_info=True)
 
 
 def list_projects() -> list[dict]:

@@ -76,3 +76,20 @@ def tx() -> Iterator[Session]:
             yield session
     finally:
         session.close()
+
+
+def compact() -> None:
+    """Rewrite the database file and empty the WAL (DEVIATIONS D-04).
+
+    After a project is deleted its rows are gone, but SQLite keeps the old bytes in free pages
+    and in the -wal file until they are overwritten. VACUUM rebuilds the file without free pages;
+    wal_checkpoint(TRUNCATE) copies the WAL back and truncates it to zero bytes.
+    Runs on a raw autocommit connection because VACUUM cannot run inside a transaction.
+    """
+    raw = get_engine().raw_connection()
+    try:
+        conn = raw.driver_connection
+        conn.execute("VACUUM")
+        conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+    finally:
+        raw.close()

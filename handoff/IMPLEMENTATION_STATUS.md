@@ -16,7 +16,7 @@
 | T04 공통 UI | DONE | `npm run build` PASS (Next.js 16.4.5, TypeScript). `scripts/browser_demo_check.py`로 헤드리스 Chromium에서 5분 시연과 변경 전파 시연 전 과정 PASS. 2026-11-07 UI/UX 기획안 v0.2 디자인 반영 후 `npm run typecheck`·`npm run build`·`browser_demo_check.py`(별도 demo 서버, 새 버튼 문구·Brief 탭 열기 반영) 다시 PASS |
 | T05 live Gateway·arXiv | DONE (오프라인) | `pytest tests/test_gateway.py tests/test_references.py` PASS. timeout·거절·잘림·HTTP 오류는 failed로 끝나고 SDK 재시도 0회, 보정은 최대 1회, fixture 대체 없음. 기록된 Atom 응답으로 버전 접미사 정규화, 첫 제출 연도, 미검증 후보 경고, 0편 실패 확인. arXiv 실제 응답 형식은 컨테이너에서 한 번 조회해 확인. `LLM_DATA_POLICY.md`는 DOCUMENTS_REVIEWED |
 | T06 단계별 live 생성 | DONE (오프라인) | `pytest tests/test_context_handoff.py tests/test_evidence.py` PASS. 수정·재승인한 S3 본문, 정확한 상위 ID, 코멘트가 S4 요청 인자에 들어감 (AC-03). S5는 서버 metric binding을 받음. 모델이 만든 미등록 cite는 채택하지 않음. 실제 키 live 실행은 NOT RUN |
-| T07 필수 동작 검증 | DONE | `cd backend && .venv/bin/python -m pytest -q` → **49 passed**. `cd frontend && npm run build` → PASS. 브라우저 시연 PASS. AC별 결과는 아래 "앱 검사 결과" |
+| T07 필수 동작 검증 | DONE | `cd backend && .venv/bin/python -m pytest -q` → **49 passed**. `cd frontend && npm run build` → PASS. 브라우저 시연 PASS. AC별 결과는 아래 "앱 검사 결과". 2026-11-07 D-04(삭제)·D-05(생성 시 모드 선택) 추가 후 `ANTHROPIC_API_KEY= LLM_MODEL= .venv/bin/python -m pytest -q` → **56 passed**. 실제 키가 든 `.env` 그대로 돌리면 `test_health`가 live_configured=false를 기대해 실패한다(환경 차이, 코드 문제 아님). 브라우저 검사에 삭제 단계 추가, PASS |
 | T08 제출 정리 | DONE | 루트 `README.md`(설치·실행·demo/live·5분 시연·변경 전파·제한·검사 결과), 이 문서, `LLM_DATA_POLICY.md`, `DEVIATIONS.md` 작성. 깨끗한 설치 재현 결과는 아래 "깨끗한 설치 재현" |
 
 ## 구현 선택

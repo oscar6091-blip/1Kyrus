@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import type { Health, ProjectSummary, StageView } from "@/lib/types";
+import type { Health, Mode, ProjectSummary, StageView } from "@/lib/types";
 import { STATUS_LABEL } from "@/lib/types";
 import AppSidebar from "./AppSidebar";
-import { DEMO_NOTICE, ErrorBox, ModeBadge, fmtTime } from "./common";
+import { ConfirmDialog, DEMO_NOTICE, ErrorBox, ModeBadge, fmtTime } from "./common";
 
 /** Dashboard (UI/UX plan UI-01): project cards with the six-stage strip, plus the create form. */
 export default function ProjectList() {
@@ -17,24 +17,47 @@ export default function ProjectList() {
   const [stages, setStages] = useState<Record<string, StageView[]>>({});
   const [name, setName] = useState("");
   const [idea, setIdea] = useState("");
+  const [mode, setMode] = useState<Mode | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
+  const [toDelete, setToDelete] = useState<ProjectSummary | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [reload, setReload] = useState(0);
 
   useEffect(() => {
-    api.health().then(setHealth).catch(setError);
+    api.health().then((h) => { setHealth(h); setMode((m) => m ?? h.default_mode); }).catch(setError);
+  }, []);
+
+  useEffect(() => {
     api.listProjects().then((ps) => {
       setProjects(ps);
       // Stage status per project comes from the existing project detail API (read-only).
       ps.forEach((p) => api.project(p.id).then((d) => setStages((s) => ({ ...s, [p.id]: d.stages }))).catch(() => {}));
     }).catch(setError);
-  }, []);
+  }, [reload]);
+
+  async function remove() {
+    if (!toDelete) return;
+    setDeleting(true);
+    setError(null);
+    try {
+      await api.deleteProject(toDelete.id);
+      setStages((s) => { const n = { ...s }; delete n[toDelete.id]; return n; });
+      setReload((r) => r + 1);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setDeleting(false);
+      setToDelete(null);
+    }
+  }
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
     try {
-      const p = await api.createProject(name.trim(), idea.trim());
+      const p = await api.createProject(name.trim(), idea.trim(), mode ?? undefined);
       router.push(`/projects/${p.id}`);
     } catch (err) {
       setError(err);
@@ -49,7 +72,7 @@ export default function ProjectList() {
 
   return (
     <div className="shell">
-      <AppSidebar />
+      <AppSidebar refreshKey={reload} />
       <main className="content stack">
         <div className="page-head">
           <div>
@@ -87,6 +110,7 @@ export default function ProjectList() {
                   <div className="row">
                     {focus && focus.status !== "stale" && <span className={`badge ${focus.status}`}>S{focus.stage_no} {STATUS_LABEL[focus.status]}</span>}
                     {staleN > 0 && <span className="badge stale">오래됨 {staleN}</span>}
+                    <button className="btn" onClick={() => setToDelete(p)} aria-label={`${p.name} 삭제`}>삭제</button>
                     <Link href={`/projects/${p.id}`} className="btn dark">이어서 하기 →</Link>
                   </div>
                 </div>
@@ -117,12 +141,28 @@ export default function ProjectList() {
           <input id="name" type="text" maxLength={120} value={name} onChange={(e) => setName(e.target.value)} required />
           <label className="field" htmlFor="idea">연구 아이디어</label>
           <textarea id="idea" maxLength={8000} rows={4} value={idea} onChange={(e) => setIdea(e.target.value)} required />
+          <label className="field">생성 모드</label>
+          <div className="modepick" role="radiogroup" aria-label="생성 모드">
+            <button type="button" role="radio" aria-checked={mode === "demo"} className={mode === "demo" ? "on" : ""} onClick={() => setMode("demo")}>
+              <b>demo</b><span>사전 작성 결과로 흐름 확인 · API 키 불필요</span>
+            </button>
+            <button type="button" role="radio" aria-checked={mode === "live"} className={mode === "live" ? "on" : ""}
+              onClick={() => setMode("live")} disabled={!health?.live_configured}>
+              <b>live</b><span>{health?.live_configured ? "실제 모델과 arXiv 사용 · 비용 발생" : "서버에 API 키·모델 설정이 없어 선택할 수 없음"}</span>
+            </button>
+          </div>
           <div className="row" style={{ marginTop: 16 }}>
-            <button className="btn primary" disabled={busy || !name.trim() || !idea.trim()}>프로젝트 만들기</button>
-            {health && <span className="small muted">이 프로젝트의 모드: {health.default_mode} (생성 후 바뀌지 않음)</span>}
+            <button className="btn primary" disabled={busy || !name.trim() || !idea.trim() || !mode}>프로젝트 만들기</button>
+            <span className="small muted">모드는 만든 뒤에 바꿀 수 없습니다 (임시 선택 기능).</span>
           </div>
         </form>
       </main>
+      {toDelete && (
+        <ConfirmDialog title="프로젝트를 삭제할까요?" confirmLabel="삭제" busy={deleting} onConfirm={remove} onCancel={() => setToDelete(null)}>
+          <b>{toDelete.name}</b>의 모든 단계 결과와 버전, 승인·결정 기록, 업로드한 실험 결과가 이 서버의 DB에서 지워집니다.
+          되돌릴 수 없습니다. 이미 내려받은 파일은 그대로 남습니다. 작업이 진행 중이면 끝난 뒤에 삭제할 수 있습니다.
+        </ConfirmDialog>
+      )}
     </div>
   );
 }

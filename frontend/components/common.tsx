@@ -73,3 +73,26 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
     </div>
   );
 }
+
+/** Confirmation popup in the plan's exception-popup style (black-bordered card, two pill buttons). */
+export function ConfirmDialog({ title, children, confirmLabel, busy, onConfirm, onCancel }: {
+  title: string;
+  children: React.ReactNode;
+  confirmLabel: string;
+  busy?: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div className="modal-back" onClick={busy ? undefined : onCancel}>
+      <div className="modal confirm" onClick={(e) => e.stopPropagation()} role="alertdialog" aria-label={title}>
+        <h2 style={{ fontSize: 20 }}>{title}</h2>
+        <div style={{ margin: "10px 0 20px", color: "var(--ink-2)", lineHeight: 1.6 }}>{children}</div>
+        <div className="row" style={{ justifyContent: "flex-end" }}>
+          <button className="btn" onClick={onCancel} disabled={busy}>취소</button>
+          <button className="btn dark" onClick={onConfirm} disabled={busy}>{confirmLabel}</button>
+        </div>
+      </div>
+    </div>
+  );
+}

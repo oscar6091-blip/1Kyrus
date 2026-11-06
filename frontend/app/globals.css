@@ -304,3 +304,18 @@ pre.code { background: var(--bg); padding: 16px; border-radius: var(--r-inner); 
 .strip .running .lbl { color: var(--run-ink); font-weight: 600; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+
+/* create form: mode choice */
+.modepick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modepick button {
+  border: 1.5px solid var(--line-2); background: #fff; border-radius: var(--r-inner); padding: 14px 18px; text-align: left; cursor: pointer;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.modepick button span { font-size: 13px; color: var(--muted); }
+.modepick button.on { border-color: var(--accent); background: var(--accent-weak); }
+.modepick button.on b { color: var(--accent); }
+.modepick button:disabled { opacity: .45; cursor: not-allowed; }
+@media (max-width: 720px) { .modepick { grid-template-columns: 1fr; } }
+
+/* confirm popup (exception popup style) */
+.modal.confirm { max-width: 480px; margin-top: 12vh; border: 2px solid #000; border-radius: 0; box-shadow: var(--shadow-pop); }

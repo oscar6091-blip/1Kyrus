@@ -124,7 +124,8 @@ cd frontend && npm run build                       # 타입 검사 포함
 | 필요 설정 | 없음 | `.env`의 `ANTHROPIC_API_KEY`, `LLM_MODEL` (`ANTHROPIC_WORKSPACE_ID`는 선택) |
 | 실패 시 | — | 실패로 표시. demo 결과로 바꾸지 않음 |
 
-- 모드는 **프로젝트를 만들 때** `.env`의 `APP_MODE`로 정해지고, 이후에는 바뀌지 않습니다. live로 쓰려면 `APP_MODE=live`, `ANTHROPIC_API_KEY=...`, `LLM_MODEL=...`을 설정한 뒤 백엔드를 다시 시작하고 새 프로젝트를 만듭니다.
+- 모드는 **프로젝트를 만들 때** 정해지고, 이후에는 바뀌지 않습니다. 생성 화면에서 demo/live를 고를 수 있고(임시 기능, `DEVIATIONS.md` D-05), 기본 선택은 `.env`의 `APP_MODE`입니다. live를 고르려면 `.env`에 `ANTHROPIC_API_KEY=...`, `LLM_MODEL=...`을 설정하고 백엔드를 다시 시작해야 합니다. 설정이 없으면 live 선택이 막혀 있습니다.
+- 대시보드의 프로젝트 카드에서 **삭제**를 누르고 확인하면 그 프로젝트의 단계 결과·버전·결정 기록·업로드한 실험 결과가 DB에서 지워지고, 지운 내용이 DB 파일에 남지 않도록 SQLite 파일을 바로 다시 정리합니다(되돌릴 수 없음, `DEVIATIONS.md` D-04). 작업이 진행 중이면 끝난 뒤에 삭제할 수 있습니다.
 - demo에서도 저장, 승인, 버전, 오래됨, 업로드, 내보내기는 실제 앱 코드로 처리합니다. 화면과 내보낸 파일에는 "데모 모드: 사전 작성 산출물 사용"이 표시됩니다.
 - demo의 생성 지연은 `DEMO_STAGE_DELAY_SECONDS`(기본 1초)로 조절합니다. 진행 상태 조회를 보여 주기 위한 값입니다.
 - 비용 추정은 `LLM_INPUT_USD_PER_MILLION`, `LLM_OUTPUT_USD_PER_MILLION`이 둘 다 설정됐을 때만 계산합니다. 설정이 없으면 null입니다.
@@ -367,7 +368,7 @@ UI/UX 기획안 v0.2(UI-01~UI-10)는 SSRD·SSAD 전체를 기준으로 그렸고
 
 | 검사 | 결과 |
 | --- | --- |
-| 백엔드 pytest 49개 (실제 임시 SQLite 파일) | PASS |
+| 백엔드 pytest 56개 (실제 임시 SQLite 파일, live 설정을 비운 상태) | PASS |
 | `npm run build` | PASS |
 | 헤드리스 Chromium으로 5분 시연과 변경 전파 시연 수행 (`scripts/browser_demo_check.py`) | PASS |
 | 실제 API 키를 쓴 live 호출 | **NOT RUN** (키 없음). live 경로는 Fake/Recorder Gateway와 기록된 arXiv 응답으로만 검사 |
