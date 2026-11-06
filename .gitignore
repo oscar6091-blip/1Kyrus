@@ -14,7 +14,7 @@ node_modules/
 next-env.d.ts
 
 # local data
-data/
+/data/
 
 # local screenshots from scripts/browser_demo_check.py
 .shots/

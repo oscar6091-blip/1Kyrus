@@ -49,7 +49,8 @@ ENV UV_LINK_MODE=copy
 RUN curl -fLsS "https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz" \
         | tar -xz -C /usr/local/bin --strip-components=1 \
     && uv python install 3.11 \
-    && ln -s "$(uv python find 3.11)" /usr/local/bin/python3.11 \
+    && printf '#!/bin/sh\nexec "%s" "$@"\n' "$(uv python find 3.11)" > /usr/local/bin/python3.11 \
+    && chmod 755 /usr/local/bin/python3.11 \
     && chmod -R a+rX "${UV_PYTHON_INSTALL_DIR}"
 
 # --- 호스트 UID/GID를 쓰는 non-root 사용자 ------------------------------------

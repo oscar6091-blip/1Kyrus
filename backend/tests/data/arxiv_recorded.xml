@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Shape recorded from https://export.arxiv.org/api/query on 2026-11-06; entries trimmed for tests. -->
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <title>arXiv Query: search_query=all:adam AND all:optimizer</title>
+  <opensearch:totalResults>3</opensearch:totalResults>
+  <entry>
+    <id>http://arxiv.org/abs/1412.6980v9</id>
+    <title>Adam: A Method for Stochastic
+      Optimization</title>
+    <summary>We introduce Adam, an algorithm for first-order gradient-based optimization of stochastic objective functions.</summary>
+    <published>2014-12-22T21:48:20Z</published>
+    <author><name>Diederik P. Kingma</name></author>
+    <author><name>Jimmy Ba</name></author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/9999.00001v1</id>
+    <title>A Candidate Without Authors</title>
+    <summary>Missing author list.</summary>
+    <published>2020-01-01T00:00:00Z</published>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1711.05101v3</id>
+    <title>Decoupled Weight Decay Regularization</title>
+    <summary>L2 regularization and weight decay regularization are equivalent for standard SGD but not for adaptive methods.</summary>
+    <published>2017-11-14T18:46:13Z</published>
+    <author><name>Ilya Loshchilov</name></author>
+    <author><name>Frank Hutter</name></author>
+  </entry>
+</feed>
