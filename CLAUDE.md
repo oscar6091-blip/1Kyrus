@@ -23,11 +23,21 @@ Research-to-Paper 웹 프로토타입(수업 과제, 제출일 **2026-11-08 Asia
   과 "저장소 루트 `.env`" → **이 루트**에 둔다.
 - 계획 검사: `python3.11 handoff/scripts/check_handoff.py`.
 
-## 계획과 달라진 점 기록 (필수)
+## 어디에 기록하나 (필수)
 
-계획팩 원본은 고치지 않는다. 계획팩(문서, 계약, 구현 계획, 안내)과 다르게 하는 일이 생기면
-**그 자리에서 `DEVIATIONS.md`에 항목을 추가한다.** 환경 때문이든, 자료끼리 모순이 있어서든, 사용자 지시 때문이든 똑같이 기록한다.
-`IMPLEMENTATION_STATUS.md`에는 진행 상황만 적는다. 차이가 있었다면 해당 D 번호만 언급한다.
+계획팩 원본은 고치지 않는다. 기록은 성격에 따라 세 곳에 나눠 그 자리에서 남긴다.
+
+| 성격 | 기록 위치 |
+| --- | --- |
+| 계획팩(문서, 계약, 구현 계획, 안내)과 **다르게** 했다. 이유가 환경이든, 자료끼리 모순이든, 사용자 지시든 같다 | `DEVIATIONS.md`에 D-NN 항목 추가 |
+| 계획팩이 **정하지 않은 것**을 정했다(버전, 라이브러리, 경로 해석 같은 일반 구현 선택) | `handoff/IMPLEMENTATION_STATUS.md` "구현 선택" 절 |
+| T 작업 진행 상황, 실행 명령, PASS/FAIL/NOT RUN | `handoff/IMPLEMENTATION_STATUS.md` 작업 표·검사 절 (차이가 있었다면 D 번호만 언급) |
+
+## 제출
+
+`git archive --format=zip -o ../1Kyrus_submit.zip HEAD`로 만든다. `.gitattributes`의 export-ignore 때문에
+`dockerfile_1Kyrus/`가 빠지고, git에 올리지 않은 `.env`·`.venv`·`node_modules`·`data/`도 들어가지 않는다.
+그래서 **커밋한 내용만 제출된다.** 만들기 전에 `git status`가 깨끗한지 확인한다.
 
 ## 개발 환경
 
