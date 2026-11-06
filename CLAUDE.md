@@ -32,7 +32,8 @@ Research-to-Paper 웹 프로토타입(수업 과제, 제출일 **2026-11-08 Asia
 | --- | --- |
 | 계획팩(문서, 계약, 구현 계획, 안내)과 **다르게** 했다. 이유가 환경이든, 자료끼리 모순이든, 사용자 지시든 같다 | `DEVIATIONS.md`에 D-NN 항목 추가 |
 | 계획팩이 **정하지 않은 것**을 정했다(버전, 라이브러리, 경로 해석 같은 일반 구현 선택) | `handoff/IMPLEMENTATION_STATUS.md` "구현 선택" 절 |
-| `docs/`의 SSRD·SSAD·UI/UX 새 버전을 앱(`backend/`, `frontend/`)에 반영했다. 계획팩은 v0.1 기준이므로 계획팩과 달라지는 것으로 본다 | `DEVIATIONS.md`에 D-NN 항목 추가. 원문 위치에 반영한 문서와 버전(예: `docs/ssrd/SSRD_v0.2.docx` 3.1)을 적는다 |
+| `docs/`의 SSRD·SSAD·UI/UX 문서를 앱에 반영하면서 **동작**(API, 상태·승인 규칙, 필수 입력)이 계획팩과 달라졌다 | `DEVIATIONS.md`에 D-NN 항목 추가. 원문 위치에 반영한 문서와 버전(예: `docs/ssrd/SSRD_v0.2.docx` 3.1)을 적는다 |
+| UI/UX 기획안에 맞춰 **배치·스타일·표시만** 바꿨다 (`handoff/CLAUDE.md`가 허용) | `handoff/IMPLEMENTATION_STATUS.md` "구현 선택"에 한 줄. 기획안 대비 범위는 `README.md` "UI/UX 기획안 대비 구현 범위" 표를 갱신 |
 | T 작업 진행 상황, 실행 명령, PASS/FAIL/NOT RUN | `handoff/IMPLEMENTATION_STATUS.md` 작업 표·검사 절 (차이가 있었다면 D 번호만 언급) |
 
 ## 제출

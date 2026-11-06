@@ -233,8 +233,8 @@ export const STAGE_NAMES: Record<number, string> = {
 
 export const STATUS_LABEL: Record<StageStatus, string> = {
   pending: "대기",
-  running: "생성 중",
+  running: "진행 중",
   needs_review: "검토 필요",
-  approved: "승인됨",
+  approved: "승인",
   stale: "오래됨",
 };

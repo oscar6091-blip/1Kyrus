@@ -38,7 +38,7 @@ def run_stage(page: Page, n: int):
 
 def approve(page: Page, n: int):
     page.get_by_role("button", name="승인", exact=True).click()
-    status_of(page, n, "승인됨")
+    status_of(page, n, "승인")
 
 
 def main() -> None:
@@ -83,7 +83,7 @@ def main() -> None:
         open_stage(page, 3)
         run_stage(page, 3)
         page.locator("main textarea").first.fill("반복 seed 확인 계획을 더 분명히 적어 주세요")
-        page.get_by_role("button", name="코멘트로 재생성").click()
+        page.get_by_role("button", name="재생성 요청").click()
         expect(page.locator("main")).to_contain_text("현재 결과 · v2", timeout=TIMEOUT)
         page.screenshot(path=str(shots / "s3_regenerated.png"), full_page=True)
         approve(page, 3)
@@ -134,14 +134,16 @@ def main() -> None:
         open_stage(page, 4)
         expect(page.locator("main")).to_contain_text("오래됨")
         page.locator("main textarea").first.fill("새 S3 반영")
-        page.get_by_role("button", name="코멘트로 재생성").click()
+        page.get_by_role("button", name="재생성 요청").click()
         status_of(page, 4, "검토 필요")
+        page.get_by_role("button", name=re.compile(r"^Research Brief")).click()  # open the Research Brief panel (closed by default)
         expect(page.locator("aside.right")).to_contain_text("S3 실험 설계 v3", timeout=TIMEOUT)
         open_stage(page, 5)
-        expect(page.get_by_role("button", name="코멘트로 재생성")).to_be_disabled()
+        expect(page.get_by_role("button", name="재생성 요청")).to_be_disabled()
         page.screenshot(path=str(shots / "propagation.png"), full_page=True)
         log.append("change propagation: S3 edit saved (not approved) -> approved -> S4-S6 stale; S4 regenerated reads S3 v3; S5 blocked")
 
+        page.get_by_role("tab", name="변경 이력").click()
         expect(page.locator("aside.right")).to_contain_text("S1 v1")
         page.get_by_role("button", name="S1 v1").first.click()
         expect(page.locator(".modal")).to_contain_text("읽기 전용")

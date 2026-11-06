@@ -13,7 +13,7 @@
 | T01 환경·골격 | DONE | `cd backend && .venv/bin/pip install -r requirements.lock`(uv로 고정), `npm ci`. `.venv/bin/python -m app` 기동 후 `GET /api/health` → `{"status":"ok","default_mode":"demo","live_configured":false}`. 프런트가 health를 읽어 모드 표시. DB는 `handoff/contracts/database.sql`을 그대로 실행해 생성 |
 | T02 DB·워크플로 | DONE | `pytest tests/test_workflow.py tests/test_versions.py` PASS. 승인 게이트, 버전·Decision 수, stale 전파, back, request_id 중복, 작업 잠금, S3/S5 의미 검증 |
 | T03 demo 실행·업로드·내보내기 | DONE | `pytest tests/test_smoke_flow.py tests/test_jobs.py tests/test_uploads.py tests/test_exports.py` PASS. API만으로 S1~S6 생성·승인, valid JSON 업로드, code.zip·paper.md·references.bib 다운로드. 참조 수치 4개가 `expected_reference_metrics.json`과 정확히 일치. zip의 train.py는 원본과 바이트 동일 |
-| T04 공통 UI | DONE | `npm run build` PASS (Next.js 16.4.5, TypeScript). `scripts/browser_demo_check.py`로 헤드리스 Chromium에서 5분 시연과 변경 전파 시연 전 과정 PASS |
+| T04 공통 UI | DONE | `npm run build` PASS (Next.js 16.4.5, TypeScript). `scripts/browser_demo_check.py`로 헤드리스 Chromium에서 5분 시연과 변경 전파 시연 전 과정 PASS. 2026-11-07 UI/UX 기획안 v0.2 디자인 반영 후 `npm run typecheck`·`npm run build`·`browser_demo_check.py`(별도 demo 서버, 새 버튼 문구·Brief 탭 열기 반영) 다시 PASS |
 | T05 live Gateway·arXiv | DONE (오프라인) | `pytest tests/test_gateway.py tests/test_references.py` PASS. timeout·거절·잘림·HTTP 오류는 failed로 끝나고 SDK 재시도 0회, 보정은 최대 1회, fixture 대체 없음. 기록된 Atom 응답으로 버전 접미사 정규화, 첫 제출 연도, 미검증 후보 경고, 0편 실패 확인. arXiv 실제 응답 형식은 컨테이너에서 한 번 조회해 확인. `LLM_DATA_POLICY.md`는 DOCUMENTS_REVIEWED |
 | T06 단계별 live 생성 | DONE (오프라인) | `pytest tests/test_context_handoff.py tests/test_evidence.py` PASS. 수정·재승인한 S3 본문, 정확한 상위 ID, 코멘트가 S4 요청 인자에 들어감 (AC-03). S5는 서버 metric binding을 받음. 모델이 만든 미등록 cite는 채택하지 않음. 실제 키 live 실행은 NOT RUN |
 | T07 필수 동작 검증 | DONE | `cd backend && .venv/bin/python -m pytest -q` → **49 passed**. `cd frontend && npm run build` → PASS. 브라우저 시연 PASS. AC별 결과는 아래 "앱 검사 결과" |
@@ -42,6 +42,11 @@
 | 2026-11-07 | T05 | arXiv 검색어 | 모델 검색어에서 영문 키워드 최대 5개를 `all:` AND로 결합, 결과 최대 5개 중 확인된 3편 채택, https 엔드포인트 | arXiv API 문법. http는 리다이렉트되어 https 사용 |
 | 2026-11-07 | T05 | 프롬프트 출처 | system·단계·보정 지시를 런타임에 `handoff/prompts/stage_prompts.md`에서, 출력 schema를 `artifacts.schema.json`에서($ref 인라인) 읽음 | 계획 문서와 앱의 프롬프트를 한 곳에서 관리 |
 | 2026-11-07 | T07 | 브라우저 검사 도구 | `scripts/browser_demo_check.py` (Playwright 1.49.1, 앱 의존성 아님) | 실제 화면 조작 확인용. Ubuntu 20.04에서 동작하는 마지막 계열 |
+| 2026-11-07 | T04 | UI/UX 기획안 v0.2 반영 (배치·스타일만) | 기획안 디자인 캔버스(`docs/uiux/UIUX_v0.2_canvas.html`)의 Sidebar·CheckpointBar 컴포넌트와 UI-01·UI-04·UI-08 목업 값을 따름: 배경 `#F7F7F8`, 테두리 없는 흰 카드 24px, 안쪽 카드 18px(`#F2F2F5`·`#F5F6FF`), 알약 버튼(radius 69, 46/50px), 인디고 `#5661F6`, 검정 표 머리행, 상태 표기(승인 검정·검토 필요 인디고 점·대기 빈 원·오래됨 점선). 화면 구조: 왼쪽 사이드바 카드(R2P+, 새 프로젝트, 내 프로젝트, 연구 단계), 단계 헤더(참조한 승인본 버전), 산출물 왼쪽·결정 근거 카드 오른쪽, 아래 고정 알약 결정 바, Research Brief는 오른쪽 끝 탭으로 여닫는 패널(현재 Brief/변경 이력), 대시보드는 프로젝트 카드와 6단계 막대 | `handoff/CLAUDE.md`가 기획안 도착 후 배치·스타일 조정을 허용. API·승인 조건·버전 규칙은 그대로라 DEVIATIONS 대상 아님. 대시보드 단계 막대는 기존 `GET /projects/{id}`를 프로젝트마다 호출 |
+| 2026-11-07 | T04 | 오래됨 원인 표시 | 결과의 `input_snapshot.upstream_artifact_ids`와 상위 단계의 현재 승인본을 비교해 "S3 실험 설계 승인본이 v2 → v3로 바뀌었습니다"처럼 표시. 기존 API(`GET artifact`)만 사용 | 기획안 UI-08 "상위 변경 영향"(RQ-10)을 서버 변경 없이 보여 주기 위해 |
+| 2026-11-07 | T04 | S5 가설 판정 카드, 경고 상자 | `hypothesis_verdicts`를 지지/부분 지지/기각/판단 보류 배지 카드로, `evidence.warnings`를 본문 위 경고 상자로 표시 (본문 Markdown은 그대로) | 기획안 UI-06 ②(ONRQ-5), UI-03 미검증 인용(ONRQ-1) 표시 방식 |
+| 2026-11-07 | T04 | 폰트 | Pretendard(본문)·Outfit(로고·단계 코드)·JetBrains Mono(버전·코드)를 `frontend/public/fonts/`에 직접 포함 (기획안 캔버스에 들어 있던 파일, SIL OFL 1.1, 라이선스 원문 동봉) | 기획안 폰트를 오프라인 localhost에서도 같게 보이도록. 외부 CDN 의존 없음 |
+| 2026-11-07 | T04 | 화면 문구 | 상태 "승인됨"→"승인", "생성 중"→"진행 중", 버튼 "코멘트로 재생성"→"재생성 요청" (기획안 표기). Research Brief 패널은 기본 접힘, 여닫은 상태는 브라우저 localStorage에만 저장 | 기획안 p.07 상태 표기와 CheckpointBar 문구. `scripts/browser_demo_check.py`와 README 시연 문구도 같이 바꿈 |
 
 ## 계획 자료 검사
 

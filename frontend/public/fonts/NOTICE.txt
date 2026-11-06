@@ -1,0 +1,9 @@
+Fonts used by the UI, taken from the UI/UX plan design canvas (docs/uiux/UIUX_v0.2_canvas.html).
+All are licensed under the SIL Open Font License 1.1. The license texts are in this folder.
+
+- Pretendard 1.3.9 (Regular, Medium, SemiBold, Bold, ExtraBold)  OFL-Pretendard.txt
+  https://github.com/orioncactus/pretendard
+- Outfit, latin subset (Google Fonts)                            OFL-Outfit.txt
+  https://github.com/Outfitio/Outfit-Fonts
+- JetBrains Mono, latin subset (Google Fonts)                    OFL-JetBrainsMono.txt
+  https://github.com/JetBrains/JetBrainsMono
