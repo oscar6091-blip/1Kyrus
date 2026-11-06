@@ -26,6 +26,31 @@
 - Docker, Redis, 별도 DB 서버는 필요하지 않습니다.
 - API 키와 네트워크가 없어도 demo 모드는 끝까지 동작합니다. 단, 처음 설치할 때는 패키지를 받아야 하므로 네트워크가 필요합니다.
 
+`python3.11 -V`와 `node -v`로 먼저 확인합니다. 둘 중 하나라도 없으면 아래 절차로 **내 홈 폴더에만** 설치합니다.
+
+### Python 3.11·Node 22가 없을 때 (root·Docker 없이)
+
+공용 서버에서 `sudo apt install`을 쓰지 않는 방법입니다. 모두 `~/.local` 아래에 설치되고 다른 사용자에게 영향을 주지 않습니다. Ubuntu 20.04(x86_64) 서버에서 이 절차 그대로 설치·실행·테스트를 확인했습니다.
+
+```bash
+# 1) uv(파이썬 설치 도구)와 Python 3.11
+curl -LsSf https://astral.sh/uv/install.sh | sh        # ~/.local/bin/uv
+export PATH="$HOME/.local/bin:$PATH"
+uv python install 3.11
+
+# 2) Node 22 (공식 바이너리를 내 폴더에 풀기)
+mkdir -p ~/.local/node22
+curl -fsSL https://nodejs.org/dist/v22.23.2/node-v22.23.2-linux-x64.tar.xz | tar -xJ -C ~/.local/node22 --strip-components=1
+export PATH="$HOME/.local/node22/bin:$PATH"
+
+# 3) 다음 로그인부터도 쓰도록 등록
+echo 'export PATH="$HOME/.local/node22/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc
+
+uv --version && node -v && npm -v                      # node는 v22.x
+```
+
+이 경우 아래 "설치" 2)의 `python3.11 -m venv .venv` 줄을 **`uv venv --seed -p 3.11 .venv`** 로 바꿔 실행합니다. 나머지는 같습니다.
+
 ## 설치
 
 저장소 루트에서 실행합니다.
@@ -65,15 +90,43 @@ npm run dev
 - 운영 빌드로 확인하려면 `npm run build && npm run start`를 씁니다.
 - 프런트가 호출하는 API 주소는 기본 `http://127.0.0.1:8000/api`입니다. 바꾸려면 `frontend/.env.local`에 `NEXT_PUBLIC_API_BASE_URL`을 넣습니다.
 
+### 3000·8000 포트가 이미 쓰이고 있을 때
+
+공용 서버에서는 다른 사람이 같은 포트를 쓰고 있을 수 있습니다. `ss -ltn | grep -E ':(3000|8000) '`에 결과가 나오면 다른 번호(예: 웹 3200, API 8200)를 씁니다. **네 군데를 같은 번호로 맞춥니다.**
+
+1. 루트 `.env`: `BACKEND_PORT=8200`, `FRONTEND_ORIGIN=http://127.0.0.1:3200`
+2. `frontend/.env.local` 파일을 만들고 한 줄: `NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8200/api`
+3. 웹 실행 명령: `npm run dev -- -p 3200`
+4. 아래 포트 포워딩도 `3200`, `8200`으로, **내 컴퓨터 쪽 번호도 똑같이** 연결하고 브라우저에서 http://127.0.0.1:3200 을 엽니다.
+
+`.env`와 `.env.local`을 바꾼 뒤에는 백엔드와 웹을 둘 다 다시 시작합니다. 이후 문서의 3000·8000은 바꾼 번호로 읽습니다.
+
 ### 서버가 원격 머신에 있을 때 (내 컴퓨터 브라우저로 접속)
 
 서버를 SSH로 접속한 원격 머신에서 실행했다면, 내 컴퓨터 브라우저에서 `127.0.0.1:3000`을 열어도 아무것도 뜨지 않습니다. `127.0.0.1`은 **내 컴퓨터 자신**을 가리키기 때문입니다. 원격 머신의 포트를 내 컴퓨터로 연결(포트 포워딩)해야 합니다.
 
 **반드시 3000(웹)과 8000(API) 두 포트를 같은 번호로 연결합니다.** 화면은 3000에서 받지만, 브라우저가 API를 `http://127.0.0.1:8000/api`로 직접 호출합니다. 8000이 빠지거나 다른 번호로 연결되면 화면만 뜨고 "API 서버에 연결할 수 없습니다" 오류가 납니다.
 
+**먼저 접속 경로에 맞게 내 컴퓨터의 `~/.ssh/config`를 적습니다** (Windows는 `C:\Users\<나>\.ssh\config`). 주소와 계정은 각자 것으로 바꿉니다.
+
+```
+# 경로 a: 학교 밖. VPN을 켠 뒤 VPN 사용자용 중간 서버(singapore)를 거쳐 연구실 서버로
+Host lab-via-sg
+    HostName <연구실 서버 주소>
+    User <내 계정>
+    ProxyJump <내 계정>@<singapore 주소>
+
+# 경로 b: 연구실 컴퓨터에서 연구실 서버로 바로
+Host lab
+    HostName <연구실 서버 주소>
+    User <내 계정>
+```
+
+두 경로 모두 앱은 **연구실 서버에서** 설치·실행하고, 화면은 **내 컴퓨터 브라우저로** 봅니다. 아래 단계는 경로와 상관없이 같습니다.
+
 **방법 1: VS Code Remote-SSH (추천)**
 
-1. VS Code로 서버가 실행 중인 원격 머신에 접속합니다. 중간 서버를 거쳐야 하면 `~/.ssh/config`의 `ProxyJump`로 설정합니다 (방법 2의 예시 참고). 어떤 경로로 접속하든 아래 단계는 같습니다.
+1. VS Code에서 `Ctrl+Shift+P`(macOS `Cmd+Shift+P`) → `Remote-SSH: Connect to Host...` → `lab-via-sg`(경로 a) 또는 `lab`(경로 b)을 고릅니다. 저장소 폴더를 열고, VS Code 터미널 두 개에서 위 "실행"의 두 명령을 띄웁니다.
 2. 아래쪽 패널의 **PORTS** 탭을 엽니다. 안 보이면 `Ctrl+Shift+P`(macOS `Cmd+Shift+P`)를 누르고 `Ports: Focus on Ports View`를 실행합니다.
 3. **Forward a Port**로 `3000`을 추가하고, 같은 방법으로 `8000`도 추가합니다.
 4. 표의 **Local Address**가 정확히 `localhost:3000`, `localhost:8000`인지 확인합니다.
@@ -84,21 +137,13 @@ npm run dev
 **방법 2: 터미널 SSH만 쓸 때**
 
 ```bash
-# 원격 머신에 바로 접속하는 경우
-ssh -N -L 3000:127.0.0.1:3000 -L 8000:127.0.0.1:8000 <사용자>@<원격 머신>
-
-# 중간 서버(점프 호스트)를 거치는 경우
-ssh -N -J <사용자>@<중간 서버> -L 3000:127.0.0.1:3000 -L 8000:127.0.0.1:8000 <사용자>@<원격 머신>
+ssh -N -L 3000:127.0.0.1:3000 -L 8000:127.0.0.1:8000 lab-via-sg   # 경로 a
+ssh -N -L 3000:127.0.0.1:3000 -L 8000:127.0.0.1:8000 lab          # 경로 b
 ```
 
-이 터미널을 열어 둔 채로 브라우저에서 http://127.0.0.1:3000 을 엽니다. `~/.ssh/config`에 다음처럼 적어 두면 VS Code와 `ssh <원격 머신 별칭>` 모두 중간 서버를 자동으로 거칩니다.
+이 터미널을 열어 둔 채로 브라우저에서 http://127.0.0.1:3000 을 엽니다. 서버 실행은 별도 SSH 터미널에서 합니다.
 
-```
-Host <원격 머신 별칭>
-    HostName <원격 머신 주소>
-    User <사용자>
-    ProxyJump <사용자>@<중간 서버>
-```
+VS Code 창이나 SSH 연결을 닫으면 그 터미널에서 띄운 서버도 꺼집니다. 연결을 끊고도 계속 띄워 두려면 `tmux` 안에서 실행합니다.
 
 **접속 문제 확인 순서**
 
@@ -111,7 +156,7 @@ Host <원격 머신 별칭>
 ### 테스트
 
 ```bash
-cd backend && .venv/bin/python -m pytest -q        # 49개, 실제 임시 SQLite 파일 사용, 네트워크 불필요
+cd backend && .venv/bin/python -m pytest -q        # 57개, 실제 임시 SQLite 파일 사용, 네트워크 불필요
 cd frontend && npm run build                       # 타입 검사 포함
 ```
 
@@ -190,9 +235,9 @@ demo의 재생성 본문은 사전 작성본이라 코멘트의 의미가 본문
 
 ### 0. 준비 (한 번)
 
-1. 루트 `.env`를 다음처럼 설정합니다. 키는 Console에서 발급하고 크레딧을 충전한 API 키입니다.
+1. 루트 `.env`를 다음처럼 설정합니다. 키는 **각자 본인 계정**의 Console에서 발급하고 크레딧을 충전한 API 키를 씁니다. 키를 다른 사람과 공유하거나 파일로 주고받지 않습니다. `.env`는 git과 제출 zip에 들어가지 않습니다.
    ```
-   APP_MODE=live
+   APP_MODE=live                 # 생성 화면의 기본 선택. demo로 두고 화면에서 live를 골라도 됨
    ANTHROPIC_API_KEY=<API 키>
    LLM_MODEL=claude-sonnet-5-5
    LLM_TIMEOUT_SECONDS=300
@@ -204,7 +249,7 @@ demo의 재생성 본문은 사전 작성본이라 코멘트의 의미가 본문
    - 출력 상한은 모델의 내부 추론까지 포함하므로 16000으로 둡니다.
    
 2. 백엔드를 다시 시작하고 http://127.0.0.1:8000/api/health 에서 `"default_mode":"live","live_configured":true`인지 확인합니다.
-3. 브라우저를 새로고침해 상단에 **live 모드**가 보이는지 확인합니다.
+3. 브라우저를 새로고침하고 대시보드의 새 프로젝트 폼에서 **live**를 고를 수 있는지 확인합니다. 키나 모델 설정이 없으면 live가 막혀 있습니다.
 4. 비용: Sonnet 5.5 기준 여섯 단계 1회에 대략 $0.3~0.5입니다. 재생성할 때마다 그 단계 비용이 더 듭니다.
 
 ### 1. 프로젝트 만들기
@@ -368,7 +413,8 @@ UI/UX 기획안 v0.2(UI-01~UI-10)는 SSRD·SSAD 전체를 기준으로 그렸고
 
 | 검사 | 결과 |
 | --- | --- |
-| 백엔드 pytest 56개 (실제 임시 SQLite 파일, live 설정을 비운 상태) | PASS |
+| 백엔드 pytest 57개 (실제 임시 SQLite 파일, live 설정을 비운 상태) | PASS |
+| 깨끗한 Ubuntu 20.04 서버에서 위 "root·Docker 없이" 절차로 설치, 포트 3200/8200으로 실행, S1 실행, 테스트·build | PASS |
 | `npm run build` | PASS |
 | 헤드리스 Chromium으로 5분 시연과 변경 전파 시연 수행 (`scripts/browser_demo_check.py`) | PASS |
 | 실제 API 키를 쓴 live 호출 | **NOT RUN** (키 없음). live 경로는 Fake/Recorder Gateway와 기록된 arXiv 응답으로만 검사 |

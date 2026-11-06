@@ -52,3 +52,21 @@ def test_reference_metrics_are_exact(api):
     verdicts = api.current_payload(pid, 5)["content"]["hypothesis_verdicts"]
     assert verdicts[0]["verdict"] == expected["expected_verdict"]
     assert any("Maximum iterations" in w for w in ev["warnings"])
+
+
+def test_cors_allows_both_loopback_names_for_changed_web_port(monkeypatch, tmp_path):
+    """README "포트를 바꿀 때": FRONTEND_ORIGIN=http://127.0.0.1:3200 also allows http://localhost:3200."""
+    from fastapi.testclient import TestClient
+
+    from app import db
+    from app.config import settings
+    from app.main import create_app
+
+    monkeypatch.setattr(settings, "frontend_origin", "http://127.0.0.1:3200")
+    db.init_engine(f"sqlite:///{tmp_path / 'cors.db'}")
+    with TestClient(create_app()) as c:
+        for origin in ("http://127.0.0.1:3200", "http://localhost:3200", "http://127.0.0.1:3000"):
+            r = c.get("/api/health", headers={"Origin": origin})
+            assert r.headers.get("access-control-allow-origin") == origin
+        r = c.get("/api/health", headers={"Origin": "http://evil.example"})
+        assert "access-control-allow-origin" not in r.headers

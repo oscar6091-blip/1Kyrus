@@ -60,66 +60,13 @@ cd handoff/reference_experiment && uv venv -p 3.11 .venv && uv pip install -p .v
 PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers /opt/pw/bin/python scripts/browser_demo_check.py --shots /tmp/shots
 ```
 
-## 팀원이 munich에서 띄운 앱에 접속하기 (팀 내부용, 제출물 아님)
+## 컨테이너에서 앱 띄우기 (나만 쓰는 munich)
 
-앱(웹 3000, API 8000)은 munich의 컨테이너 `jwpark_kyrus_dev` 안에서 실행된다. munich 호스트의
-`127.0.0.1:3000`, `127.0.0.1:8000`으로 열려 있다. 팀원은 **munich에 SSH로 접속한 뒤 이 두 포트를 자기 컴퓨터로
-포워딩**하면 된다. 컨테이너에 들어가거나 서버를 다시 띄울 필요는 없다.
+munich는 나만 쓰는 서버다. 팀원은 여기에 접속하지 않고, 제출 zip(`git archive`)을 받아 **각자 연구실 서버에
+루트 README대로 직접 설치**한다(Python 3.11·Node 22가 없으면 README의 "root·Docker 없이" 절차, 포트·VS Code
+포워딩·경로 a/b도 루트 README). 이 문서는 내 개발 컨테이너 전용이다.
 
-### 접속 경로는 두 가지다. 포워딩 방법은 같다
-
-| 경로 | 언제 | SSH 설정 |
-| --- | --- | --- |
-| A. 내 노트북 → VPN → singapore → munich | 학교 밖. singapore는 VPN 사용자용 중간 서버 | `~/.ssh/config`에 `ProxyJump`로 singapore를 거치게 한다 (아래 예시) |
-| B. 연구실 컴퓨터 → munich | 연구실 안 | munich에 바로 접속. ProxyJump 없음 |
-
-`~/.ssh/config` 예시 (주소·계정은 각자 것으로 바꾼다):
-
-```
-# 경로 A: 학교 밖 (VPN을 켠 상태에서)
-Host munich-via-sg
-    HostName <munich 주소>
-    User <내 계정>
-    ProxyJump <내 계정>@<singapore 주소>
-
-# 경로 B: 연구실 안
-Host munich
-    HostName <munich 주소>
-    User <내 계정>
-```
-
-### VS Code로 접속하는 경우 (추천)
-
-1. `Ctrl+Shift+P`(macOS `Cmd+Shift+P`) → `Remote-SSH: Connect to Host...` → 경로에 맞는 별칭을 고른다 (`munich-via-sg` 또는 `munich`).
-2. 접속되면 아래 패널의 **PORTS** 탭을 연다. 안 보이면 `Ctrl+Shift+P` → `Ports: Focus on Ports View`.
-3. **Forward a Port** → `3000`, 다시 **Forward a Port** → `8000`. **둘 다** 필요하다. 화면(3000)이 브라우저에서 API(8000)를 직접 부른다.
-4. **Local Address**가 `localhost:3000`, `localhost:8000`으로 정확히 같은 번호인지 확인한다.
-   - 다른 번호(3001 등)로 잡히면 내 컴퓨터에서 그 포트를 쓰는 프로그램을 끄고 포워딩을 다시 추가한다.
-5. **내 컴퓨터의 브라우저**에서 http://127.0.0.1:3000 을 연다.
-
-### 터미널만 쓰는 경우
-
-```bash
-ssh -N -L 3000:127.0.0.1:3000 -L 8000:127.0.0.1:8000 munich-via-sg   # 경로 A
-ssh -N -L 3000:127.0.0.1:3000 -L 8000:127.0.0.1:8000 munich          # 경로 B
-```
-
-이 터미널을 열어 둔 채 http://127.0.0.1:3000 을 연다.
-
-### 안 될 때
-
-| 증상 | 원인과 조치 |
-| --- | --- |
-| 브라우저에서 아예 안 열림 | 3000 포워딩이 없음. 또는 서버가 꺼져 있음. munich에서 `curl -s http://127.0.0.1:3000 -o /dev/null -w '%{http_code}'`로 확인한다 |
-| 화면은 뜨는데 "불러오는 중…"이나 "API 서버에 연결할 수 없습니다" | 8000 포워딩이 없거나 다른 번호로 잡혔음. 내 브라우저에서 http://127.0.0.1:8000/api/health 가 열리는지 본다 |
-| 서버가 꺼져 있음 | 컨테이너 주인(jwpark)이 아래 "서버 띄우기"로 다시 띄운다 |
-
-### 주의
-
-- 모두 **같은 DB를 함께 본다**(사용자 구분 없는 단일 사용자 프로토타입). 남이 시연 중인 프로젝트를 승인·수정하지 않는다. 각자 새 프로젝트를 만들어 쓴다.
-- 현재 `.env`는 `APP_MODE=live`라 새 프로젝트는 실제 API를 호출하고 비용이 든다. demo로 연습하려면 컨테이너 주인에게 `APP_MODE=demo`로 바꿔 재시작해 달라고 한다.
-
-### 서버 띄우기 (컨테이너 주인)
+### 서버 띄우기
 
 ```bash
 docker exec -d jwpark_kyrus_dev bash -lc 'cd /home/Paris/jwpark/1Kyrus/backend && exec .venv/bin/python -m app > /tmp/backend.log 2>&1'

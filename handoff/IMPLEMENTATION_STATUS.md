@@ -16,7 +16,7 @@
 | T04 공통 UI | DONE | `npm run build` PASS (Next.js 16.4.5, TypeScript). `scripts/browser_demo_check.py`로 헤드리스 Chromium에서 5분 시연과 변경 전파 시연 전 과정 PASS. 2026-11-07 UI/UX 기획안 v0.2 디자인 반영 후 `npm run typecheck`·`npm run build`·`browser_demo_check.py`(별도 demo 서버, 새 버튼 문구·Brief 탭 열기 반영) 다시 PASS |
 | T05 live Gateway·arXiv | DONE (오프라인) | `pytest tests/test_gateway.py tests/test_references.py` PASS. timeout·거절·잘림·HTTP 오류는 failed로 끝나고 SDK 재시도 0회, 보정은 최대 1회, fixture 대체 없음. 기록된 Atom 응답으로 버전 접미사 정규화, 첫 제출 연도, 미검증 후보 경고, 0편 실패 확인. arXiv 실제 응답 형식은 컨테이너에서 한 번 조회해 확인. `LLM_DATA_POLICY.md`는 DOCUMENTS_REVIEWED |
 | T06 단계별 live 생성 | DONE (오프라인) | `pytest tests/test_context_handoff.py tests/test_evidence.py` PASS. 수정·재승인한 S3 본문, 정확한 상위 ID, 코멘트가 S4 요청 인자에 들어감 (AC-03). S5는 서버 metric binding을 받음. 모델이 만든 미등록 cite는 채택하지 않음. 실제 키 live 실행은 NOT RUN |
-| T07 필수 동작 검증 | DONE | `cd backend && .venv/bin/python -m pytest -q` → **49 passed**. `cd frontend && npm run build` → PASS. 브라우저 시연 PASS. AC별 결과는 아래 "앱 검사 결과". 2026-11-07 D-04(삭제)·D-05(생성 시 모드 선택) 추가 후 `ANTHROPIC_API_KEY= LLM_MODEL= .venv/bin/python -m pytest -q` → **56 passed**. 실제 키가 든 `.env` 그대로 돌리면 `test_health`가 live_configured=false를 기대해 실패한다(환경 차이, 코드 문제 아님). 브라우저 검사에 삭제 단계 추가, PASS |
+| T07 필수 동작 검증 | DONE | `cd backend && .venv/bin/python -m pytest -q` → **49 passed**. `cd frontend && npm run build` → PASS. 브라우저 시연 PASS. AC별 결과는 아래 "앱 검사 결과". 2026-11-07 D-04(삭제)·D-05(생성 시 모드 선택) 추가 후 `ANTHROPIC_API_KEY= LLM_MODEL= .venv/bin/python -m pytest -q` → **57 passed** (CORS 테스트 포함). 실제 키가 든 `.env` 그대로 돌리면 `test_health`가 live_configured=false를 기대해 실패한다(환경 차이, 코드 문제 아님). 브라우저 검사에 삭제 단계 추가, PASS |
 | T08 제출 정리 | DONE | 루트 `README.md`(설치·실행·demo/live·5분 시연·변경 전파·제한·검사 결과), 이 문서, `LLM_DATA_POLICY.md`, `DEVIATIONS.md` 작성. 깨끗한 설치 재현 결과는 아래 "깨끗한 설치 재현" |
 
 ## 구현 선택
@@ -47,6 +47,7 @@
 | 2026-11-07 | T04 | S5 가설 판정 카드, 경고 상자 | `hypothesis_verdicts`를 지지/부분 지지/기각/판단 보류 배지 카드로, `evidence.warnings`를 본문 위 경고 상자로 표시 (본문 Markdown은 그대로) | 기획안 UI-06 ②(ONRQ-5), UI-03 미검증 인용(ONRQ-1) 표시 방식 |
 | 2026-11-07 | T04 | 폰트 | Pretendard(본문)·Outfit(로고·단계 코드)·JetBrains Mono(버전·코드)를 `frontend/public/fonts/`에 직접 포함 (기획안 캔버스에 들어 있던 파일, SIL OFL 1.1, 라이선스 원문 동봉) | 기획안 폰트를 오프라인 localhost에서도 같게 보이도록. 외부 CDN 의존 없음 |
 | 2026-11-07 | T04 | 화면 문구 | 상태 "승인됨"→"승인", "생성 중"→"진행 중", 버튼 "코멘트로 재생성"→"재생성 요청" (기획안 표기). Research Brief 패널은 기본 접힘, 여닫은 상태는 브라우저 localStorage에만 저장 | 기획안 p.07 상태 표기와 CheckpointBar 문구. `scripts/browser_demo_check.py`와 README 시연 문구도 같이 바꿈 |
+| 2026-11-07 | T01 | CORS 허용 origin | 3000번 두 이름에 더해 `FRONTEND_ORIGIN`과 그 `localhost`/`127.0.0.1` 짝을 허용 | 공용 서버에서 웹 포트를 바꿨을 때 어느 주소로 열어도 API 호출이 되도록. 다른 호스트 origin은 그대로 거부 |
 
 ## 계획 자료 검사
 
@@ -121,6 +122,20 @@ python scripts/check_handoff.py
 | 기동 | `BACKEND_PORT=8100 .venv/bin/python -m app` → `GET /api/health` | `{"status":"ok","default_mode":"demo","live_configured":false}`. reload 없이 1 프로세스. `data/prototype.db` 자동 생성 |
 
 이 검사에서 결함 하나를 찾아 고쳤다. `.gitignore`의 `data/` 규칙이 `backend/tests/data/`까지 제외해서, 기록된 arXiv 응답이 커밋에서 빠져 있었다. 첫 재현 시도에서 pytest 수집 오류가 났고, 규칙을 `/data/`로 고친 뒤 위 결과를 얻었다.
+
+### 연구실 서버에 Python 3.11·Node가 없을 때 (root·Docker 없이, 2026-11-07)
+
+munich 호스트(Ubuntu 20.04, glibc 2.31, Python 3.8만 있고 Node 없음, 컨테이너 밖)에서 `git archive HEAD`(`b4a69a7`) 압축본을 임시 폴더에 풀고 README "Python 3.11·Node 22가 없을 때" 절차를 그대로 따랐다. uv·Python·Node·캐시는 모두 임시 폴더에 두어 홈 폴더를 바꾸지 않았고, 끝난 뒤 지웠다.
+
+| 단계 | 결과 |
+| --- | --- |
+| uv 설치 스크립트, `uv python install 3.11` | uv 0.13.7, Python 3.11.18 |
+| Node 공식 바이너리 v22.23.2를 사용자 폴더에 풀기 | node v22.23.2, npm 10.9.8 실행됨 |
+| `uv venv --seed -p 3.11 .venv && .venv/bin/pip install -r requirements.lock`, `npm ci` | PASS |
+| 포트 변경 실행 (README "포트가 이미 쓰이고 있을 때": `.env` `BACKEND_PORT=8200`·`FRONTEND_ORIGIN=http://127.0.0.1:3200`, `frontend/.env.local`, `npm run dev -- -p 3200`) | health OK, 웹 200, `Origin: http://localhost:3200`에 CORS 허용, demo S1 실행 succeeded |
+| `pytest -q`, `npm run build` | **56 passed** (해당 커밋 기준), Compiled |
+
+이 검사에서 결함 하나를 찾아 고쳤다. CORS가 3000번만 `localhost`·`127.0.0.1` 둘 다 허용하고, 바꾼 포트는 `FRONTEND_ORIGIN`에 적은 한 가지 이름만 허용했다. `FRONTEND_ORIGIN`의 다른 루프백 이름도 함께 허용하도록 고쳤다(구현 선택 표, 테스트 `test_cors_allows_both_loopback_names_for_changed_web_port`).
 
 ## 아직 수행하지 않은 확인
 

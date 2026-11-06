@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import logging
+from urllib.parse import urlsplit
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -36,9 +37,18 @@ def _err(status: int, code: str, message: str, fields=None, retryable=False) -> 
         "code": code, "message": message, "fields": fields or [], "retryable": retryable}})
 
 
+def _loopback_aliases(origin: str) -> set[str]:
+    """FRONTEND_ORIGIN plus its localhost/127.0.0.1 twin, so a changed web port works with either address."""
+    u = urlsplit(origin)
+    if u.hostname not in ("localhost", "127.0.0.1"):
+        return {origin}
+    port = f":{u.port}" if u.port else ""
+    return {origin, f"{u.scheme}://localhost{port}", f"{u.scheme}://127.0.0.1{port}"}
+
+
 def create_app() -> FastAPI:
     app = FastAPI(title="Research Workflow Course Prototype", version="1.0", lifespan=lifespan)
-    origins = {settings.frontend_origin, "http://localhost:3000", "http://127.0.0.1:3000"}
+    origins = {"http://localhost:3000", "http://127.0.0.1:3000", *_loopback_aliases(settings.frontend_origin)}
     app.add_middleware(CORSMiddleware, allow_origins=sorted(origins), allow_methods=["*"], allow_headers=["*"],
                        expose_headers=["Content-Disposition"])
 
