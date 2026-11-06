@@ -1,0 +1,11 @@
+# Web server dependencies only. scikit-learn/PyTorch are NOT server dependencies
+# (the generated experiment code runs outside the service).
+fastapi
+pydantic>=2,<3
+sqlalchemy>=2,<3
+uvicorn
+anthropic>=1,<2
+httpx
+python-multipart
+python-dotenv
+pytest
