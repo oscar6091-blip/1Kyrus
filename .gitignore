@@ -1,0 +1,17 @@
+# secrets
+.env
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# node / next
+node_modules/
+.next/
+*.tsbuildinfo
+next-env.d.ts
+
+# local data
+data/
