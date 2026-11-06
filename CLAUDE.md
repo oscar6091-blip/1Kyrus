@@ -8,8 +8,12 @@ Research-to-Paper 웹 프로토타입(수업 과제, 제출일 **2026-11-08 Asia
 
 | 위치 | 내용 | 수정 |
 | --- | --- | --- |
-| `handoff/` | 배포받은 계획팩 원본 (`handoff/manifest.json`에 40개 파일의 SHA-256) | **수정 금지.** 예외: `IMPLEMENTATION_STATUS.md`, `LLM_DATA_POLICY.md`. 계획팩이 작업하면서 갱신하라고 지시한 기록 파일이라, 구현하는 쪽(Claude)이 T 작업을 마칠 때마다 갱신한다 |
-| `backend/`, `frontend/`, `README.md`, `.gitignore` | 우리가 만드는 앱과 제출 README | 자유 |
+| `handoff/` | 배포받은 계획팩 원본 (`handoff/manifest.json`에 40개 파일의 SHA-256). 문서만이 아니라 **실행에도 쓰인다**: 백엔드가 `contracts/database.sql`(DB 생성), `contracts/artifacts.schema.json`(결과 검사), `fixtures/`(demo 결과), `prompts/stage_prompts.md`(live 지시)를 실행 중에 직접 읽는다 (`backend/app/config.py`). 지우면 앱이 돌지 않는다 | **수정 금지.** 예외: `IMPLEMENTATION_STATUS.md`, `LLM_DATA_POLICY.md`. 계획팩이 작업하면서 갱신하라고 지시한 기록 파일이라, 구현하는 쪽(Claude)이 T 작업을 마칠 때마다 갱신한다 |
+| `backend/` | FastAPI 백엔드. `app/`(api 라우터, services, stages, schemas), `tests/`(pytest, `tests/data/`에 기록된 arXiv 응답) | 자유 |
+| `frontend/` | Next.js 화면. `app/`(페이지), `components/`, `lib/`(API 클라이언트·타입), `public/fonts/`(기획안 폰트, SIL OFL) | 자유 |
+| `README.md`, `.gitignore`, `.gitattributes` | 제출 README, git 제외 규칙, 제출 zip 제외 규칙 | 자유 |
+| `scripts/` | 개발 검사 도구 (`browser_demo_check.py`: 헤드리스 브라우저 시연 검사). 앱 실행에는 필요 없음 | 자유 |
+| `.env`, `data/` | 실행할 때 생기는 로컬 파일. `.env`는 `handoff/.env.example`을 복사해 만들고(API 키 포함), `data/prototype.db`는 SQLite DB. 둘 다 git과 제출 zip에 들어가지 않는다 | 로컬 전용 |
 | `docs/` | 팀 설계 문서의 작업본. `ssrd/`(SSRD), `ssad/`(SSAD), `uiux/`(UI/UX 기획안, 같은 내용의 디자인 캔버스 html 포함). v0.1은 `handoff/sources/original/`과 같은 파일의 사본이다. 문서는 앞으로 계속 개정되며, `handoff/`는 v0.1 기준 계획으로 고정한다 | 새 버전은 덮어쓰지 않고 `SSRD_v0.2.docx`, `SSAD_v0.2.pdf`, `UIUX_v0.3.pdf`처럼 파일을 추가한다 |
 | `DEVIATIONS.md` | 계획팩과 다르게 한 것의 기록 | 아래 규칙대로 추가 |
 | `dockerfile_1Kyrus/` | 개발 컨테이너 | **제출할 때 제외** |

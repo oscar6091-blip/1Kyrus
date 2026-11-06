@@ -16,6 +16,7 @@
 - 계획·계약·원문 자료: [`handoff/`](handoff/) (배포받은 계획팩 원본. 시작점은 [`handoff/CLAUDE.md`](handoff/CLAUDE.md))
 - 구현·검사 상태: [`handoff/IMPLEMENTATION_STATUS.md`](handoff/IMPLEMENTATION_STATUS.md)
 - 계획과 다르게 한 점: [`DEVIATIONS.md`](DEVIATIONS.md)
+- 폴더 구조와 작업 규칙(각 폴더의 의미, 어디에 무엇을 기록하나): [`CLAUDE.md`](CLAUDE.md) "폴더 구분"
 
 > SQLite, S1 승인 때만 Brief 갱신, 화면 이동만 하는 back, Markdown 초안 출력은 SSAD와 별도로 둔 **프로토타입 전용 임시 baseline**입니다. SSAD의 확정 사항이나 원문 준수의 증거가 아닙니다.
 
