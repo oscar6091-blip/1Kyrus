@@ -100,11 +100,22 @@ python scripts/check_handoff.py
 | AC-17 이전 단계 이동 | PASS | back Decision과 navigate만, 상태 불변, S1 back 422 (자동) |
 | AC-18 사용량 | PASS (오프라인) / live NOT RUN | 토큰·호출 수·비용(단가 있을 때만)·모델 기록, demo calls=0·null (자동). LLM 데이터 조건은 DOCUMENTS_REVIEWED이며 계정 조건은 미확인 |
 | AC-19 계획·이유 | PASS | S3 가설 누락·중복·미등록 H·Ablation 누락 거부, 모르는 근거 ID 거부 (자동). 근거 칩으로 논문·지표 원본 행·버전 열람, 빈 근거에 "근거 없음: 사용자 확인 필요" 표시 (UI 구현, 브라우저에서는 이력 모달만 조작) |
-| AC-20 제출 재현 | 아래 "깨끗한 설치 재현" 참고 | lockfile 두 개, `.env.example`, README, 이 문서. Docker/Redis/DB 서버 없이 실행 |
+| AC-20 제출 재현 | PASS | lockfile 두 개, `.env.example`, README, 이 문서. Docker/Redis/DB 서버 없이 실행 |
 
 ## 깨끗한 설치 재현
 
-(아래 절에 기록)
+2026-11-07에 커밋된 제출물을 `git archive HEAD`로 빈 폴더(`/tmp/fresh`)에 풀고, 루트 README 명령 그대로 실행했다. uv는 쓰지 않고 표준 `venv`와 `pip`를 사용했다.
+
+| 단계 | 명령 | 결과 |
+| --- | --- | --- |
+| 제출물 구성 | `git archive HEAD` | `dockerfile_1Kyrus/`가 빠짐 (`.gitattributes` export-ignore). `.env`·`.venv`·`node_modules`·`data/`도 들어가지 않음 |
+| 환경 파일 | `cp handoff/.env.example .env` | PASS |
+| 백엔드 설치·테스트 | `python3.11 -m venv .venv && .venv/bin/pip install -r requirements.lock && .venv/bin/python -m pytest -q` | **49 passed** |
+| 프런트 설치·빌드 | `npm ci && npm run build` | PASS (Compiled, TypeScript 통과) |
+| 계획 자료 검사 | `python3.11 handoff/scripts/check_handoff.py` | PASS |
+| 기동 | `BACKEND_PORT=8100 .venv/bin/python -m app` → `GET /api/health` | `{"status":"ok","default_mode":"demo","live_configured":false}`. reload 없이 1 프로세스. `data/prototype.db` 자동 생성 |
+
+이 검사에서 결함 하나를 찾아 고쳤다. `.gitignore`의 `data/` 규칙이 `backend/tests/data/`까지 제외해서, 기록된 arXiv 응답이 커밋에서 빠져 있었다. 첫 재현 시도에서 pytest 수집 오류가 났고, 규칙을 `/data/`로 고친 뒤 위 결과를 얻었다.
 
 ## 아직 수행하지 않은 확인
 
