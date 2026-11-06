@@ -146,7 +146,8 @@ export default function StageReview({ projectId, mode, detail, runs, activeJob, 
               </button>
             )}
           </div>
-          {stage.approved_artifact_id === viewed?.id && <div className="notice ok small" style={{ marginTop: 6 }}>이 버전이 현재 승인본입니다.</div>}
+          {stage.approved_artifact_id === viewed?.id && !isStale && <div className="notice ok small" style={{ marginTop: 6 }}>이 버전이 현재 승인본입니다.</div>}
+          {stage.approved_artifact_id === viewed?.id && isStale && <div className="notice stale small" style={{ marginTop: 6 }}>마지막 승인본이지만 상위 단계 변경으로 오래됨 상태입니다. 다음 단계의 입력으로 쓸 수 없습니다.</div>}
           {isNewDraft && !showApproved && <div className="notice warn small" style={{ marginTop: 6 }}>승인되지 않은 새 초안입니다. 다음 단계에는 승인본만 쓰입니다.</div>}
 
           {!editing && viewed && (
@@ -232,10 +233,7 @@ function RationaleList({ artifact, onOpen }: { artifact: ArtifactView; onOpen: (
         </div>
       ))}
       {artifact.evidence.warnings.length > 0 && (
-        <div className="notice warn small" style={{ marginTop: 8 }}>
-          <strong>경고</strong>
-          <ul style={{ margin: "4px 0 0", paddingLeft: 18 }}>{artifact.evidence.warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>
-        </div>
+        <div className="small muted">이 결과의 경고 {artifact.evidence.warnings.length}건은 위 본문의 ‘경고’ 절에 표시됩니다 (미검증 후보 제외·실행 경고 포함).</div>
       )}
     </div>
   );

@@ -33,19 +33,29 @@ bash dockerfile_1Kyrus/docker_use.sh dev2 3100 8100   # 호스트 포트가 사�
 호스트(Claude 포함)에서는 `docker exec jwpark_kyrus_dev bash -lc 'cd /home/Paris/jwpark/1Kyrus && ...'`로
 컨테이너 안에서 실행한다. 컨테이너에는 Node 22.23.2, `python3.11`, `uv`가 들어 있다.
 
-## 컨테이너 안 개발 명령 (제출 README와 같은 명령)
+## 컨테이너 안 개발 명령
+
+제출 README의 명령과 같다. 다만 컨테이너 밖에서 접속하기 위해 `0.0.0.0`으로 바인딩하는 점만 다르다.
+
 
 ```bash
 # backend (서버 venv에는 scikit-learn·PyTorch를 넣지 않는다)
 cd backend
 uv venv -p 3.11 .venv
-uv pip compile requirements.in -o requirements.lock
+uv pip compile -q --python-version 3.11 requirements.in -o requirements.lock   # 의존성을 바꿀 때만
 uv pip sync -p .venv requirements.lock
-.venv/bin/uvicorn app.main:app --host "${BACKEND_HOST:-127.0.0.1}" --port 8000   # reload·다중 worker 금지
+.venv/bin/python -m app        # 컨테이너의 BACKEND_HOST=0.0.0.0을 사용. reload·다중 worker 없음
 
 # frontend
-cd frontend && npm ci && npm run dev -- -H 0.0.0.0 -p 3000
+cd frontend && npm ci && npm run dev -- -H 0.0.0.0   # 컨테이너 안에서는 0.0.0.0으로 덮어써야 포트 포워딩됨
 
 # 참조 실험은 별도 venv
 cd handoff/reference_experiment && uv venv -p 3.11 .venv && uv pip install -p .venv -r requirements.txt
+```
+
+브라우저 화면 검사(선택): 컨테이너에 root로 Playwright 1.49.1과 Chromium을 `/opt/pw`, `/opt/pw-browsers`에 설치해 두었다.
+이 설치는 컨테이너를 다시 만들면 사라진다.
+
+```bash
+PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers /opt/pw/bin/python scripts/browser_demo_check.py --shots /tmp/shots
 ```

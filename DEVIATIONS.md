@@ -36,3 +36,15 @@
 - 확인: 옮기기 전과 후 모두 SHA-256 40개가 일치하고 `handoff/scripts/check_handoff.py`가 exit 0으로 끝났다. git 첫 커밋 `3c61cdd`가 옮기기 전 원본이다.
 - 영향: 제출물의 폴더 구조가 달라진다. 제출 README에 `handoff/` 위치를 적는다. 관련 T 작업: T01(.env 복사 절차), T03(fixtures 경로), T06(prompts 경로).
 - 상태: 적용
+
+## D-03 계약 목록에 없는 오류 코드 세 개를 추가했다
+- 날짜: 2026-11-07
+- 원문 위치: `handoff/contracts/workflow.json` `error_http`, `async_error_codes`
+- 원래 내용: 동기 오류 코드 12개와 비동기 오류 코드 8개(LLM_TIMEOUT, LLM_REFUSAL, LLM_TRUNCATED 등)를 나열한다.
+- 바꾼 내용: 목록에 맞는 코드가 없는 경우에만 다음 세 코드를 쓴다. 오류 응답 형식 `{error:{code,message,fields,retryable}}`은 그대로다.
+  - `LLM_API_ERROR`: 모델 API가 401·429·5xx 같은 HTTP 오류를 반환한 경우. 비동기 Job 오류다.
+  - `INTERNAL_ERROR`: 예상하지 못한 서버 예외. 500이다.
+  - `HTTP_ERROR`: 404가 아닌 프레임워크 HTTP 예외(예: 405).
+- 이유: HTTP 상태 오류를 `LLM_REFUSAL`(모델의 거절)이나 `LLM_TIMEOUT`으로 기록하면 원인을 잘못 알리게 된다.
+- 영향: 응답 스키마(code는 문자열)는 바뀌지 않는다. AC-15의 failed 처리와 보정 상한도 그대로다.
+- 상태: 적용

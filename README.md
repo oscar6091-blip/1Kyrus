@@ -1,0 +1,159 @@
+# Research-to-Paper 워크플로 프로토타입
+
+연구 아이디어를 입력하면 여섯 단계를 순서대로 진행하는 수업 과제용 로컬 웹 프로토타입입니다.
+
+**S1 연구 Brief → S2 관련 연구 → S3 실험 설계 → S4 실행 코드 → S5 결과 분석 → S6 영어 논문 초안**
+
+각 단계의 결과는 사용자가 직접 검토·수정·재생성·승인합니다. 승인된 결과만 다음 단계의 입력이 됩니다.
+
+이번 구현에서 우선 확인하는 것은 AI 결과의 품질이 아니라 다음 규칙들이 **서버에서 실제로 지켜지는지**입니다.
+
+- 승인 게이트와 입력 버전 연결
+- 상위 단계를 새로 승인했을 때의 변경 전파(오래됨, stale)
+- 실험 결과 업로드와 원본 지표 연결
+- 코드·초안·참고문헌 내보내기
+
+- 계획·계약·원문 자료: [`handoff/`](handoff/) (배포받은 계획팩 원본. 시작점은 [`handoff/CLAUDE.md`](handoff/CLAUDE.md))
+- 구현·검사 상태: [`handoff/IMPLEMENTATION_STATUS.md`](handoff/IMPLEMENTATION_STATUS.md)
+- 계획과 다르게 한 점: [`DEVIATIONS.md`](DEVIATIONS.md)
+
+> SQLite, S1 승인 때만 Brief 갱신, 화면 이동만 하는 back, Markdown 초안 출력은 SSAD와 별도로 둔 **프로토타입 전용 임시 baseline**입니다. SSAD의 확정 사항이나 원문 준수의 증거가 아닙니다.
+
+## 준비물
+
+- Python **3.11**
+- Node.js **22 이상** (npm 포함)
+- Docker, Redis, 별도 DB 서버는 필요하지 않습니다.
+- API 키와 네트워크가 없어도 demo 모드는 끝까지 동작합니다. 단, 처음 설치할 때는 패키지를 받아야 하므로 네트워크가 필요합니다.
+
+## 설치
+
+저장소 루트에서 실행합니다.
+
+```bash
+# 1) 환경 설정: 루트 .env를 백엔드가 읽는다 (API 키는 live 모드에만 필요)
+cp handoff/.env.example .env
+
+# 2) 백엔드: 버전 고정 lockfile로 설치 (scikit-learn·PyTorch는 서버에 설치하지 않음)
+cd backend
+python3.11 -m venv .venv
+.venv/bin/pip install -r requirements.lock      # Windows: .venv\Scripts\pip install -r requirements.lock
+cd ..
+
+# 3) 프런트엔드: package-lock.json 그대로 설치
+cd frontend
+npm ci
+cd ..
+```
+
+## 실행 (터미널 두 개)
+
+```bash
+# 터미널 1 — API: http://127.0.0.1:8000/api  (프로세스 1개, 자동 reload·다중 worker 없음)
+cd backend
+.venv/bin/python -m app
+
+# 터미널 2 — 웹: http://127.0.0.1:3000
+cd frontend
+npm run dev
+```
+
+브라우저에서 **http://127.0.0.1:3000** 에 접속합니다. 백엔드 상태는 http://127.0.0.1:8000/api/health 에서 확인할 수 있습니다.
+
+- `python -m app`은 `.env`의 `BACKEND_HOST`(기본 127.0.0.1)와 `BACKEND_PORT`(기본 8000)를 씁니다.
+- SQLite 파일은 `.env`의 `DATABASE_URL`(기본 `./data/prototype.db`)에 생깁니다. 경로는 저장소 루트 기준이며, 파일이 없으면 자동으로 만듭니다. 처음부터 다시 시작하려면 `data/` 폴더를 지우면 됩니다.
+- 운영 빌드로 확인하려면 `npm run build && npm run start`를 씁니다.
+- 프런트가 호출하는 API 주소는 기본 `http://127.0.0.1:8000/api`입니다. 바꾸려면 `frontend/.env.local`에 `NEXT_PUBLIC_API_BASE_URL`을 넣습니다.
+
+### 테스트
+
+```bash
+cd backend && .venv/bin/python -m pytest -q        # 49개, 실제 임시 SQLite 파일 사용, 네트워크 불필요
+cd frontend && npm run build                       # 타입 검사 포함
+```
+
+## demo와 live
+
+| | demo (기본값) | live |
+| --- | --- | --- |
+| 단계 결과 | `handoff/fixtures/stages/s1~s6.json` 사전 작성본 | Anthropic API로 생성 |
+| 관련 연구 | 동봉 snapshot `handoff/fixtures/references.snapshot.json` | arXiv에서 조회·확인한 논문 1~3편 (초록 기반) |
+| 필요 설정 | 없음 | `.env`의 `ANTHROPIC_API_KEY`, `LLM_MODEL` (`ANTHROPIC_WORKSPACE_ID`는 선택) |
+| 실패 시 | — | 실패로 표시. demo 결과로 바꾸지 않음 |
+
+- 모드는 **프로젝트를 만들 때** `.env`의 `APP_MODE`로 정해지고, 이후에는 바뀌지 않습니다. live로 쓰려면 `APP_MODE=live`, `ANTHROPIC_API_KEY=...`, `LLM_MODEL=...`을 설정한 뒤 백엔드를 다시 시작하고 새 프로젝트를 만듭니다.
+- demo에서도 저장, 승인, 버전, 오래됨, 업로드, 내보내기는 실제 앱 코드로 처리합니다. 화면과 내보낸 파일에는 "데모 모드: 사전 작성 산출물 사용"이 표시됩니다.
+- demo의 생성 지연은 `DEMO_STAGE_DELAY_SECONDS`(기본 1초)로 조절합니다. 진행 상태 조회를 보여 주기 위한 값입니다.
+- 비용 추정은 `LLM_INPUT_USD_PER_MILLION`, `LLM_OUTPUT_USD_PER_MILLION`이 둘 다 설정됐을 때만 계산합니다. 설정이 없으면 null입니다.
+- 비밀키는 백엔드만 읽습니다. 브라우저, 소스, 내보내기 파일에는 들어가지 않습니다.
+
+## 5분 기본 시연 (demo)
+
+1. 서버 두 개를 시작하고 http://127.0.0.1:3000 에 접속합니다. 키가 없어도 열리고 "demo 모드" 표시가 보입니다.
+2. `handoff/fixtures/project_input.json`의 `name`과 `idea`를 붙여 넣고 **프로젝트 만들기**를 누릅니다.
+3. **S1 실행**을 누르고 Brief를 읽습니다.
+   - 왼쪽에서 S2를 누르면 **S2 실행**이 잠겨 있습니다 (승인 전 차단).
+   - S1으로 돌아가 **승인**합니다. 오른쪽 "승인된 Brief"에 표시됩니다.
+4. **S2 실행**을 누르고 논문 카드의 출처와 확인일을 확인한 뒤 승인합니다.
+5. **S3 실행**을 누릅니다.
+   - 실험 E1, 가설 H1, 필수 지표 4개, `## Ablation 계획`을 확인합니다.
+   - 코멘트를 적고 **코멘트로 재생성**을 누르면 v2가 생기고, Decision 기록이 남습니다.
+   - 승인합니다.
+6. **S4 실행**을 누릅니다. 코드 파일과 "서버 미실행" 표시를 확인하고 승인한 뒤 **코드 zip 다운로드**를 누릅니다.
+7. S5에서 `handoff/fixtures/experiment_result.valid.json`을 **업로드**합니다.
+   - 지표 4개, 환경 정보, 수렴 경고가 원본 값 그대로 표시됩니다.
+   - **S5 실행** 후 판정이 inconclusive인지 확인하고 승인합니다.
+8. **S6 실행**을 누르고 여섯 섹션, 실험 수치, 참고문헌을 확인한 뒤 승인합니다. **논문 Markdown**과 **BibTeX**를 다운로드합니다.
+9. 데모 표시가 있는 생성 본문과 실제 측정 파일(`data_origin: measured`)은 출처가 다르다는 점을 설명합니다.
+   - 측정 파일은 `handoff/reference_experiment/train.py`를 CPU에서 실행해 만든 것입니다.
+
+판단 이유 아래의 `ref:`, `metric:`, `artifact:` 칩을 누르면 원본 근거(논문, 업로드 원본 행, 특정 버전)가 읽기 전용으로 열립니다. 근거가 비어 있으면 "근거 없음: 사용자 확인 필요"가 표시됩니다.
+
+## 변경 전파 시연
+
+1. 여섯 단계를 모두 승인한 프로젝트에서 S3 → **직접 수정**을 엽니다.
+2. 반복 seed 관련 문구를 고쳐 **새 버전으로 저장**합니다. 저장만으로는 승인되지 않아 S3가 "검토 필요"로 바뀝니다.
+3. S3를 **승인**하면 S4·S5·S6가 **오래됨**으로 바뀝니다. 과거 결과와 승인 기록은 그대로 열람할 수 있습니다.
+4. S4에서 코멘트를 적고 **코멘트로 재생성**을 누릅니다. 오른쪽 "입력 버전"이 새 S3 버전을 가리키는지 확인합니다.
+5. S4를 다시 승인하기 전에는 S5 실행 버튼이 잠겨 있습니다. API로 직접 요청해도 서버가 409로 거부합니다.
+
+demo의 재생성 본문은 사전 작성본이라 코멘트의 의미가 본문에 반영되지는 않습니다. 입력 연결은 snapshot과 recorder Gateway 테스트로 확인했습니다.
+
+## 업로드 형식 (prototype_json_v1)
+
+`handoff/contracts/upload.schema.json` 형식만 받습니다. 원문 SSRD A.II 형식과 비교하면 아래 필드가 더 필요하며, 자동 변환이나 CSV 입력은 지원하지 않습니다.
+
+- `schema_version`
+- `data_origin`
+- `metrics[].unit`
+
+다음과 같은 파일은 422로 거부하고, 문제가 있는 필드 위치를 함께 보여 줍니다.
+
+- NaN·Infinity가 들어 있음
+- 같은 키가 중복됨
+- 수치가 문자열이거나 seed가 bool임
+- 같은 지표(name, split, step)가 중복됨
+- 승인된 S3에 없는 실험 ID를 씀
+- 필수 지표가 빠짐
+
+## 하지 않는 것 (제한)
+
+- 서버는 생성 코드나 실험을 **실행하지 않습니다.** S4 코드는 Python 문법 검사만 합니다.
+- 사용자 공유, 로그인, 다중 사용자는 없습니다. 로컬 단일 사용자 전용입니다.
+- LaTeX/PDF 출력은 없고, 초안은 Markdown으로만 내보냅니다.
+- 다음 기능은 없습니다: 전체 버전 diff·복원, 섹션별 재생성, 논문 수동 추가, 통계 검정, 자유 서술 수치 전체에 대한 의미 검증.
+- S2는 초록 기반 정리입니다. 논문 전문을 검토한 novelty 판정이 아닙니다.
+- 동봉 실측은 단일 seed·단일 split이고 수렴 경고가 있어, 알고리즘 우위의 근거가 되지 않습니다.
+- 고객 가정 A-1~A-7, SUS, 가용률, 사용자 평가는 검증하지 않았습니다.
+
+## 실제 수행한 검사
+
+상세 내용은 [`handoff/IMPLEMENTATION_STATUS.md`](handoff/IMPLEMENTATION_STATUS.md)에 있습니다.
+
+| 검사 | 결과 |
+| --- | --- |
+| 백엔드 pytest 49개 (실제 임시 SQLite 파일) | PASS |
+| `npm run build` | PASS |
+| 헤드리스 Chromium으로 5분 시연과 변경 전파 시연 수행 (`scripts/browser_demo_check.py`) | PASS |
+| 실제 API 키를 쓴 live 호출 | **NOT RUN** (키 없음). live 경로는 Fake/Recorder Gateway와 기록된 arXiv 응답으로만 검사 |
+| LLM 입력 데이터 사용 조건 ([`handoff/LLM_DATA_POLICY.md`](handoff/LLM_DATA_POLICY.md)) | DOCUMENTS_REVIEWED. 실제 계정 조건은 미확인 |

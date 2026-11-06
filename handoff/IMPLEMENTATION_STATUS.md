@@ -1,21 +1,23 @@
 # 구현 상태
 
-현재 상태: **계획 팩만 작성됨. 아래 웹 앱 작업은 아직 시작하지 않음.**
+현재 상태 (2026-11-07 갱신): **T01~T08 구현 완료. demo 경로는 API 테스트와 헤드리스 브라우저 조작으로 확인. live는 Fake/Recorder Gateway로만 오프라인 검사했고 실제 API 키 호출은 NOT RUN.**
 
-이 문구는 배포한 계획팩의 초기 상태다. 기존 작업 폴더에 구현이 있다면 현재 코드·검사 결과를 확인해 갱신하고 이어서 작업한다. source-completion 개정으로 원문 자료와 N-01~N-09 구현 지시를 보완했으며, 이것이 앱 구현 완료라는 뜻은 아니다. LLM 입력 데이터 조건의 확인 상태는 LLM_DATA_POLICY.md의 NOT_CHECKED에서 시작한다.
+아래 문단은 배포한 계획팩의 초기 설명이다. 기존 작업 폴더에 구현이 있다면 현재 코드·검사 결과를 확인해 갱신하고 이어서 작업한다. source-completion 개정으로 원문 자료와 N-01~N-09 구현 지시를 보완했으며, 이것이 앱 구현 완료라는 뜻은 아니다. LLM 입력 데이터 조건의 확인 상태는 LLM_DATA_POLICY.md의 NOT_CHECKED에서 시작한다.
 
 범위 설명: SQLite·S1에서만 Brief 갱신·화면 이동만 수행하는 back·Markdown 출력은 SSAD와 별도로 둔 프로토타입 전용 임시 baseline이다. 구현 상태 보고에서도 이를 SSAD의 확정 사항이나 설계 변경으로 표현하지 않는다. SSRD·SSAD 원본 수정은 이번 작업에 포함되지 않는다.
 
+검사 환경: 개발 컨테이너 `jwpark_kyrus_dev` (Ubuntu 20.04), Python 3.11.13, Node 22.23.2, npm 10.9.8. 컨테이너는 개발용이며 앱 실행에는 필요 없다 (`DEVIATIONS.md` D-01). 명령은 저장소 루트 기준이다.
+
 | 작업 | 상태 | 실제 실행 명령과 결과 |
 | --- | --- | --- |
-| T01 환경·골격 | TODO | |
-| T02 DB·워크플로 | TODO | |
-| T03 demo 실행·업로드·내보내기 | TODO | |
-| T04 공통 UI | TODO | |
-| T05 live Gateway·arXiv | TODO | |
-| T06 단계별 live 생성 | TODO | |
-| T07 필수 동작 검증 | TODO | |
-| T08 제출 정리 | TODO | |
+| T01 환경·골격 | DONE | `cd backend && .venv/bin/pip install -r requirements.lock`(uv로 고정), `npm ci`. `.venv/bin/python -m app` 기동 후 `GET /api/health` → `{"status":"ok","default_mode":"demo","live_configured":false}`. 프런트가 health를 읽어 모드 표시. DB는 `handoff/contracts/database.sql`을 그대로 실행해 생성 |
+| T02 DB·워크플로 | DONE | `pytest tests/test_workflow.py tests/test_versions.py` PASS. 승인 게이트, 버전·Decision 수, stale 전파, back, request_id 중복, 작업 잠금, S3/S5 의미 검증 |
+| T03 demo 실행·업로드·내보내기 | DONE | `pytest tests/test_smoke_flow.py tests/test_jobs.py tests/test_uploads.py tests/test_exports.py` PASS. API만으로 S1~S6 생성·승인, valid JSON 업로드, code.zip·paper.md·references.bib 다운로드. 참조 수치 4개가 `expected_reference_metrics.json`과 정확히 일치. zip의 train.py는 원본과 바이트 동일 |
+| T04 공통 UI | DONE | `npm run build` PASS (Next.js 16.4.5, TypeScript). `scripts/browser_demo_check.py`로 헤드리스 Chromium에서 5분 시연과 변경 전파 시연 전 과정 PASS |
+| T05 live Gateway·arXiv | DONE (오프라인) | `pytest tests/test_gateway.py tests/test_references.py` PASS. timeout·거절·잘림·HTTP 오류는 failed로 끝나고 SDK 재시도 0회, 보정은 최대 1회, fixture 대체 없음. 기록된 Atom 응답으로 버전 접미사 정규화, 첫 제출 연도, 미검증 후보 경고, 0편 실패 확인. arXiv 실제 응답 형식은 컨테이너에서 한 번 조회해 확인. `LLM_DATA_POLICY.md`는 DOCUMENTS_REVIEWED |
+| T06 단계별 live 생성 | DONE (오프라인) | `pytest tests/test_context_handoff.py tests/test_evidence.py` PASS. 수정·재승인한 S3 본문, 정확한 상위 ID, 코멘트가 S4 요청 인자에 들어감 (AC-03). S5는 서버 metric binding을 받음. 모델이 만든 미등록 cite는 채택하지 않음. 실제 키 live 실행은 NOT RUN |
+| T07 필수 동작 검증 | DONE | `cd backend && .venv/bin/python -m pytest -q` → **49 passed**. `cd frontend && npm run build` → PASS. 브라우저 시연 PASS. AC별 결과는 아래 "앱 검사 결과" |
+| T08 제출 정리 | DONE | 루트 `README.md`(설치·실행·demo/live·5분 시연·변경 전파·제한·검사 결과), 이 문서, `LLM_DATA_POLICY.md`, `DEVIATIONS.md` 작성. 깨끗한 설치 재현 결과는 아래 "깨끗한 설치 재현" |
 
 ## 구현 선택
 
@@ -23,6 +25,23 @@
 
 | 날짜 | 관련 T | 항목 | 선택 | 이유 |
 | --- | --- | --- | --- | --- |
+| 2026-11-07 | T01 | 백엔드 lockfile | `uv pip compile`로 만든 `backend/requirements.lock` (pip 형식) | pip만으로도 설치 가능하고 버전이 모두 고정됨 |
+| 2026-11-07 | T01 | 경로 해석 | `.env`와 `DATABASE_URL`의 상대 경로를 저장소 루트 기준으로 해석 | 백엔드를 `backend/`에서 실행해도 "저장소 루트 `.env`"를 읽도록 |
+| 2026-11-07 | T01 | DB 생성 | ORM `create_all` 대신 `handoff/contracts/database.sql`을 그대로 실행하고, ORM은 그 테이블에 매핑 | 계약 DDL과 관계·제약을 정확히 일치시키기 위해 |
+| 2026-11-07 | T01 | 트랜잭션 | 모든 세션 트랜잭션을 `BEGIN IMMEDIATE`로 시작 (연결마다 FK·busy_timeout·WAL) | 두 요청이 같은 과거 상태로 승인하지 않도록 (architecture.md) |
+| 2026-11-07 | T01 | 백엔드 실행 명령 | `python -m app` (uvicorn, reload 없음, worker 1)이 `.env`의 BACKEND_HOST/PORT 사용 | 한 줄 명령으로 계획의 실행 조건을 지키기 위해 |
+| 2026-11-07 | T01 | 프런트 버전 | React 19.3.1, react-markdown 10.1.0, remark-gfm 4.0.1, TypeScript 5.9.3 고정 | TypeScript 7은 Next 빌드 타입 검사와의 호환을 확인하지 못해 5.x 사용 |
+| 2026-11-07 | T04 | Next dev 허용 origin | `allowedDevOrigins: ["127.0.0.1","localhost"]`, dev/start는 `-H 127.0.0.1` | 계획의 주소 `http://127.0.0.1:3000`에서 Next 16 dev가 개발 리소스를 막아 화면이 hydration되지 않는 문제를 브라우저 검사에서 발견 |
+| 2026-11-07 | T03 | demo 지연 | `DEMO_STAGE_DELAY_SECONDS`(기본 1.0초, `.env.example`에는 없음) | 1초 조회·재접속 동작이 화면에 보이도록. 테스트는 0초 |
+| 2026-11-07 | T02 | S1 back 오류 | 422 `INVALID_PAYLOAD` | AC-17이 422를 요구하나 workflow.json에 해당 코드가 없어 422인 기존 코드 사용 |
+| 2026-11-07 | T03 | 업로드 중복 재전송 응답 | 같은 client_upload_id·같은 내용이면 기존 Run을 201로 반환 | OpenAPI에 201만 정의됨 |
+| 2026-11-07 | T03 | 업로드 내용 비교 | 파싱한 JSON을 키 정렬 직렬화한 SHA-256으로 비교 | 공백·키 순서만 다른 같은 내용을 중복으로 인식 |
+| 2026-11-07 | T03 | S5 경고 | 업로드 `config.fit_warnings`, `config.interpretation_limit`, `synthetic_demo` 여부를 evidence.warnings로 복사 | 수렴 경고·한계를 숨기지 않기 위해 (stage_prompts S5) |
+| 2026-11-07 | T03 | 수치 표기 | 원본 float를 `repr` 그대로 표시하고 단위를 괄호·별도 열로 표시 | 0.9666…을 97%로 바꾸지 않기 위해 |
+| 2026-11-07 | T03 | 생성 실패 후 상태 | failed/interrupted 작업 뒤 Stage는 workflow.json대로 needs_review. 이전 승인본과 current가 같으면 승인 불가이며 재생성 필요 | 계약 그대로. 기존 승인본을 새 결과처럼 승인하지 않음 |
+| 2026-11-07 | T05 | arXiv 검색어 | 모델 검색어에서 영문 키워드 최대 5개를 `all:` AND로 결합, 결과 최대 5개 중 확인된 3편 채택, https 엔드포인트 | arXiv API 문법. http는 리다이렉트되어 https 사용 |
+| 2026-11-07 | T05 | 프롬프트 출처 | system·단계·보정 지시를 런타임에 `handoff/prompts/stage_prompts.md`에서, 출력 schema를 `artifacts.schema.json`에서($ref 인라인) 읽음 | 계획 문서와 앱의 프롬프트를 한 곳에서 관리 |
+| 2026-11-07 | T07 | 브라우저 검사 도구 | `scripts/browser_demo_check.py` (Playwright 1.49.1, 앱 의존성 아님) | 실제 화면 조작 확인용. Ubuntu 20.04에서 동작하는 마지막 계열 |
 
 ## 계획 자료 검사
 
@@ -56,13 +75,45 @@ python scripts/check_handoff.py
 - 두 학습의 최대 iteration 도달 수렴 경고를 config.fit_warnings에 보존했다.
 - 단일 실행으로 통계적 우위나 재현성 목표 달성을 주장하지 않는다. 이 측정이 웹 앱의 구현·시험을 뜻하지도 않는다.
 
+## 앱 검사 결과 (AC-01~20)
+
+검사일 2026-11-07. "자동"은 `backend/tests`의 pytest이고, "브라우저"는 `scripts/browser_demo_check.py`(헤드리스 Chromium, 실제 Next·FastAPI 서버)다.
+
+| AC | 결과 | 근거 |
+| --- | --- | --- |
+| AC-01 오프라인 시작 | PASS | 키 없이 demo 기동·프로젝트 생성·목록·선택 (브라우저). demo 표시가 화면·zip·paper.md·bib에 있음 (자동·브라우저) |
+| AC-02 승인 전 차단 | PASS | S1 미승인 시 S2 run 409 PREDECESSOR_NOT_APPROVED (자동), 버튼 잠김 (브라우저) |
+| AC-03 입력 연결 | PASS | Recorder Gateway 인자에 새 S3 본문·S3 artifact ID·코멘트 포함 (자동) |
+| AC-04 편집과 승인 분리 | PASS | 편집은 새 버전과 edit Decision만 남김. 두 번 승인한 S1을 Decision 목록으로 열람해도 상태·Decision 수가 그대로 (자동). 이력 모달 읽기 전용 (브라우저) |
+| AC-05 변경 전파 | PASS | S3 새 승인 → S4~S6만 stale, 과거 포인터 보존, S4 재승인 전 S5 거부 (자동·브라우저) |
+| AC-06 재접속 보존 | PASS (API) | 지연 작업 중 project 상세 재조회 시 같은 active_job, 결과 1개 (자동). UI는 재접속 때 active_job으로 다시 조회하도록 구현. 브라우저 창을 닫았다 여는 조작은 수행하지 않음 |
+| AC-07 서버 재시작 | PASS | running Job을 만든 뒤 startup 복구 → interrupted·needs_review·승인본 보존·수동 재시도 성공 (자동). 실제 프로세스 kill 재시작은 수행하지 않음 |
+| AC-08 인용 경계 | PASS (오프라인) | 미등록 cite 채택 거부, 0편이면 NO_VERIFIED_REFERENCES와 사유, 일부 제외 경고가 S2→S6에 보존, live 실패에 fixture 대체 없음 (자동) |
+| AC-09 실험 업로드 | PASS | valid 수락. invalid·NaN·Infinity·중복 키·문자열 수치·bool seed·중복 metric·미등록 E ID·필수 지표 누락·범위 위반·타 프로젝트 Run 거부. 원문 A.II 예시 422 (schema_version, data_origin, metrics.0.unit)와 정상 예시 안내 (자동) |
+| AC-10 실측 값 분석 | PASS | 네 값 원본 일치, 같은 accuracy·수렴 경고 유지, H 판정 누락·중복·미등록 거부 (자동·브라우저) |
+| AC-11 지표 토큰 | PASS | 표·토큰은 Artifact evidence로 렌더링, 미등록 토큰 422, 새 업로드 뒤에도 과거 초안·paper.md 불변 (자동) |
+| AC-12 코드 내보내기 | PASS | zip 정상, `../../escape.py`·절대경로·역슬래시·.env·NUL 거부, 앱 코드에 실행 경로 없음 (자동). 브라우저에서 zip 다운로드 |
+| AC-13 초안 내보내기 | PASS | 여섯 섹션·참고문헌·지표 표·demo 표식이 있는 paper.md와 references.bib (자동·브라우저) |
+| AC-14 중복 요청 | PASS | run·approve·edit·regenerate 재전송 시 같은 결과, 다른 내용이면 409 (자동) |
+| AC-15 LLM Gateway | PASS (오프라인) / live NOT RUN | 모든 live 호출이 `llm_gateway.py` 하나만 거침 (anthropic import 1곳), timeout·거절·잘림·HTTP 오류 failed, 보정 1회 상한 (Fake client) |
+| AC-16 작업 잠금 | PASS | 작업 중 같은 프로젝트 쓰기 409, 조회·다른 프로젝트 가능, 종료 후 해제 (자동) |
+| AC-17 이전 단계 이동 | PASS | back Decision과 navigate만, 상태 불변, S1 back 422 (자동) |
+| AC-18 사용량 | PASS (오프라인) / live NOT RUN | 토큰·호출 수·비용(단가 있을 때만)·모델 기록, demo calls=0·null (자동). LLM 데이터 조건은 DOCUMENTS_REVIEWED이며 계정 조건은 미확인 |
+| AC-19 계획·이유 | PASS | S3 가설 누락·중복·미등록 H·Ablation 누락 거부, 모르는 근거 ID 거부 (자동). 근거 칩으로 논문·지표 원본 행·버전 열람, 빈 근거에 "근거 없음: 사용자 확인 필요" 표시 (UI 구현, 브라우저에서는 이력 모달만 조작) |
+| AC-20 제출 재현 | 아래 "깨끗한 설치 재현" 참고 | lockfile 두 개, `.env.example`, README, 이 문서. Docker/Redis/DB 서버 없이 실행 |
+
+## 깨끗한 설치 재현
+
+(아래 절에 기록)
+
 ## 아직 수행하지 않은 확인
 
-- 웹 프런트·백엔드 구현·통합·브라우저 시연.
-- 사용자의 API 키를 이용한 실제 앱 LLM 호출과 arXiv 네트워크 어댑터 동작.
-- LLM 입력 데이터 사용 조건의 실제 계정 적용 여부. 현재 확인 기록은 LLM_DATA_POLICY.md에서 본다.
+- 실제 API 키로 하는 live 생성(여섯 단계), 실제 arXiv 조회를 거친 S2 생성. 키가 없어 NOT RUN.
+- LLM 입력 데이터 사용 조건의 실제 계정 적용 여부. 공식 문서 검토까지만 했다 (`LLM_DATA_POLICY.md`).
+- 브라우저 창을 닫았다 다시 여는 AC-06 조작, 실제 프로세스를 죽이는 AC-07 재시작.
+- 사람이 직접 하는 브라우저 시연. 자동화한 헤드리스 조작만 수행했다.
 - SUS·고객 평가·가용률·기관용 보안·모든 자유 서술 수치의 정확성 평가.
 
 ## live 검사
 
-아직 미실행. 구현 후 실제 사용한 키·모델로 수행한 경우에만 결과를 기록한다. 키 값은 적지 않는다. API 기능 시험 결과와 데이터 사용 조건 확인 상태를 분리한다.
+NOT RUN. 사용 가능한 API 키가 없다. live 경로의 동작은 Fake/Recorder Gateway와 기록된 arXiv 응답으로만 오프라인 검사했으며, 이것을 실제 모델 품질이나 검색 성능 검증으로 보고하지 않는다. 키가 생기면 `.env`에 `APP_MODE=live`, `ANTHROPIC_API_KEY`, `LLM_MODEL`을 넣고 새 프로젝트에서 실행해 결과(모델명, 단계, PASS/FAIL)를 여기에 적는다. 키 값은 적지 않는다.
