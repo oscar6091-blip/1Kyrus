@@ -10,6 +10,7 @@ Research-to-Paper 웹 프로토타입(수업 과제, 제출일 **2026-11-08 Asia
 | --- | --- | --- |
 | `handoff/` | 배포받은 계획팩 원본 (`handoff/manifest.json`에 40개 파일의 SHA-256) | **수정 금지.** 예외: `IMPLEMENTATION_STATUS.md`, `LLM_DATA_POLICY.md`. 계획팩이 작업하면서 갱신하라고 지시한 기록 파일이라, 구현하는 쪽(Claude)이 T 작업을 마칠 때마다 갱신한다 |
 | `backend/`, `frontend/`, `README.md`, `.gitignore` | 우리가 만드는 앱과 제출 README | 자유 |
+| `docs/` | 팀 설계 문서의 작업본. `ssrd/`(SSRD), `ssad/`(SSAD), `uiux/`(UI/UX 기획안, 같은 내용의 디자인 캔버스 html 포함). v0.1은 `handoff/sources/original/`과 같은 파일의 사본이다. 문서는 앞으로 계속 개정되며, `handoff/`는 v0.1 기준 계획으로 고정한다 | 새 버전은 덮어쓰지 않고 `SSRD_v0.2.docx`, `SSAD_v0.2.pdf`, `UIUX_v0.3.pdf`처럼 파일을 추가한다 |
 | `DEVIATIONS.md` | 계획팩과 다르게 한 것의 기록 | 아래 규칙대로 추가 |
 | `dockerfile_1Kyrus/` | 개발 컨테이너 | **제출할 때 제외** |
 
@@ -31,12 +32,13 @@ Research-to-Paper 웹 프로토타입(수업 과제, 제출일 **2026-11-08 Asia
 | --- | --- |
 | 계획팩(문서, 계약, 구현 계획, 안내)과 **다르게** 했다. 이유가 환경이든, 자료끼리 모순이든, 사용자 지시든 같다 | `DEVIATIONS.md`에 D-NN 항목 추가 |
 | 계획팩이 **정하지 않은 것**을 정했다(버전, 라이브러리, 경로 해석 같은 일반 구현 선택) | `handoff/IMPLEMENTATION_STATUS.md` "구현 선택" 절 |
+| `docs/`의 SSRD·SSAD·UI/UX 새 버전을 앱(`backend/`, `frontend/`)에 반영했다. 계획팩은 v0.1 기준이므로 계획팩과 달라지는 것으로 본다 | `DEVIATIONS.md`에 D-NN 항목 추가. 원문 위치에 반영한 문서와 버전(예: `docs/ssrd/SSRD_v0.2.docx` 3.1)을 적는다 |
 | T 작업 진행 상황, 실행 명령, PASS/FAIL/NOT RUN | `handoff/IMPLEMENTATION_STATUS.md` 작업 표·검사 절 (차이가 있었다면 D 번호만 언급) |
 
 ## 제출
 
 `git archive --format=zip -o ../1Kyrus_submit.zip HEAD`로 만든다. `.gitattributes`의 export-ignore 때문에
-`dockerfile_1Kyrus/`가 빠지고, git에 올리지 않은 `.env`·`.venv`·`node_modules`·`data/`도 들어가지 않는다.
+`dockerfile_1Kyrus/`와 `docs/`가 빠지고, git에 올리지 않은 `.env`·`.venv`·`node_modules`·`data/`도 들어가지 않는다.
 그래서 **커밋한 내용만 제출된다.** 만들기 전에 `git status`가 깨끗한지 확인한다.
 
 ## 개발 환경

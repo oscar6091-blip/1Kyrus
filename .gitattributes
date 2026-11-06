@@ -1,2 +1,3 @@
 # git archive로 제출물을 만들 때 뺄 것 (CLAUDE.md "제출" 참고)
 /dockerfile_1Kyrus export-ignore
+/docs export-ignore
