@@ -8,7 +8,7 @@ Research-to-Paper 웹 프로토타입(수업 과제, 제출일 **2026-11-08 Asia
 
 | 위치 | 내용 | 수정 |
 | --- | --- | --- |
-| `handoff/` | 배포받은 계획팩 원본 (`handoff/manifest.json`에 40개 파일의 SHA-256) | **수정 금지.** 예외: `IMPLEMENTATION_STATUS.md`, `LLM_DATA_POLICY.md` (갱신하라고 만든 파일) |
+| `handoff/` | 배포받은 계획팩 원본 (`handoff/manifest.json`에 40개 파일의 SHA-256) | **수정 금지.** 예외: `IMPLEMENTATION_STATUS.md`, `LLM_DATA_POLICY.md`. 계획팩이 작업하면서 갱신하라고 지시한 기록 파일이라, 구현하는 쪽(Claude)이 T 작업을 마칠 때마다 갱신한다 |
 | `backend/`, `frontend/`, `README.md`, `.gitignore` | 우리가 만드는 앱과 제출 README | 자유 |
 | `DEVIATIONS.md` | 계획팩과 다르게 한 것의 기록 | 아래 규칙대로 추가 |
 | `dockerfile_1Kyrus/` | 개발 컨테이너 | **제출할 때 제외** |
@@ -31,10 +31,6 @@ Research-to-Paper 웹 프로토타입(수업 과제, 제출일 **2026-11-08 Asia
 
 ## 개발 환경
 
-- 호스트(munich)에는 Node가 없고 Python은 3.8뿐이다. 실행·설치·테스트는 전부 컨테이너
-  `jwpark_kyrus_dev` 안에서 한다(`docker exec jwpark_kyrus_dev bash -lc '...'`).
-  Node 22.23.2, Python 3.11(`python3.11`, `uv`)이 들어 있다. 자세한 내용은 `dockerfile_1Kyrus/README.md`.
-- 컨테이너는 호스트 `127.0.0.1:3000`→3000(웹), `127.0.0.1:8000`→8000(API)으로 연결되어 있다.
-  컨테이너에는 개발용으로 `BACKEND_HOST=0.0.0.0`이 들어 있다. `.env`가 이 값을 덮어쓰지 않게 한다.
-- 제출 README에는 Docker 없이 venv와 npm으로 실행하는 명령만 쓴다(T01).
-- git은 이 폴더가 저장소다. 첫 커밋이 계획팩 원본이므로, 원본이 바뀌었는지는 `git diff <첫 커밋> -- handoff/`로 확인한다.
+- 실행·설치·테스트는 전부 컨테이너 `jwpark_kyrus_dev` 안에서 한다(호스트에는 Node가 없다).
+  자세한 내용은 `dockerfile_1Kyrus/README.md`를 본다. 제출 README에는 Docker 명령을 쓰지 않는다.
+- 이 폴더가 git 저장소다. 첫 커밋 `3c61cdd`가 계획팩 원본이므로, 원본이 바뀌었는지는 `git diff 3c61cdd -M -- handoff/`로 확인한다.

@@ -3,10 +3,7 @@
 # 제출물에는 포함하지 않는다. 앱은 Docker 없이 venv + npm으로 실행되어야 한다
 # (implementation_plan.md T01). 이 이미지는 Node가 없는 호스트에서 개발하기 위한 것이다.
 #
-# 베이스는 glibc 2.33 이하여야 한다. 호스트 Docker 20.10.2의 seccomp가 glibc 2.34+의
-# clone3를 막아서, Debian bookworm·Ubuntu 22.04 이상에서는 Node가 스레드 생성 단계에서
-# abort한다. Debian bullseye는 2026-08 지원 종료로 apt 보안 저장소가 404를 낸다.
-# 그래서 3D_HGS와 같은 Ubuntu 20.04(glibc 2.31)에 Node 공식 바이너리를 얹는다.
+# 베이스를 Ubuntu 20.04로 고정한 이유는 README.md "3D_HGS와 다른 점"에 있다(바꾸지 말 것).
 FROM ubuntu:20.04
 
 ARG USERNAME=jwpark

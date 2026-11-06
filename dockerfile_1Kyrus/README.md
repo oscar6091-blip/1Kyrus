@@ -30,6 +30,9 @@ bash dockerfile_1Kyrus/docker_use.sh dev2 3100 8100   # 호스트 포트가 사�
 호스트 포트를 3000/8000이 아닌 번호로 바꾸면, 노트북에서는 VS Code 포트 포워딩으로
 로컬 3000과 8000을 그 원격 포트에 연결해야 한다. 프런트가 `http://127.0.0.1:8000/api`를 호출하기 때문이다.
 
+호스트(Claude 포함)에서는 `docker exec jwpark_kyrus_dev bash -lc 'cd /home/Paris/jwpark/1Kyrus && ...'`로
+컨테이너 안에서 실행한다. 컨테이너에는 Node 22.23.2, `python3.11`, `uv`가 들어 있다.
+
 ## 컨테이너 안 개발 명령 (제출 README와 같은 명령)
 
 ```bash

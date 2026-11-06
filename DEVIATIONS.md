@@ -23,7 +23,7 @@
 - 원문 위치: `handoff/CLAUDE.md` "환경과 실행 방식", `handoff/implementation_plan.md` T01 6항("컨테이너를 도입하지 않는다")
 - 원래 내용: Node 22 이상과 Python 3.11 venv로 로컬에서 개발하고 실행한다. 컨테이너는 도입하지 않는다.
 - 바꾼 내용: 개발할 때만 `dockerfile_1Kyrus/`의 컨테이너 `jwpark_kyrus_dev`(Ubuntu 20.04, Node 22.23.2, uv로 설치한 Python 3.11) 안에서 venv와 npm을 쓴다. 앱 코드와 제출 README는 Docker에 의존하지 않는다.
-- 이유: 호스트에 Node가 없고 Python이 3.8이다. 연구실 서버라 시스템에 직접 설치하지 않는다. 호스트 Docker 20.10.2가 glibc 2.34 이상 이미지에서 Node를 죽이고(`clone3`), Debian bullseye는 지원 종료로 apt가 404를 낸다. 그래서 베이스를 Ubuntu 20.04로 정했다.
+- 이유: 호스트에 Node가 없고 Python이 3.8이다. 연구실 공용 서버라 시스템에 직접 설치하지 않는다. 베이스 이미지를 고른 이유는 `dockerfile_1Kyrus/README.md`에 있다.
 - 영향: 제출물에는 영향 없음. 제출할 때 `dockerfile_1Kyrus/`를 뺀다. T01 6항은 앱이 컨테이너를 필요로 하지 않는다는 뜻으로 읽고 그대로 지킨다.
 - 상태: 적용
 
