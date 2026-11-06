@@ -1,6 +1,6 @@
 # 구현 상태
 
-현재 상태 (2026-11-07 갱신): **T01~T08 구현 완료. demo 경로는 API 테스트와 헤드리스 브라우저 조작으로 확인. live는 Fake/Recorder Gateway로만 오프라인 검사했고 실제 API 키 호출은 NOT RUN.**
+현재 상태 (2026-11-07 갱신): **T01~T08 구현 완료. demo 경로는 API 테스트와 헤드리스 브라우저 조작으로 확인. live는 Fake/Recorder Gateway로만 오프라인 검사했고 실제 API 키 호출은 NOT RUN (키는 설정했지만 아직 실행하지 않음).**
 
 아래 문단은 배포한 계획팩의 초기 설명이다. 기존 작업 폴더에 구현이 있다면 현재 코드·검사 결과를 확인해 갱신하고 이어서 작업한다. source-completion 개정으로 원문 자료와 N-01~N-09 구현 지시를 보완했으며, 이것이 앱 구현 완료라는 뜻은 아니다. LLM 입력 데이터 조건의 확인 상태는 LLM_DATA_POLICY.md의 NOT_CHECKED에서 시작한다.
 
@@ -16,7 +16,7 @@
 | T04 공통 UI | DONE | `npm run build` PASS (Next.js 16.4.5, TypeScript). `scripts/browser_demo_check.py`로 헤드리스 Chromium에서 5분 시연과 변경 전파 시연 전 과정 PASS. 2026-11-07 UI/UX 기획안 v0.2 디자인 반영 후 `npm run typecheck`·`npm run build`·`browser_demo_check.py`(별도 demo 서버, 새 버튼 문구·Brief 탭 열기 반영) 다시 PASS |
 | T05 live Gateway·arXiv | DONE (오프라인) | `pytest tests/test_gateway.py tests/test_references.py` PASS. timeout·거절·잘림·HTTP 오류는 failed로 끝나고 SDK 재시도 0회, 보정은 최대 1회, fixture 대체 없음. 기록된 Atom 응답으로 버전 접미사 정규화, 첫 제출 연도, 미검증 후보 경고, 0편 실패 확인. arXiv 실제 응답 형식은 컨테이너에서 한 번 조회해 확인. `LLM_DATA_POLICY.md`는 DOCUMENTS_REVIEWED |
 | T06 단계별 live 생성 | DONE (오프라인) | `pytest tests/test_context_handoff.py tests/test_evidence.py` PASS. 수정·재승인한 S3 본문, 정확한 상위 ID, 코멘트가 S4 요청 인자에 들어감 (AC-03). S5는 서버 metric binding을 받음. 모델이 만든 미등록 cite는 채택하지 않음. 실제 키 live 실행은 NOT RUN |
-| T07 필수 동작 검증 | DONE | `cd backend && .venv/bin/python -m pytest -q` → **49 passed**. `cd frontend && npm run build` → PASS. 브라우저 시연 PASS. AC별 결과는 아래 "앱 검사 결과". 2026-11-07 D-04(삭제)·D-05(생성 시 모드 선택) 추가 후 `ANTHROPIC_API_KEY= LLM_MODEL= .venv/bin/python -m pytest -q` → **57 passed** (CORS 테스트 포함). 실제 키가 든 `.env` 그대로 돌리면 `test_health`가 live_configured=false를 기대해 실패한다(환경 차이, 코드 문제 아님). 브라우저 검사에 삭제 단계 추가, PASS |
+| T07 필수 동작 검증 | DONE | 최종(2026-11-07): `ANTHROPIC_API_KEY= LLM_MODEL= .venv/bin/python -m pytest -q` → **57 passed**. 처음 T07을 마쳤을 때는 49개였고 D-04(삭제)·D-05(생성 시 모드 선택)·CORS 테스트로 늘었다. 실제 키가 든 `.env` 그대로 돌리면 `test_health`가 live_configured=false를 기대해 실패한다(환경 차이, 코드 문제 아님). `cd frontend && npm run build` → PASS. 브라우저 시연 PASS(삭제 단계 포함). AC별 결과는 아래 "앱 검사 결과" |
 | T08 제출 정리 | DONE | 루트 `README.md`(설치·실행·demo/live·5분 시연·변경 전파·제한·검사 결과), 이 문서, `LLM_DATA_POLICY.md`, `DEVIATIONS.md` 작성. 깨끗한 설치 재현 결과는 아래 "깨끗한 설치 재현" |
 
 ## 구현 선택
@@ -105,7 +105,7 @@ python scripts/check_handoff.py
 | AC-16 작업 잠금 | PASS | 작업 중 같은 프로젝트 쓰기 409, 조회·다른 프로젝트 가능, 종료 후 해제 (자동) |
 | AC-17 이전 단계 이동 | PASS | back Decision과 navigate만, 상태 불변, S1 back 422 (자동) |
 | AC-18 사용량 | PASS (오프라인) / live NOT RUN | 토큰·호출 수·비용(단가 있을 때만)·모델 기록, demo calls=0·null (자동). LLM 데이터 조건은 DOCUMENTS_REVIEWED이며 계정 조건은 미확인 |
-| AC-19 계획·이유 | PASS | S3 가설 누락·중복·미등록 H·Ablation 누락 거부, 모르는 근거 ID 거부 (자동). 근거 칩으로 논문·지표 원본 행·버전 열람, 빈 근거에 "근거 없음: 사용자 확인 필요" 표시 (UI 구현, 브라우저에서는 이력 모달만 조작) |
+| AC-19 계획·이유 | PASS | S3 가설 누락·중복·미등록 H·Ablation 누락 거부, 모르는 근거 ID 거부 (자동). 근거 칩으로 논문·지표 원본 행·버전 열람, 빈 근거에 "근거 없음 · 사용자 확인 필요" 표시 (UI/UX 디자인 반영 후 문구. UI 구현, 브라우저에서는 이력 모달만 조작) |
 | AC-20 제출 재현 | PASS | lockfile 두 개, `.env.example`, README, 이 문서. Docker/Redis/DB 서버 없이 실행 |
 
 ## 깨끗한 설치 재현
@@ -139,7 +139,7 @@ munich 호스트(Ubuntu 20.04, glibc 2.31, Python 3.8만 있고 Node 없음, 컨
 
 ## 아직 수행하지 않은 확인
 
-- 실제 API 키로 하는 live 생성(여섯 단계), 실제 arXiv 조회를 거친 S2 생성. 키가 없어 NOT RUN.
+- 실제 API 키로 하는 live 생성(여섯 단계), 실제 arXiv 조회를 거친 S2 생성. 키는 `.env`에 설정했지만 아직 실행하지 않았다(NOT RUN).
 - LLM 입력 데이터 사용 조건의 실제 계정 적용 여부. 공식 문서 검토까지만 했다 (`LLM_DATA_POLICY.md`).
 - 브라우저 창을 닫았다 다시 여는 AC-06 조작, 실제 프로세스를 죽이는 AC-07 재시작.
 - 사람이 직접 하는 브라우저 시연. 자동화한 헤드리스 조작만 수행했다.
@@ -147,4 +147,4 @@ munich 호스트(Ubuntu 20.04, glibc 2.31, Python 3.8만 있고 Node 없음, 컨
 
 ## live 검사
 
-NOT RUN. 사용 가능한 API 키가 없다. live 경로의 동작은 Fake/Recorder Gateway와 기록된 arXiv 응답으로만 오프라인 검사했으며, 이것을 실제 모델 품질이나 검색 성능 검증으로 보고하지 않는다. 키가 생기면 `.env`에 `APP_MODE=live`, `ANTHROPIC_API_KEY`, `LLM_MODEL`을 넣고 새 프로젝트에서 실행해 결과(모델명, 단계, PASS/FAIL)를 여기에 적는다. 키 값은 적지 않는다.
+NOT RUN. 2026-11-07 기준 키는 설정했지만 아직 실행하지 않았다. live 경로의 동작은 Fake/Recorder Gateway와 기록된 arXiv 응답으로만 오프라인 검사했으며, 이것을 실제 모델 품질이나 검색 성능 검증으로 보고하지 않는다. 키가 생기면 `.env`에 `APP_MODE=live`, `ANTHROPIC_API_KEY`, `LLM_MODEL`을 넣고 새 프로젝트에서 실행해 결과(모델명, 단계, PASS/FAIL)를 여기에 적는다. 키 값은 적지 않는다.

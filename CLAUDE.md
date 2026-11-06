@@ -30,7 +30,7 @@ Research-to-Paper 웹 프로토타입(수업 과제, 제출일 **2026-11-08 Asia
 
 ## 어디에 기록하나 (필수)
 
-계획팩 원본은 고치지 않는다. 기록은 성격에 따라 세 곳에 나눠 그 자리에서 남긴다.
+계획팩 원본은 고치지 않는다. 기록은 성격에 따라 아래 자리에 나눠 그때그때 남긴다.
 
 | 성격 | 기록 위치 |
 | --- | --- |
@@ -50,4 +50,13 @@ Research-to-Paper 웹 프로토타입(수업 과제, 제출일 **2026-11-08 Asia
 
 - 실행·설치·테스트는 전부 컨테이너 `jwpark_kyrus_dev` 안에서 한다(호스트에는 Node가 없다).
   자세한 내용은 `dockerfile_1Kyrus/README.md`를 본다. 제출 README에는 Docker 명령을 쓰지 않는다.
-- 이 폴더가 git 저장소다. 첫 커밋 `3c61cdd`가 계획팩 원본이므로, 원본이 바뀌었는지는 `git diff 3c61cdd -M -- handoff/`로 확인한다.
+- 이 폴더가 git 저장소다. 첫 커밋 `3c61cdd`가 계획팩 원본(당시 루트에 있었음)이다. 팩을 `handoff/`로 옮겼기 때문에
+  `git diff 3c61cdd -- handoff/`는 모든 파일을 새 파일로 보여 줘서 쓸 수 없다. 원본이 바뀌었는지는 옛 경로와 새 경로를 함께 넘겨 본다.
+  ```bash
+  git diff -M --name-status 3c61cdd HEAD -- handoff/ $(git ls-tree --name-only 3c61cdd) | grep -v '^R100'
+  ```
+  정상이면 다음 줄만 나온다. 이 밖의 줄이 있으면 원본이 바뀐 것이다.
+  - `M CLAUDE.md`, `A handoff/CLAUDE.md`: 원본 안내를 `handoff/`로 옮기고(내용 동일) 루트에 이 안내를 새로 둠
+  - `IMPLEMENTATION_STATUS.md`, `LLM_DATA_POLICY.md`의 `D`/`A` 짝: 갱신이 허용된 두 파일
+  - `A scripts/browser_demo_check.py`: 옛 팩의 `scripts/`와 이름이 겹치는 우리 검사 도구
+- 원격 저장소: GitHub `oscar6091-blip/1Kyrus` (팀 공유용, munich의 저장소 전용 deploy key로 push). 제출물은 여전히 위 `git archive` zip이다.
