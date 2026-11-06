@@ -1,0 +1,37 @@
+{
+  "data_origin": "measured",
+  "equality_is_observed": true,
+  "has_convergence_warnings": true,
+  "metrics": [
+    {
+      "name": "sgd_accuracy",
+      "split": "test",
+      "value": 0.9666666666666667,
+      "step": 200,
+      "unit": "ratio"
+    },
+    {
+      "name": "sgd_macro_f1",
+      "split": "test",
+      "value": 0.9665831244778612,
+      "step": 200,
+      "unit": "ratio"
+    },
+    {
+      "name": "adam_accuracy",
+      "split": "test",
+      "value": 0.9666666666666667,
+      "step": 200,
+      "unit": "ratio"
+    },
+    {
+      "name": "adam_macro_f1",
+      "split": "test",
+      "value": 0.9665831244778612,
+      "step": 200,
+      "unit": "ratio"
+    }
+  ],
+  "expected_verdict": "inconclusive",
+  "not_statistical_evidence": true
+}

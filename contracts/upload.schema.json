@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "upload.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "experiment_id": {
+      "type": "string",
+      "pattern": "^E[1-9][0-9]*$"
+    },
+    "code_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "config": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "seed": {
+      "type": "integer"
+    },
+    "environment": {
+      "type": "object"
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,63}$"
+          },
+          "split": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+          },
+          "value": {
+            "type": "number"
+          },
+          "step": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "unit": {
+            "enum": [
+              "ratio",
+              "percent",
+              "seconds",
+              "count",
+              "loss",
+              "other"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "split",
+          "value",
+          "unit"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 100
+    },
+    "started_at": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "duration_sec": {
+      "type": "number",
+      "minimum": 0
+    },
+    "data_origin": {
+      "enum": [
+        "measured",
+        "synthetic_demo"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "experiment_id",
+    "code_version",
+    "config",
+    "seed",
+    "metrics",
+    "data_origin"
+  ],
+  "additionalProperties": false
+}

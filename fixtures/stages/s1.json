@@ -1,0 +1,29 @@
+{
+  "stage_no": 1,
+  "content": {
+    "brief": {
+      "research_problem": "동일한 Iris 분류 설정에서 SGD와 Adam의 결과를 비교하는 과정을 기록하고 후속 산출물에 연결한다.",
+      "hypotheses": [
+        {
+          "id": "H1",
+          "statement": "고정한 학습 설정에서 Adam이 SGD보다 높은 test accuracy를 보일 수 있다. 단일 seed로 일반적 우위를 주장하지 않는다."
+        }
+      ],
+      "expected_contribution": "새 알고리즘의 기여가 아니라, 계획·실행 기록·분석·초안 연결을 확인하는 교육용 재현 실험이다.",
+      "evaluation_plan": "같은 train/test split, train-only 표준화, 같은 MLP 크기와 최대 iteration에서 accuracy와 macro F1을 비교한다.",
+      "constraints": "로컬 CPU, 공개 내장 Iris, 서버 자동 실행 없음, 결과 JSON 업로드. 단일 seed·수렴 경고를 한계로 보고한다.",
+      "results_conclusion": null
+    },
+    "clarification_questions": [
+      "이 과제에서 단일 seed 비교와 전체 워크플로 연결 확인으로 범위를 제한해도 되는가?"
+    ]
+  },
+  "rationale": [
+    {
+      "decision_key": "main",
+      "reason": "작은 내장 데이터와 CPU 실험으로 개발·실행 비용을 줄이고 결과의 입력 연결을 먼저 확인한다.",
+      "evidence_refs": [],
+      "alternatives": []
+    }
+  ]
+}

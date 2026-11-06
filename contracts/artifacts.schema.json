@@ -1,0 +1,572 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "artifacts.schema.json",
+  "$defs": {
+    "Rationale": {
+      "type": "object",
+      "properties": {
+        "decision_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "minItems": 0,
+          "maxItems": 20
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "minItems": 0,
+          "maxItems": 5
+        }
+      },
+      "required": [
+        "decision_key",
+        "reason",
+        "evidence_refs",
+        "alternatives"
+      ],
+      "additionalProperties": false
+    },
+    "Brief": {
+      "type": "object",
+      "properties": {
+        "research_problem": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000
+        },
+        "hypotheses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^H[1-9][0-9]*$"
+              },
+              "statement": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "id",
+              "statement"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 5
+        },
+        "expected_contribution": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "evaluation_plan": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "constraints": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "results_conclusion": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "research_problem",
+        "hypotheses",
+        "expected_contribution",
+        "evaluation_plan",
+        "constraints",
+        "results_conclusion"
+      ],
+      "additionalProperties": false
+    },
+    "SearchQuery": {
+      "type": "object",
+      "properties": {
+        "search_query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        }
+      },
+      "required": [
+        "search_query"
+      ],
+      "additionalProperties": false
+    },
+    "Stage1": {
+      "type": "object",
+      "properties": {
+        "stage_no": {
+          "const": 1
+        },
+        "content": {
+          "type": "object",
+          "properties": {
+            "brief": {
+              "type": "object",
+              "properties": {
+                "research_problem": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 3000
+                },
+                "hypotheses": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^H[1-9][0-9]*$"
+                      },
+                      "statement": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2000
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "statement"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 5
+                },
+                "expected_contribution": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                },
+                "evaluation_plan": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000
+                },
+                "constraints": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                },
+                "results_conclusion": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "research_problem",
+                "hypotheses",
+                "expected_contribution",
+                "evaluation_plan",
+                "constraints",
+                "results_conclusion"
+              ],
+              "additionalProperties": false
+            },
+            "clarification_questions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "minItems": 0,
+              "maxItems": 3
+            }
+          },
+          "required": [
+            "brief",
+            "clarification_questions"
+          ],
+          "additionalProperties": false
+        },
+        "rationale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Rationale"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "stage_no",
+        "content",
+        "rationale"
+      ],
+      "additionalProperties": false
+    },
+    "Stage2": {
+      "type": "object",
+      "properties": {
+        "stage_no": {
+          "const": 2
+        },
+        "content": {
+          "type": "object",
+          "properties": {
+            "body_md": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20000
+            }
+          },
+          "required": [
+            "body_md"
+          ],
+          "additionalProperties": false
+        },
+        "rationale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Rationale"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "stage_no",
+        "content",
+        "rationale"
+      ],
+      "additionalProperties": false
+    },
+    "Stage3": {
+      "type": "object",
+      "properties": {
+        "stage_no": {
+          "const": 3
+        },
+        "content": {
+          "type": "object",
+          "properties": {
+            "body_md": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20000
+            },
+            "experiments": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^E[1-9][0-9]*$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "hypothesis_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 20
+                    },
+                    "minItems": 1,
+                    "maxItems": 5
+                  },
+                  "metric_names": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "minItems": 1,
+                    "maxItems": 20
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "hypothesis_ids",
+                  "metric_names"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 5
+            }
+          },
+          "required": [
+            "body_md",
+            "experiments"
+          ],
+          "additionalProperties": false
+        },
+        "rationale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Rationale"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "stage_no",
+        "content",
+        "rationale"
+      ],
+      "additionalProperties": false
+    },
+    "Stage4": {
+      "type": "object",
+      "properties": {
+        "stage_no": {
+          "const": 4
+        },
+        "content": {
+          "type": "object",
+          "properties": {
+            "body_md": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20000
+            },
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "content": {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 65536
+                  },
+                  "language": {
+                    "enum": [
+                      "python",
+                      "text",
+                      "markdown",
+                      "json",
+                      "yaml"
+                    ]
+                  }
+                },
+                "required": [
+                  "path",
+                  "content",
+                  "language"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 10
+            }
+          },
+          "required": [
+            "body_md",
+            "files"
+          ],
+          "additionalProperties": false
+        },
+        "rationale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Rationale"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "stage_no",
+        "content",
+        "rationale"
+      ],
+      "additionalProperties": false
+    },
+    "Stage5": {
+      "type": "object",
+      "properties": {
+        "stage_no": {
+          "const": 5
+        },
+        "content": {
+          "type": "object",
+          "properties": {
+            "body_md": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20000
+            },
+            "hypothesis_verdicts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "hypothesis_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 20
+                  },
+                  "verdict": {
+                    "enum": [
+                      "supported",
+                      "partly_supported",
+                      "not_supported",
+                      "inconclusive"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 3000
+                  }
+                },
+                "required": [
+                  "hypothesis_id",
+                  "verdict",
+                  "reason"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 5
+            }
+          },
+          "required": [
+            "body_md",
+            "hypothesis_verdicts"
+          ],
+          "additionalProperties": false
+        },
+        "rationale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Rationale"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "stage_no",
+        "content",
+        "rationale"
+      ],
+      "additionalProperties": false
+    },
+    "Stage6": {
+      "type": "object",
+      "properties": {
+        "stage_no": {
+          "const": 6
+        },
+        "content": {
+          "type": "object",
+          "properties": {
+            "sections": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "enum": [
+                      "abstract",
+                      "introduction",
+                      "related_work",
+                      "methods",
+                      "experiments",
+                      "conclusion"
+                    ]
+                  },
+                  "body_md": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 15000
+                  }
+                },
+                "required": [
+                  "key",
+                  "body_md"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 6,
+              "maxItems": 6
+            }
+          },
+          "required": [
+            "sections"
+          ],
+          "additionalProperties": false
+        },
+        "rationale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Rationale"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "stage_no",
+        "content",
+        "rationale"
+      ],
+      "additionalProperties": false
+    },
+    "Payload": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Stage1"
+        },
+        {
+          "$ref": "#/$defs/Stage2"
+        },
+        {
+          "$ref": "#/$defs/Stage3"
+        },
+        {
+          "$ref": "#/$defs/Stage4"
+        },
+        {
+          "$ref": "#/$defs/Stage5"
+        },
+        {
+          "$ref": "#/$defs/Stage6"
+        }
+      ]
+    }
+  },
+  "$ref": "#/$defs/Payload"
+}

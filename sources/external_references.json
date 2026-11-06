@@ -1,0 +1,50 @@
+{
+  "checked_on": "2026-11-06",
+  "sources": [
+    {
+      "id": "next_install",
+      "url": "https://nextjs.org/docs/app/getting-started/installation",
+      "used_for": "Node minimum and App Router setup"
+    },
+    {
+      "id": "next_release",
+      "url": "https://github.com/vercel/next.js/releases/tag/v16.4.5",
+      "used_for": "Stable release checked on planning date"
+    },
+    {
+      "id": "anthropic_python",
+      "url": "https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python",
+      "used_for": "SDK 1.x, messages.create, server API key, text blocks"
+    },
+    {
+      "id": "arxiv_api",
+      "url": "https://info.arxiv.org/help/api/user-manual.html",
+      "used_for": "Atom search and id_list lookup"
+    },
+    {
+      "id": "arxiv_limits",
+      "url": "https://info.arxiv.org/help/api/tou.html",
+      "used_for": "One connection, at most one request every three seconds"
+    },
+    {
+      "id": "iris",
+      "url": "https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html",
+      "used_for": "Reference dataset loader"
+    },
+    {
+      "id": "arxiv_1412_6980",
+      "url": "https://arxiv.org/abs/1412.6980",
+      "used_for": "Reference metadata and short abstract-based explanation; not performance evidence on Iris"
+    },
+    {
+      "id": "arxiv_1711_05101",
+      "url": "https://arxiv.org/abs/1711.05101",
+      "used_for": "Reference metadata and short abstract-based explanation; not performance evidence on Iris"
+    },
+    {
+      "id": "arxiv_1803_09820",
+      "url": "https://arxiv.org/abs/1803.09820",
+      "used_for": "Reference metadata and short abstract-based explanation; not performance evidence on Iris"
+    }
+  ]
+}

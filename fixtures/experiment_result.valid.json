@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "E1",
+  "code_version": "ec52c66b213cd973403f1d78ca1fd0828d733079aa1ac0747df7d8edd503326c",
+  "config": {
+    "dataset": "sklearn.load_iris",
+    "train_samples": 120,
+    "test_samples": 30,
+    "test_size": 0.2,
+    "stratified_split": true,
+    "scaler": "StandardScaler fitted on training data only",
+    "hidden_layer_sizes": [
+      16
+    ],
+    "solvers": [
+      "sgd",
+      "adam"
+    ],
+    "learning_rate_init": 0.01,
+    "max_iter": 200,
+    "early_stopping": false,
+    "tol": 0.0001,
+    "n_iter_no_change": 20,
+    "fit_warnings": [
+      "sgd: Stochastic Optimizer: Maximum iterations (200) reached and the optimization hasn't converged yet.",
+      "adam: Stochastic Optimizer: Maximum iterations (200) reached and the optimization hasn't converged yet."
+    ],
+    "interpretation_limit": "One seed and one split; integration example, not evidence of general superiority."
+  },
+  "seed": 42,
+  "environment": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "sklearn": "1.8.0",
+    "device": "CPU",
+    "dataset_source": "https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html"
+  },
+  "metrics": [
+    {
+      "name": "sgd_accuracy",
+      "split": "test",
+      "value": 0.9666666666666667,
+      "step": 200,
+      "unit": "ratio"
+    },
+    {
+      "name": "sgd_macro_f1",
+      "split": "test",
+      "value": 0.9665831244778612,
+      "step": 200,
+      "unit": "ratio"
+    },
+    {
+      "name": "adam_accuracy",
+      "split": "test",
+      "value": 0.9666666666666667,
+      "step": 200,
+      "unit": "ratio"
+    },
+    {
+      "name": "adam_macro_f1",
+      "split": "test",
+      "value": 0.9665831244778612,
+      "step": 200,
+      "unit": "ratio"
+    }
+  ],
+  "started_at": "2026-11-06T09:58:14.697123+00:00",
+  "duration_sec": 0.07101896999984092,
+  "data_origin": "measured"
+}

@@ -1,0 +1,54 @@
+{
+  "snapshot_date": "2026-11-06",
+  "date_precision": "day",
+  "year_rule": "Year of first arXiv submission, not conference publication year",
+  "references": [
+    {
+      "id": "arxiv_1412_6980",
+      "arxiv_id": "1412.6980",
+      "title": "Adam: A Method for Stochastic Optimization",
+      "authors": [
+        "Diederik P. Kingma",
+        "Jimmy Ba"
+      ],
+      "year": 2014,
+      "source_url": "https://arxiv.org/abs/1412.6980",
+      "abstract": null,
+      "abstract_summary": "적응적인 모멘트 추정에 기반한 최적화 방법 Adam을 제안한다. 작은 Iris 실험에서 다른 최적화 방법보다 우수하다는 보증으로 사용하지 않는다.",
+      "verified": true,
+      "verification_source": "bundled_snapshot",
+      "verified_at": "2026-11-06"
+    },
+    {
+      "id": "arxiv_1711_05101",
+      "arxiv_id": "1711.05101",
+      "title": "Decoupled Weight Decay Regularization",
+      "authors": [
+        "Ilya Loshchilov",
+        "Frank Hutter"
+      ],
+      "year": 2017,
+      "source_url": "https://arxiv.org/abs/1711.05101",
+      "abstract": null,
+      "abstract_summary": "적응형 최적화에서 L2 규제와 weight decay의 차이를 설명하고 분리된 weight decay를 제안한다. 이 데모는 AdamW 성능을 실험하지 않는다.",
+      "verified": true,
+      "verification_source": "bundled_snapshot",
+      "verified_at": "2026-11-06"
+    },
+    {
+      "id": "arxiv_1803_09820",
+      "arxiv_id": "1803.09820",
+      "title": "A disciplined approach to neural network hyper-parameters: Part 1 -- learning rate, batch size, momentum, and weight decay",
+      "authors": [
+        "Leslie N. Smith"
+      ],
+      "year": 2018,
+      "source_url": "https://arxiv.org/abs/1803.09820",
+      "abstract": null,
+      "abstract_summary": "학습률·배치 크기·모멘텀·weight decay 설정과 학습 곡선의 해석을 다룬다. 데모의 고정 설정이 최적이라는 근거는 아니다.",
+      "verified": true,
+      "verification_source": "bundled_snapshot",
+      "verified_at": "2026-11-06"
+    }
+  ]
+}

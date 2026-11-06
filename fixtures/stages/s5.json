@@ -1,0 +1,24 @@
+{
+  "stage_no": 5,
+  "content": {
+    "body_md": "## 측정 결과\n서버가 원본 로그의 전체 지표 표를 이 설명과 함께 표시한다. SGD accuracy는 {{metric:m0}}, Adam accuracy는 {{metric:m2}}이다. 두 측정값은 같다.\n\n## 해석\n이 실행에서는 H1을 지지하는 우위가 관측되지 않았다. 단일 seed·단일 split이고 두 학습 모두 최대 iteration 수렴 경고가 있어 일반적인 알고리즘 성능 차이를 판정할 수 없다.\n\n## 후속 확인\n다른 seed 반복, 학습 곡선과 수렴 확인, 학습률 범위를 검토할 수 있으나 이 프로토타입이 자동 수행하지 않는다.",
+    "hypothesis_verdicts": [
+      {
+        "hypothesis_id": "H1",
+        "verdict": "inconclusive",
+        "reason": "같은 accuracy, 단일 split, 수렴 경고로 일반적 우위를 판단할 근거가 부족하다."
+      }
+    ]
+  },
+  "rationale": [
+    {
+      "decision_key": "main",
+      "reason": "원본 측정값과 실행 경고에 맞춰 해석한다.",
+      "evidence_refs": [
+        "metric:m0",
+        "metric:m2"
+      ],
+      "alternatives": []
+    }
+  ]
+}

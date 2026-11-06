@@ -1,0 +1,1352 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Research Workflow Course Prototype",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000/api"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/Health"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "operationId": "listProjects",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "domain.schema.json#/$defs/ProjectSummary"
+                  },
+                  "minItems": 0,
+                  "maxItems": 100
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createProject",
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ProjectSummary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "domain.schema.json#/$defs/ProjectCreate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}": {
+      "get": {
+        "operationId": "getProject",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ProjectDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/projects/{project_id}/stages/{stage_no}": {
+      "get": {
+        "operationId": "getStage",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/StageDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stage_no",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/projects/{project_id}/stages/{stage_no}/run": {
+      "post": {
+        "operationId": "runStage",
+        "description": "",
+        "responses": {
+          "202": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/JobView"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stage_no",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "domain.schema.json#/$defs/RunRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/stages/{stage_no}/decisions": {
+      "post": {
+        "operationId": "decideStage",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/DecisionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stage_no",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "domain.schema.json#/$defs/DecisionRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/stages/{stage_no}/edits": {
+      "post": {
+        "operationId": "editStage",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/DecisionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stage_no",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "domain.schema.json#/$defs/EditRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/artifacts/{artifact_id}": {
+      "get": {
+        "operationId": "getArtifact",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ArtifactView"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/projects/{project_id}/decisions": {
+      "get": {
+        "operationId": "listDecisions",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "domain.schema.json#/$defs/DecisionRecord"
+                  },
+                  "minItems": 0,
+                  "maxItems": 100
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/jobs/{job_id}": {
+      "get": {
+        "operationId": "getJob",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/JobView"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/projects/{project_id}/runs": {
+      "get": {
+        "operationId": "listRuns",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "domain.schema.json#/$defs/ExperimentRun"
+                  },
+                  "minItems": 0,
+                  "maxItems": 100
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "uploadRun",
+        "description": "At most 1 MiB. Strict JSON, NaN/Infinity and duplicate object keys rejected. Only allowed after S1-S4 approval and while no project job is active.",
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ExperimentRun"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "client_upload_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  }
+                },
+                "required": [
+                  "file",
+                  "client_upload_id"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/exports/code.zip": {
+      "get": {
+        "operationId": "exportCode",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Attachment",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/projects/{project_id}/exports/paper.md": {
+      "get": {
+        "operationId": "exportPaper",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Attachment",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/projects/{project_id}/exports/references.bib": {
+      "get": {
+        "operationId": "exportReferences",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Attachment",
+            "content": {
+              "application/x-bibtex": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error; see contracts/workflow.json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "domain.schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,1199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "domain.schema.json",
+  "$defs": {
+    "StageStatus": {
+      "enum": [
+        "pending",
+        "running",
+        "needs_review",
+        "approved",
+        "stale"
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "message": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              }
+            },
+            "required": [
+              "path",
+              "message"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "retryable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "fields",
+        "retryable"
+      ],
+      "additionalProperties": false
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "$ref": "#/$defs/Error"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "Usage": {
+      "type": "object",
+      "properties": {
+        "input_tokens": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "output_tokens": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "estimated_cost_usd": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "input_tokens",
+        "output_tokens",
+        "calls",
+        "estimated_cost_usd"
+      ],
+      "additionalProperties": false
+    },
+    "ReferenceSnapshot": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "arxiv_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "minItems": 1,
+          "maxItems": 40
+        },
+        "year": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2100
+        },
+        "source_url": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "abstract": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "abstract_summary": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 3000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "verified": {
+          "const": true
+        },
+        "verification_source": {
+          "enum": [
+            "arxiv_live",
+            "bundled_snapshot"
+          ]
+        },
+        "verified_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "id",
+        "arxiv_id",
+        "title",
+        "authors",
+        "year",
+        "source_url",
+        "abstract",
+        "abstract_summary",
+        "verified",
+        "verification_source",
+        "verified_at"
+      ],
+      "additionalProperties": false
+    },
+    "MetricBinding": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "metric_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "split": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "value": {
+          "type": "number"
+        },
+        "step": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unit": {
+          "enum": [
+            "ratio",
+            "percent",
+            "seconds",
+            "count",
+            "loss",
+            "other"
+          ]
+        }
+      },
+      "required": [
+        "run_id",
+        "metric_index",
+        "name",
+        "split",
+        "value",
+        "step",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "Evidence": {
+      "type": "object",
+      "properties": {
+        "references": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "arxiv_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "authors": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                },
+                "minItems": 1,
+                "maxItems": 40
+              },
+              "year": {
+                "type": "integer",
+                "minimum": 1900,
+                "maximum": 2100
+              },
+              "source_url": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 400
+              },
+              "abstract": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 20000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "abstract_summary": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 3000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "verified": {
+                "const": true
+              },
+              "verification_source": {
+                "enum": [
+                  "arxiv_live",
+                  "bundled_snapshot"
+                ]
+              },
+              "verified_at": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              }
+            },
+            "required": [
+              "id",
+              "arxiv_id",
+              "title",
+              "authors",
+              "year",
+              "source_url",
+              "abstract",
+              "abstract_summary",
+              "verified",
+              "verification_source",
+              "verified_at"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "run_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "metric_index": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "split": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 30
+              },
+              "value": {
+                "type": "number"
+              },
+              "step": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "unit": {
+                "enum": [
+                  "ratio",
+                  "percent",
+                  "seconds",
+                  "count",
+                  "loss",
+                  "other"
+                ]
+              }
+            },
+            "required": [
+              "run_id",
+              "metric_index",
+              "name",
+              "split",
+              "value",
+              "step",
+              "unit"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 0,
+          "maxItems": 30
+        }
+      },
+      "required": [
+        "references",
+        "metrics",
+        "warnings"
+      ],
+      "additionalProperties": false
+    },
+    "ContextSnapshot": {
+      "type": "object",
+      "properties": {
+        "brief_artifact_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upstream_artifact_ids": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "previous_artifact_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "user_comments": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4000
+        },
+        "idea_snapshot": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8000
+        }
+      },
+      "required": [
+        "brief_artifact_id",
+        "upstream_artifact_ids",
+        "previous_artifact_id",
+        "run_id",
+        "user_comments",
+        "idea_snapshot"
+      ],
+      "additionalProperties": false
+    },
+    "ProjectCreate": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "idea": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8000
+        }
+      },
+      "required": [
+        "name",
+        "idea"
+      ],
+      "additionalProperties": false
+    },
+    "ProjectSummary": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "idea": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8000
+        },
+        "mode": {
+          "enum": [
+            "demo",
+            "live"
+          ]
+        },
+        "current_brief_artifact_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "updated_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "idea",
+        "mode",
+        "current_brief_artifact_id",
+        "created_at",
+        "updated_at"
+      ],
+      "additionalProperties": false
+    },
+    "StageView": {
+      "type": "object",
+      "properties": {
+        "stage_no": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "status": {
+          "$ref": "#/$defs/StageStatus"
+        },
+        "current_artifact_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "approved_artifact_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "can_run": {
+          "type": "boolean"
+        },
+        "can_approve": {
+          "type": "boolean"
+        },
+        "disabled_reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "active_job_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "stage_no",
+        "status",
+        "current_artifact_id",
+        "approved_artifact_id",
+        "can_run",
+        "can_approve",
+        "disabled_reason",
+        "active_job_id"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactView": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "stage_no": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "payload": {
+          "$ref": "artifacts.schema.json#/$defs/Payload"
+        },
+        "input_snapshot": {
+          "$ref": "#/$defs/ContextSnapshot"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "rendered_markdown": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 120000
+        },
+        "created_by": {
+          "enum": [
+            "ai",
+            "user",
+            "fixture"
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "project_id",
+        "stage_no",
+        "version",
+        "payload",
+        "input_snapshot",
+        "evidence",
+        "rendered_markdown",
+        "created_by",
+        "created_at",
+        "model"
+      ],
+      "additionalProperties": false
+    },
+    "JobView": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "stage_no": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "succeeded",
+            "failed",
+            "interrupted"
+          ]
+        },
+        "result_artifact_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "usage": {
+          "$ref": "#/$defs/Usage"
+        },
+        "started_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finished_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "project_id",
+        "stage_no",
+        "status",
+        "result_artifact_id",
+        "error",
+        "usage",
+        "started_at",
+        "finished_at"
+      ],
+      "additionalProperties": false
+    },
+    "RunRequest": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "user_comments": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4000
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "request_id",
+        "user_comments",
+        "run_id"
+      ],
+      "additionalProperties": false
+    },
+    "DecisionRequest": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "action": {
+          "enum": [
+            "approve",
+            "regenerate",
+            "back"
+          ]
+        },
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "comment": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4000
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "request_id",
+        "action",
+        "artifact_id",
+        "comment",
+        "run_id"
+      ],
+      "additionalProperties": false
+    },
+    "EditRequest": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "base_artifact_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "payload": {
+          "$ref": "artifacts.schema.json#/$defs/Payload"
+        },
+        "comment": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4000
+        }
+      },
+      "required": [
+        "request_id",
+        "base_artifact_id",
+        "payload",
+        "comment"
+      ],
+      "additionalProperties": false
+    },
+    "DecisionRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "stage_no": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "action": {
+          "enum": [
+            "approve",
+            "edit",
+            "regenerate",
+            "back"
+          ]
+        },
+        "comment": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4000
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "id",
+        "request_id",
+        "project_id",
+        "stage_no",
+        "artifact_id",
+        "action",
+        "comment",
+        "created_at"
+      ],
+      "additionalProperties": false
+    },
+    "ExperimentRun": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "client_upload_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "payload": {
+          "$ref": "upload.schema.json"
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "id",
+        "project_id",
+        "client_upload_id",
+        "payload",
+        "created_at"
+      ],
+      "additionalProperties": false
+    },
+    "Health": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "ok"
+        },
+        "default_mode": {
+          "enum": [
+            "demo",
+            "live"
+          ]
+        },
+        "live_configured": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "status",
+        "default_mode",
+        "live_configured"
+      ],
+      "additionalProperties": false
+    },
+    "ProjectDetail": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "$ref": "#/$defs/ProjectSummary"
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StageView"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "brief": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "active_job": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/JobView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "project",
+        "stages",
+        "brief",
+        "active_job"
+      ],
+      "additionalProperties": false
+    },
+    "StageDetail": {
+      "type": "object",
+      "properties": {
+        "stage": {
+          "$ref": "#/$defs/StageView"
+        },
+        "current_artifact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "approved_artifact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "stage",
+        "current_artifact",
+        "approved_artifact"
+      ],
+      "additionalProperties": false
+    },
+    "DecisionResponse": {
+      "type": "object",
+      "properties": {
+        "decision": {
+          "$ref": "#/$defs/DecisionRecord"
+        },
+        "stage": {
+          "$ref": "#/$defs/StageView"
+        },
+        "job": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/JobView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "artifact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "navigate_to_stage": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "decision",
+        "stage",
+        "job",
+        "artifact",
+        "navigate_to_stage"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

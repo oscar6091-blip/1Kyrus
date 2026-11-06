@@ -1,0 +1,341 @@
+{
+  "schema_version": "1.0",
+  "deadline": {
+    "date": "2026-11-08",
+    "timezone": "Asia/Seoul",
+    "time": "not specified"
+  },
+  "purpose": "수업 제출용 로컬 연구 워크플로 프로토타입. 생성 품질보다 실제 승인·입력 버전 연결·재생성·자료 보존을 먼저 검증.",
+  "application_is_not_implemented_in_this_pack": true,
+  "prototype_baseline": {
+    "status": "temporary_prototype_only",
+    "relationship_to_ssad": "SSAD와 별도로 둔 프로토타입 전용 임시 설정. SSAD의 확정 사항이나 설계 변경으로 취급하지 않는다.",
+    "source_documents_modified": false,
+    "implementation_instruction": "이번 프로토타입은 아래 설정을 따라 구현한다. SSRD·SSAD 원문과 추출 원문은 보존하고, 이 설정을 SSAD 준수의 근거로 보고하지 않는다.",
+    "official_design_adoption": "정식 시스템 설계에 채택할지는 이 계획팩에서 결정하지 않는다.",
+    "settings": [
+      {
+        "id": "database",
+        "value": "SQLite",
+        "behavior": "별도 DB 서버 없이 로컬 SQLite 파일에 저장한다."
+      },
+      {
+        "id": "brief_update",
+        "value": "S1_approval_only",
+        "behavior": "S1 결과 승인 때만 승인된 Brief를 교체한다. S2~S6 결과는 각 단계 산출물에 저장한다."
+      },
+      {
+        "id": "back_behavior",
+        "value": "record_and_navigate_only",
+        "behavior": "이동 기록을 남기고 이전 단계 화면을 연다. back 자체는 승인 상태·산출물·stale 상태를 변경하지 않는다."
+      },
+      {
+        "id": "paper_output",
+        "value": "English Markdown",
+        "behavior": "S6 논문 초안을 Markdown으로 내보낸다. LaTeX/PDF 출력은 이번 범위에서 제외한다."
+      }
+    ]
+  },
+  "defaults": {
+    "deployment": "localhost only",
+    "users": "single local user",
+    "frontend": "Next.js 16.4.5 + TypeScript",
+    "backend": "Python 3.11 + FastAPI + Pydantic 2 + SQLAlchemy 2",
+    "database": "SQLite",
+    "llm": "Anthropic Python SDK 1.x; model from LLM_MODEL",
+    "default_mode": "demo",
+    "experiments": "external CPU execution + JSON upload",
+    "paper": "English Markdown",
+    "ui": "Korean",
+    "sse": false,
+    "poll_interval_ms": 1000
+  },
+  "must": [
+    "PR-1",
+    "PR-3",
+    "PR-6",
+    "PR-7",
+    "PR-8",
+    "PR-9",
+    "RQ-1",
+    "RQ-2",
+    "RQ-3",
+    "RQ-4",
+    "RQ-5",
+    "RQ-6",
+    "RQ-7",
+    "RQ-8",
+    "RQ-9",
+    "RQ-10",
+    "RQ-12",
+    "RQ-13",
+    "ONRQ-1",
+    "ONRQ-5",
+    "ONRQ-6",
+    "ONRQ-7",
+    "ONRQ-8",
+    "SIR-1",
+    "SIR-2",
+    "SIR-3",
+    "SIR-4",
+    "SIR-6",
+    "SIR-7",
+    "LOR-1",
+    "LOR-2",
+    "LOR-4",
+    "LOR-5",
+    "LOR-6",
+    "LOR-8",
+    "LOR-10"
+  ],
+  "deferred": [
+    {
+      "id": "PR-2",
+      "reason": "이미 작성된 설계 산출물의 일정 요구. 이 구현 팩은 제출용 코드 작업만 다룸."
+    },
+    {
+      "id": "PR-4",
+      "reason": "실제 고객 모집·평가 리포트는 이번 제출 범위 밖."
+    },
+    {
+      "id": "PR-5",
+      "reason": "고객 인터뷰와 정기 세션은 이번 구현 범위 밖."
+    },
+    {
+      "id": "RQ-11",
+      "reason": "단일 사용자 localhost 범위이므로 지도교수 계정·공유·코멘트 권한 제외."
+    },
+    {
+      "id": "ONRQ-2",
+      "reason": "자동 novelty 부족 탐지·중단 판정 제외. S2 차별점은 검토용 제안으로만 표시."
+    },
+    {
+      "id": "ONRQ-3",
+      "reason": "서비스가 생성 코드를 실행하지 않으므로 자동 실행 오류 수정 제외."
+    },
+    {
+      "id": "ONRQ-4",
+      "reason": "서비스 내 실험이 없어 실험별 GPU 시간·비용 중단 제외. LLM timeout은 별도 규칙."
+    },
+    {
+      "id": "SIR-5",
+      "reason": "서비스 내 코드 실행 전체 제외. 생성 코드는 외부에서 사용자가 실행."
+    },
+    {
+      "id": "LOR-3",
+      "reason": "SUS 사용자 평가를 수행하지 않음."
+    },
+    {
+      "id": "LOR-7",
+      "reason": "기관용 접근 제어·TLS·저장 암호화·7일 백업 삭제는 제외. localhost 전용, API 키 서버 보관은 기본 적용."
+    },
+    {
+      "id": "LOR-9",
+      "reason": "서버 실험 재실행과 ±1.5%p 판정 제외. 참조 실험 조건과 측정 파일은 제공."
+    },
+    {
+      "id": "CR-1",
+      "reason": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음."
+    },
+    {
+      "id": "CR-2",
+      "reason": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음."
+    },
+    {
+      "id": "CR-3",
+      "reason": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음."
+    },
+    {
+      "id": "CR-4",
+      "reason": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음."
+    },
+    {
+      "id": "CR-5",
+      "reason": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음."
+    },
+    {
+      "id": "CR-6",
+      "reason": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음."
+    },
+    {
+      "id": "CR-7",
+      "reason": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음."
+    },
+    {
+      "id": "CR-8",
+      "reason": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음."
+    }
+  ],
+  "mode_rules": {
+    "demo": "Use bundled stage fixtures and reviewed metadata snapshots; no network and no API key. Same DB/workflow/API code as live. Visible fixture badge. Uploaded reference_run metrics are measured, not fabricated.",
+    "live": "All model calls use the Gateway; arXiv is queried live. API errors must fail visibly. Never silently use demo outputs. Key/model configuration is required only for live."
+  },
+  "deadline_cut_order": [
+    "UI animations and charts",
+    "Extra design polish",
+    "Optional additional live topics"
+  ],
+  "never_cut": [
+    "Server approval gate",
+    "Input version snapshots",
+    "Stale propagation",
+    "No implicit demo fallback",
+    "No invented measurements or references",
+    "Fresh-start demo and accurate limitation statement"
+  ],
+  "handoff_revision": "2026-11-07-consolidated-guides",
+  "system_context_reference": "sources/ssrd_context.json",
+  "prototype_supported_work": {
+    "audience": "연구 실행 경험이 적은 석사·초기 박사과정 대학원생",
+    "domain": "공개 데이터셋을 사용하는 소규모 ML 비교 실험",
+    "prototype_execution": "서비스 밖에서 CPU/scikit-learn 실행",
+    "source_system_scope": "SSRD 3.1·7장의 원래 범위와 정의는 sources/ssrd_context.json 및 원본 문서에 보존한다. 원문의 PyTorch·GPU·시간 기준을 이번 CPU baseline의 실행 보장으로 해석하지 않는다.",
+    "excluded": [
+      "실제 논문 투고",
+      "비ML 분야",
+      "대규모 학습",
+      "사람 대상 연구",
+      "비공개 대용량 데이터셋 업로드"
+    ],
+    "automatic_domain_classifier": false
+  },
+  "upload_format": {
+    "name": "prototype_json_v1",
+    "schema": "contracts/upload.schema.json",
+    "original_source": "sources/ssrd_context.json#/external_upload_original",
+    "accepts_original_ssrd_example_unchanged": false,
+    "legacy_format_adapter": false,
+    "additional_required_fields": [
+      "schema_version",
+      "data_origin",
+      "metrics[].unit"
+    ],
+    "code_version": "프로토타입은 Git 커밋 또는 소스 해시 등 사용자 제공 식별자를 받는다. 코드 일치를 자동 인증하지 않는다.",
+    "csv_supported": false
+  },
+  "explicit_prototype_limits": {
+    "s2_reference_selection": "검증된 1~3편의 서버 snapshot을 사용한다. 사용자의 논문 직접 추가·포함/제외·연도/분야 필터 UI는 제외한다.",
+    "s4_diff": "파일별 코드 편집만 제공한다. diff 뷰어와 smoke test 실행은 제외한다.",
+    "s6_regeneration": "섹션별 직접 편집은 지원하되 재생성은 S6 전체 단위다. 섹션별 재생성·문장별 전체 근거 매핑은 제외한다.",
+    "history": "S1 approve Decision과 기존 Artifact 조회로 승인 Brief 이력만 열람한다. 전체 초안 버전 탐색기·diff·과거 버전 복원은 제외한다.",
+    "assumptions": "A-1~A-7은 원문에서 검증 전 가정이다. 이번 팩은 인터뷰나 사용자 평가를 완료했다고 주장하지 않는다."
+  },
+  "source_review_resolution": [
+    {
+      "id": "N-01",
+      "action": "preserve_source_context_and_state_prototype_domain",
+      "files": [
+        "sources/ssrd_context.json",
+        "CLAUDE.md",
+        "SOURCE_COVERAGE.md"
+      ],
+      "acceptance_ids": [],
+      "status": "source_information_restored"
+    },
+    {
+      "id": "N-02",
+      "action": "preserve_ui_definitions_and_map_to_partial_prototype",
+      "files": [
+        "sources/ssrd_context.json",
+        "SOURCE_COVERAGE.md",
+        "architecture.md"
+      ],
+      "acceptance_ids": [],
+      "status": "source_information_restored"
+    },
+    {
+      "id": "N-03",
+      "action": "preserve_original_spec_and_explicitly_use_separate_prototype_format",
+      "files": [
+        "sources/ssrd_context.json",
+        "contracts/README.md",
+        "SOURCE_COVERAGE.md"
+      ],
+      "acceptance_ids": [
+        "AC-09"
+      ],
+      "status": "specified_in_plan_not_implemented"
+    },
+    {
+      "id": "N-04",
+      "action": "preserve_unvalidated_customer_assumptions",
+      "files": [
+        "sources/ssrd_context.json",
+        "SOURCE_COVERAGE.md"
+      ],
+      "acceptance_ids": [],
+      "status": "source_information_restored"
+    },
+    {
+      "id": "N-05",
+      "action": "specify_ablation_or_reason_and_full_hypothesis_coverage",
+      "files": [
+        "contracts/README.md",
+        "prompts/stage_prompts.md",
+        "implementation_plan.md",
+        "acceptance.cases.json"
+      ],
+      "acceptance_ids": [
+        "AC-10",
+        "AC-19"
+      ],
+      "status": "specified_in_plan_not_implemented"
+    },
+    {
+      "id": "N-06",
+      "action": "specify_read_only_approved_brief_history_via_existing_apis",
+      "files": [
+        "contracts/README.md",
+        "architecture.md",
+        "implementation_plan.md",
+        "acceptance.cases.json"
+      ],
+      "acceptance_ids": [
+        "AC-04"
+      ],
+      "status": "specified_in_plan_not_implemented"
+    },
+    {
+      "id": "N-07",
+      "action": "specify_evidence_open_actions_and_missing_evidence_label",
+      "files": [
+        "contracts/README.md",
+        "architecture.md",
+        "implementation_plan.md",
+        "acceptance.cases.json"
+      ],
+      "acceptance_ids": [
+        "AC-19"
+      ],
+      "status": "specified_in_plan_not_implemented"
+    },
+    {
+      "id": "N-08",
+      "action": "add_policy_check_record_and_implementation_task_status_NOT_CHECKED",
+      "files": [
+        "LLM_DATA_POLICY.md",
+        "implementation_plan.md",
+        "acceptance.cases.json"
+      ],
+      "acceptance_ids": [
+        "AC-18"
+      ],
+      "status": "specified_in_plan_not_implemented"
+    },
+    {
+      "id": "N-09",
+      "action": "specify_partial_reference_failure_warnings",
+      "files": [
+        "contracts/README.md",
+        "architecture.md",
+        "implementation_plan.md",
+        "acceptance.cases.json"
+      ],
+      "acceptance_ids": [
+        "AC-08"
+      ],
+      "status": "specified_in_plan_not_implemented"
+    }
+  ],
+  "entrypoint": "CLAUDE.md"
+}

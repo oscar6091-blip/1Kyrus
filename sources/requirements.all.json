@@ -1,0 +1,2998 @@
+{
+  "schema_version": "1.0",
+  "generated_on": "2026-11-06",
+  "source_sha256": "1707bd1c151ebba4d8b9610fe938616490e37875dc48e28c64d6475c6e0d9839",
+  "preservation": "Each source table field, including empty values, is preserved verbatim. Original IDs and canonical aliases are separate.",
+  "authority": "Source requirements describe the full system. scope.json and contracts govern only this prototype implementation; they do not amend SSRD/SSAD. The four prototype_baseline settings are temporary prototype choices, not adopted SSAD decisions or evidence of source compliance.",
+  "requirements": [
+    {
+      "id": "PR-1",
+      "original_id": "PR-1",
+      "source_identity": "PR-1",
+      "category": "project",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "2.1 Budget and Schedule"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "PR-1"
+        },
+        {
+          "label": "Description:",
+          "value": "개발·평가 비용 상한을 지킨다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "개발 및 사용자 평가 전 기간의 LLM API, 클라우드 GPU, 호스팅 비용 합계 사용량은 주 단위로 기록한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "개발 중에는 저가 모델과 결과 캐시를 사용하고, 실험 규모를 ‘예제 규모 연구’(7장)로 제한하며, 무료 학술 API와 클라우드 무료 크레딧을 활용한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "예산"
+        },
+        {
+          "label": "Specific:",
+          "value": "비용이 상한을 넘으면 사용자 평가를 진행할 수 없다. 예산의 80%에 도달하면 범위를 재조정한다."
+        },
+        {
+          "label": "Reference:",
+          "value": "SH-3, TD"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "LLM 입력·출력 토큰과 호출 수 기록. 단가 미설정 시 비용은 null로 표시. 예산·주간 보고는 제외.",
+        "acceptance_ids": [
+          "AC-18"
+        ]
+      }
+    },
+    {
+      "id": "PR-2",
+      "original_id": "PR-2",
+      "source_identity": "PR-2",
+      "category": "project",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "2.1 Budget and Schedule"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "PR-2"
+        },
+        {
+          "label": "Description:",
+          "value": "요구사항 정의와 설계를 3주 안에 마친다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "SSRD v1.0, UI/UX 기획안 v1.0, SSAD v1.0을 2026-11-08까지 완료한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "1주차 인터뷰 결과를 바로 SSRD에 반영하고, 2~3주차에 기획안과 SSAD를 병행 작성한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "일정"
+        },
+        {
+          "label": "Specific:",
+          "value": "설계가 늦어지면 프로토타입 구현 기간(3주)이 줄어든다."
+        },
+        {
+          "label": "Reference:",
+          "value": "TD"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "이미 작성된 설계 산출물의 일정 요구. 이 구현 팩은 제출용 코드 작업만 다룸.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "PR-3",
+      "original_id": "PR-3",
+      "source_identity": "PR-3",
+      "category": "project",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "2.1 Budget and Schedule"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "PR-3"
+        },
+        {
+          "label": "Description:",
+          "value": "사용자가 직접 쓸 수 있는 working prototype을 배포한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "2026-11-08까지 예제 아이디어 1건이 6단계를 끝까지 통과하는 최소 버전(thin end-to-end)을, 2026-12-06 까지 평가용 버전을 배포한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "우선순위 Very High 요구사항부터 구현한다. 각 단계는 가장 단순한 형태로 먼저 연결한 뒤 강화한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "일정"
+        },
+        {
+          "label": "Specific:",
+          "value": "핵심 차별점(단계 간 연결)을 먼저 검증하기 위해, 모든 단계를 얕게라도 끝까지 연결하는 것을 개별 단계의 품질보다 우선한다."
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-2, VP-1"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "2026-11-08 수업 제출: 로컬에서 6단계와 승인·수정·재생성·외부 결과 업로드·초안 내보내기 시연.",
+        "acceptance_ids": [
+          "AC-01"
+        ]
+      }
+    },
+    {
+      "id": "PR-4",
+      "original_id": "PR-4",
+      "source_identity": "PR-4",
+      "category": "project",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "2.1 Budget and Schedule"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "PR-4"
+        },
+        {
+          "label": "Description:",
+          "value": "실제 고객을 대상으로 평가하고 분석 리포트를 작성한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "2026-12-07 ~ 12-14 사용자 평가(핵심 고객 3명, 지도교수 1명), 2026-12-14까지 평가 리포트와 SSRD·SSAD v2.0 제출."
+        },
+        {
+          "label": "Achievable:",
+          "value": "평가 참가자는 1주차 인터뷰 참가자 중에서 우선 모집한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "일정, 검증"
+        },
+        {
+          "label": "Specific:",
+          "value": "평가 결과는 5장 LOR 요구사항별 달성 여부로 보고한다."
+        },
+        {
+          "label": "Reference:",
+          "value": "CS, SH-1"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "실제 고객 모집·평가 리포트는 이번 제출 범위 밖.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "PR-5",
+      "original_id": "PR-5",
+      "source_identity": "PR-5",
+      "category": "project",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "2.2 Development Requirements"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "PR-5"
+        },
+        {
+          "label": "Description:",
+          "value": "핵심 고객과 정기적으로 만나 요구사항과 프로토타입을 검토한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "1주차에 대학원생 3명, 지도교수 0명 인터뷰를 마치고, 이후 격주 1회 이상 고객 피드백 세션을 연다. 모든 세션은 INT/ADV ID로 기록한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "소속 연구실·학과 대학원생을 우선 섭외하고, 세션은 30분 내외 온라인으로 진행한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "일정, 요구사항 타당성"
+        },
+        {
+          "label": "Specific:",
+          "value": "모든 요구사항의 근거(Reference)를 고객 기록으로 추적할 수 있게 한다."
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-4, SH-1"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "고객 인터뷰와 정기 세션은 이번 구현 범위 밖.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "PR-6",
+      "original_id": "PR-6",
+      "source_identity": "PR-6",
+      "category": "project",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "2.2 Development Requirements"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "PR-6"
+        },
+        {
+          "label": "Description:",
+          "value": "개발 언어와 주요 도구를 정한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "백엔드 Python 3.10 이상(FastAPI), 프론트엔드 TypeScript(Next.js), 코드 실행 격리 Docker, 데이터베이스 PostgreSQL, 형상 관리 GitHub. 최종 선택과 근거는 SSAD에 기록한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "팀이 익숙한 오픈소스 도구를 사용한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "일정, 유지보수성"
+        },
+        {
+          "label": "Specific:",
+          "value": "생성·실행할 실험 코드가 Python(PyTorch) 생태계이므로 백엔드를 Python으로 통일하면 실행·분석 모듈 개발이 단순해진다."
+        },
+        {
+          "label": "Reference:",
+          "value": "TD"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "Next.js/TypeScript, Python/FastAPI 유지. PostgreSQL 대신 SQLite. Docker와 서버 실험 실행 제외. 참조 실험은 scikit-learn CPU.",
+        "acceptance_ids": [
+          "AC-20"
+        ]
+      }
+    },
+    {
+      "id": "PR-7",
+      "original_id": "PR-7",
+      "source_identity": "PR-7",
+      "category": "project",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "2.2 Development Requirements"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "PR-7"
+        },
+        {
+          "label": "Description:",
+          "value": "상용 LLM API를 쓰되 특정 제공자에 종속되지 않고, 사용자 데이터를 모델 학습에 사용하지 않는 조건에서만 사용한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "모든 LLM 호출은 LLM Gateway(SIR-3)를 거친다. 사용하는 API의 ‘입력 데이터 학습 미사용’ 약관을 확인하여 SSAD에 기록한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "공통 호출 인터페이스를 두고 제공자별 어댑터를 구현한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "보안, 비용, 진화"
+        },
+        {
+          "label": "Specific:",
+          "value": "미공개 연구 아이디어 보호(LOR-7)와 제공자 교체(CR-8)의 전제 조건이다."
+        },
+        {
+          "label": "Reference:",
+          "value": "SH-3, TD (INT 검증 예정)"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "서버 전용 API 키, 한 LLM Gateway, Anthropic 어댑터 하나. LLM_DATA_POLICY.md에 입력 데이터 사용 조건의 확인 근거 또는 NOT_CHECKED 상태 기록. 정식 인증·다중 제공자 전환 제외.",
+        "acceptance_ids": [
+          "AC-15",
+          "AC-18"
+        ]
+      }
+    },
+    {
+      "id": "PR-8",
+      "original_id": "PR-8",
+      "source_identity": "PR-8",
+      "category": "project",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "2.3 Packaging Requirements"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "PR-8"
+        },
+        {
+          "label": "Description:",
+          "value": "사용자는 웹 브라우저만으로 시스템을 사용한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "최신 버전 Chrome, Edge, Safari에서 URL 접속만으로 모든 기능을 쓸 수 있으며, 사용자 측 설치는 필요 없다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "웹 애플리케이션으로 개발하여 클라우드 호스팅 또는 연구실 서버에 배포한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "사용성, 평가 진행"
+        },
+        {
+          "label": "Specific:",
+          "value": "평가 참가자가 각자 환경에서 바로 접속할 수 있어야 한다."
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-1, TD"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "localhost 브라우저 UI. 개발자가 Node/Python 환경을 설치해 실행. 원문의 무설치 클라우드 배포는 제외.",
+        "acceptance_ids": [
+          "AC-01"
+        ]
+      }
+    },
+    {
+      "id": "PR-9",
+      "original_id": "PR-9",
+      "source_identity": "PR-9",
+      "category": "project",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "2.3 Packaging Requirements"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "PR-9"
+        },
+        {
+          "label": "Description:",
+          "value": "사용·운영·설계 문서를 제공한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "사용자 가이드(시작하기, 단계별 사용법, FAQ), 운영 가이드(배포 절차, 환경 변수, 비용 모니터링), 설계 문서(SSAD), 코드 주석을 제공한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "개발과 함께 저장소의 docs 폴더에서 관리한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "유지보수, 평가 온보딩"
+        },
+        {
+          "label": "Specific:",
+          "value": "평가 참가자는 사용자 가이드만으로 첫 단계를 시작할 수 있어야 한다(SIR-1)."
+        },
+        {
+          "label": "Reference:",
+          "value": "TD"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "실행 README, 환경 변수 예시, 5분 시연 절차, 제한사항·테스트 결과 제공. 정식 운영 문서 제외.",
+        "acceptance_ids": [
+          "AC-20"
+        ]
+      }
+    },
+    {
+      "id": "RQ-1",
+      "original_id": "RQ-1",
+      "source_identity": "RQ-1",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-1"
+        },
+        {
+          "label": "Title:",
+          "value": "아이디어 구체화 및 Research Brief 생성"
+        },
+        {
+          "label": "Priority:",
+          "value": "Very High"
+        },
+        {
+          "label": "Description:",
+          "value": "사용자가 자유 형식으로 입력한 연구 아이디어를 대화형 질문으로 구체화하여, 이후 모든 단계가 공유하는 Research Brief(연구 문제, 가설, 예상 기여, 평가 계획, 제약 조건)를 만든다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "자유 형식 아이디어 텍스트 (필수)\n참고 논문 PDF·링크, 보유 데이터·컴퓨팅 조건 (선택)\n구체화 질문에 대한 답변"
+        },
+        {
+          "label": "Source(s):",
+          "value": "사용자 입력"
+        },
+        {
+          "label": "Output(s):",
+          "value": "Research Brief v1\n아직 정해지지 않은 항목 목록"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "연구 맥락 저장소, 단계 검토 화면"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "사용자가 로그인하여 연구 프로젝트를 만들었다(RQ-13)."
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "Research Brief v1이 승인되어 S2를 시작할 수 있다."
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-02, UI-08"
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-1, PS-5, VP-1 (INT 검증 예정)"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "사용자가 아이디어를 입력하면 시스템은 Brief 항목 중 비어 있거나 모호한 항목을 찾아 한 번에 최대 3개씩 질문한다. 답변을 반영한 Brief 초안을 항목별로 보여 주고, 사용자는 항목을 직접 고치거나 승인한다. 승인하면 S2가 활성화된다."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "입력이 연구 질문으로 해석되지 않으면 예시 아이디어와 작성 가이드를 보여 주고 다시 입력받는다."
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "아이디어로 구조화 Brief 초안과 최대 3개 질문 생성. 직접 편집 또는 코멘트 재생성 후 승인. 완전한 대화 관리 제외.",
+        "acceptance_ids": [
+          "AC-02"
+        ]
+      }
+    },
+    {
+      "id": "RQ-2",
+      "original_id": "RQ-2",
+      "source_identity": "RQ-2",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-2"
+        },
+        {
+          "label": "Title:",
+          "value": "관련 연구 조사 및 차별점 분석"
+        },
+        {
+          "label": "Priority:",
+          "value": "Very High"
+        },
+        {
+          "label": "Description:",
+          "value": "Research Brief를 바탕으로 학술 DB에서 관련 논문을 검색·선별하고, 논문별 요약과 본 아이디어와의 차별점을 정리한다. 실존이 확인된 논문만 결과에 포함한다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "승인된 Research Brief\n사용자가 추가한 논문 (선택)\n검색 범위: 연도, 분야 (선택)"
+        },
+        {
+          "label": "Source(s):",
+          "value": "연구 맥락 저장소, 사용자 입력, 학술 DB API(SIR-4)"
+        },
+        {
+          "label": "Output(s):",
+          "value": "관련 연구 목록(3~5편)과 논문별 요약·관련도\n차별점 비교표\n검증된 참고문헌(BibTeX)"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "연구 맥락 저장소, 단계 검토 화면"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "RQ-1이 승인되었다."
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "사용자가 핵심 관련 연구와 차별점을 승인하고, Brief의 ‘예상 기여’ 항목이 갱신된다."
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-03"
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-3, VP-1"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "시스템은 Brief의 연구 문제·가설에서 검색어를 만들어 학술 DB를 검색하고, 중복을 제거한 뒤 관련도 순으로 선별한다. 각 논문은 DOI 또는 arXiv ID로 실존을 확인한 뒤 요약과 함께 표시한다. 사용자는 논문을 포함·제외하거나 직접 추가하고, 차별점 비교표를 고쳐 승인한다."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "ONRQ-1(인용 검증 실패), ONRQ-2(차별성 부족)"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "arXiv에서 최대 3편 확인 후 초록 기반 정리. 최소 1편 필요. 전문 분석·자동 novelty 확정·사용자 논문 추가/포함/제외·연도/분야 필터 UI 제외.",
+        "acceptance_ids": [
+          "AC-08"
+        ]
+      }
+    },
+    {
+      "id": "RQ-3",
+      "original_id": "RQ-3",
+      "source_identity": "RQ-3",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-3"
+        },
+        {
+          "label": "Title:",
+          "value": "방법론 및 실험 설계"
+        },
+        {
+          "label": "Priority:",
+          "value": "Very High"
+        },
+        {
+          "label": "Description:",
+          "value": "가설을 검증할 방법론과 실험 계획(데이터셋, 베이스라인, 평가 지표, ablation, 계산 예산)을 실험 설계서로 작성한다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "승인된 Brief와 관련 연구\n사용 가능한 컴퓨팅 조건"
+        },
+        {
+          "label": "Source(s):",
+          "value": "연구 맥락 저장소, 사용자 입력"
+        },
+        {
+          "label": "Output(s):",
+          "value": "실험 설계서(가설–실험 대응표 포함)\n실험별 예상 실행 시간·비용"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "연구 맥락 저장소, 단계 검토 화면"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "RQ-2가 승인되었다."
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "승인된 실험 설계서가 S4의 입력이 된다."
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-04"
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-2, VP-1"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "시스템은 Brief의 가설마다 이를 검증하는 실험을 하나 이상 대응시키고, 관련 연구에서 쓰인 데이터셋·베이스라인·지표를 근거로 제안한다. 예상 실행 시간이 상한(LOR-5)을 넘으면 축소안을 함께 제시한다. 사용자는 항목을 수정하고 승인한다."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "적합한 공개 데이터셋이 없으면 사용자 데이터 사용 또는 연구 범위 축소를 제안한다. 예상 비용이 상한을 넘으면 ONRQ-4를 따른다."
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "실험 계획 Markdown과 실험 ID·가설 ID·필수 지표 생성. 모든 Brief 가설을 최소 한 실험에 대응. Ablation 계획 또는 해당 없음 사유를 포함해 검토·편집·승인.",
+        "acceptance_ids": [
+          "AC-19"
+        ]
+      }
+    },
+    {
+      "id": "RQ-4",
+      "original_id": "RQ-4",
+      "source_identity": "RQ-4",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-4"
+        },
+        {
+          "label": "Title:",
+          "value": "실험 코드 구현"
+        },
+        {
+          "label": "Priority:",
+          "value": "High"
+        },
+        {
+          "label": "Description:",
+          "value": "실험 설계서에 따라 실행 가능한 실험 코드(데이터 로딩, 모델, 학습·평가 루프, 설정 파일)를 만들고 소규모 동작 확인(smoke test)을 거친다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "승인된 실험 설계서\n사용자의 기존 코드 저장소 (선택)"
+        },
+        {
+          "label": "Source(s):",
+          "value": "연구 맥락 저장소, 사용자 입력"
+        },
+        {
+          "label": "Output(s):",
+          "value": "버전 관리되는 코드 저장소와 README\nsmoke test 결과"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "연구 맥락 저장소, 실행 샌드박스"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "RQ-3가 승인되었다."
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "smoke test를 통과한 코드 버전이 승인되어 S5에서 실행할 수 있다."
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-05"
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-1, VP-1"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "시스템이 코드를 생성하면 실행 샌드박스에서 소량 데이터로 smoke test를 실행한다. 오류가 나면 자동 수정을 최대 3회 시도한다. 사용자는 코드와 변경 내역(diff)을 확인하고 직접 고치거나 승인하며, 저장소를 GitHub로 내보낼 수 있다."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "ONRQ-3(자동 수정 실패)"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "CPU Python 코드·requirements·README 생성/편집/zip 다운로드. 서버 코드 실행·smoke test·코드 diff 뷰어 제외.",
+        "acceptance_ids": [
+          "AC-12"
+        ]
+      }
+    },
+    {
+      "id": "RQ-5",
+      "original_id": "RQ-5",
+      "source_identity": "RQ-5",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-5"
+        },
+        {
+          "label": "Title:",
+          "value": "실험 수행 및 로그 수집"
+        },
+        {
+          "label": "Priority:",
+          "value": "High"
+        },
+        {
+          "label": "Description:",
+          "value": "승인된 코드를 격리된 실행 환경에서 실행하고 지표·로그·실행 메타데이터를 수집한다. 사용자가 연구실 GPU 등 외부에서 실행한 뒤 결과를 업로드하는 경로도 제공한다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "승인된 코드와 실행 설정(시드, 하이퍼파라미터)\n또는 외부 실행 결과 파일(부록 A.II 형식)"
+        },
+        {
+          "label": "Source(s):",
+          "value": "연구 맥락 저장소, 사용자 입력"
+        },
+        {
+          "label": "Output(s):",
+          "value": "실험 로그와 지표 표\n실행 메타데이터(코드 버전, 환경, 시드, 소요 시간, 비용)"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "연구 맥락 저장소, 진행 상황 화면"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "RQ-4가 승인되었다."
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "설계서의 모든 실험이 완료, 실패, 중단 중 하나로 기록된다."
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-06"
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-1, VP-1"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "사용자가 실행을 시작하면 실험이 작업 큐에 등록되어 순서대로 실행되고, 진행률과 주요 지표가 실시간으로 표시된다. 브라우저를 닫아도 실행은 계속된다. 완료되면 결과가 저장되고 결과 분석(RQ-6)이 활성화된다."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "ONRQ-3, ONRQ-4, ONRQ-8"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "외부 결과 JSON을 검사·저장하고 실행 메타데이터·지표 표시. 서버 실행·GPU·진행 로그 수집 제외.",
+        "acceptance_ids": [
+          "AC-09"
+        ]
+      }
+    },
+    {
+      "id": "RQ-6",
+      "original_id": "RQ-6",
+      "source_identity": "RQ-6",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-6"
+        },
+        {
+          "label": "Title:",
+          "value": "결과 분석"
+        },
+        {
+          "label": "Priority:",
+          "value": "High"
+        },
+        {
+          "label": "Description:",
+          "value": "실험 결과를 표·그래프로 정리하고, 각 가설의 지지 여부를 근거와 함께 판정하며, 필요한 추가 실험을 제안한다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "실험 로그\n실험 설계서와 Brief"
+        },
+        {
+          "label": "Source(s):",
+          "value": "연구 맥락 저장소"
+        },
+        {
+          "label": "Output(s):",
+          "value": "결과 표·그래프\n가설별 판정(지지 / 부분 지지 / 기각)과 근거\n추가 실험 제안"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "연구 맥락 저장소, 단계 검토 화면"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "RQ-5에서 1개 이상의 실험이 완료되었다."
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "승인된 분석으로 Brief의 ‘결과 및 결론’ 항목이 갱신된다."
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-06"
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-2, VP-1"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "시스템은 설계서의 가설–실험 대응표에 따라 결과를 정리하고, 표·그래프의 모든 수치에 원본 로그 링크를 붙인다. 사용자는 판정과 해석을 수정해 승인하거나, 추가 실험을 골라 S3·S4로 돌아간다."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "ONRQ-5(가설 미지지)"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "선택 ExperimentRun의 표·판정·한계 작성. 모든 Brief 가설의 판정을 기록하되 선택 Run에 대응하지 않는 가설은 근거 부족/inconclusive. 수치는 로그 렌더링. 추가 실험 자동 실행 제외.",
+        "acceptance_ids": [
+          "AC-10"
+        ]
+      }
+    },
+    {
+      "id": "RQ-7",
+      "original_id": "RQ-7",
+      "source_identity": "RQ-7",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-7"
+        },
+        {
+          "label": "Title:",
+          "value": "논문 초안 작성"
+        },
+        {
+          "label": "Priority:",
+          "value": "High"
+        },
+        {
+          "label": "Description:",
+          "value": "앞 단계의 승인된 산출물을 근거로 학회 LaTeX 템플릿에 맞춘 논문 초안(초록, 서론, 관련 연구, 방법, 실험, 결론)을 작성한다. 모든 수치는 실험 로그에서, 모든 인용은 검증된 참고문헌에서만 가져온다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "Brief, 관련 연구와 BibTeX, 실험 설계서, 분석 결과\n템플릿 선택"
+        },
+        {
+          "label": "Source(s):",
+          "value": "연구 맥락 저장소, 사용자 입력"
+        },
+        {
+          "label": "Output(s):",
+          "value": "LaTeX 소스와 PDF\n문장별 근거 링크(어느 산출물에서 왔는지)"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "논문 에디터, 내보내기(SIR-6)"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "RQ-6이 승인되었다."
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "사용자가 섹션별로 편집할 수 있는 초안이 저장되고, LaTeX 프로젝트로 내보낼 수 있다."
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-07"
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-1, VP-1, VP-4"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "시스템은 섹션 순서대로 초안을 만들고, 사용자는 섹션 단위로 직접 편집하거나 코멘트를 달아 다시 생성한다. 각 문장의 근거 링크를 눌러 원본 산출물을 확인할 수 있다."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "ONRQ-1(인용 검증 실패), ONRQ-6(수치 불일치)"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "승인 자료로 영어 Markdown 6개 섹션 작성·편집·다운로드. 재생성은 S6 전체 단위. LaTeX/PDF·섹션별 재생성·문장별 전체 근거 매핑 제외.",
+        "acceptance_ids": [
+          "AC-11",
+          "AC-13"
+        ]
+      }
+    },
+    {
+      "id": "RQ-8",
+      "original_id": "RQ-8",
+      "source_identity": "RQ-8",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-8"
+        },
+        {
+          "label": "Title:",
+          "value": "단계 간 연구 맥락 공유"
+        },
+        {
+          "label": "Priority:",
+          "value": "Medium"
+        },
+        {
+          "label": "Description:",
+          "value": "모든 단계 에이전트는 Research Brief의 최신 승인본과 이전 단계의 승인된 산출물을 입력으로 사용하고, 단계가 끝나면 Brief의 해당 항목을 갱신한다. 사용자는 어느 화면에서든 현재 Brief와 변경 이력을 볼 수 있다. 본 시스템의 핵심 차별 요구사항이다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "각 단계의 승인된 산출물\n사용자의 Brief 직접 수정"
+        },
+        {
+          "label": "Source(s):",
+          "value": "단계 에이전트, 사용자 입력"
+        },
+        {
+          "label": "Output(s):",
+          "value": "버전 관리되는 Research Brief(변경 이력 포함)"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "연구 맥락 저장소, 모든 단계 에이전트, 연구 맥락 패널"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "연구 프로젝트가 생성되었다."
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "모든 산출물이 자신이 참조한 Brief 버전을 기록한다."
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-08"
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-2, PS-3, VP-2"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "단계가 시작되면 시스템은 Brief 최신 승인본과 상위 산출물을 불러온다. 단계가 끝나면 Brief 변경 제안을 변경 전·후 비교로 보여 주고, 사용자가 승인하면 새 버전으로 저장한다."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "입력할 맥락이 모델의 처리 한도를 넘으면 요약본을 사용하되 원문 링크를 유지하고, 요약본을 사용했음을 사용자에게 알린다."
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "승인 Brief·상위 승인 Artifact를 실행 시 고정. Brief 갱신은 S1 승인만. S1 approve Decision과 기존 Artifact 조회로 승인 Brief 이력 열람. 전체 초안 탐색·diff·복원 제외.",
+        "acceptance_ids": [
+          "AC-03",
+          "AC-04"
+        ]
+      }
+    },
+    {
+      "id": "RQ-9",
+      "original_id": "RQ-9",
+      "source_identity": "RQ-9",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-9"
+        },
+        {
+          "label": "Title:",
+          "value": "단계별 체크포인트 (검토·수정·승인)"
+        },
+        {
+          "label": "Priority:",
+          "value": "Medium"
+        },
+        {
+          "label": "Description:",
+          "value": "각 단계가 끝나면 시스템은 다음 단계로 자동 진행하지 않고, 산출물과 근거를 제시한 뒤 사용자의 결정을 받는다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "사용자 결정: 승인 / 직접 수정 / 코멘트로 재생성 요청 / 이전 단계로 돌아가기"
+        },
+        {
+          "label": "Source(s):",
+          "value": "사용자 입력"
+        },
+        {
+          "label": "Output(s):",
+          "value": "승인된 산출물 버전\n결정 기록"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "연구 맥락 저장소, 생성 이력(LOR-8)"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "단계 산출물 생성이 끝났다."
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "승인하면 다음 단계가 활성화된다. 다른 결정은 같은 단계 또는 이전 단계에서 다시 진행한다."
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-03 ~ UI-07 공통 검토 영역"
+        },
+        {
+          "label": "Reference:",
+          "value": "VP-3"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "단계 검토 화면에 산출물, 결정 근거(RQ-12), Brief 변경 제안이 함께 표시된다. 사용자는 네 가지 결정 중 하나를 고르며, 재생성을 요청할 때 남긴 코멘트는 다음 생성의 입력으로 쓰인다."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "사용자가 결정하지 않고 이탈하면 상태를 ‘검토 필요’로 저장하고 대시보드에 표시한다."
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "승인·수정 저장·코멘트 재생성·이전 단계 이동. 이동은 기록+화면 이동이며 그 자체로 이전 단계 상태를 되돌리지 않음.",
+        "acceptance_ids": [
+          "AC-02",
+          "AC-04",
+          "AC-14",
+          "AC-16",
+          "AC-17"
+        ]
+      }
+    },
+    {
+      "id": "RQ-10",
+      "original_id": "RQ-10",
+      "source_identity": "RQ-10",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-10"
+        },
+        {
+          "label": "Title:",
+          "value": "상위 단계 변경의 영향 표시 및 재생성"
+        },
+        {
+          "label": "Priority:",
+          "value": "Medium"
+        },
+        {
+          "label": "Description:",
+          "value": "사용자가 이전 단계의 산출물이나 Brief를 수정하면, 이에 의존하는 하위 산출물을 ‘오래됨(stale)’으로 표시하고 선택적으로 다시 생성한다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "상위 산출물 또는 Brief의 새 버전"
+        },
+        {
+          "label": "Source(s):",
+          "value": "사용자 입력, 연구 맥락 저장소"
+        },
+        {
+          "label": "Output(s):",
+          "value": "영향받는 하위 산출물 목록과 표시\n선택한 산출물의 재생성 결과"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "대시보드, 연구 맥락 패널"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "하위 단계 산출물이 1개 이상 있다."
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "각 산출물의 상태가 ‘최신’ 또는 ‘오래됨’으로 정확히 표시된다."
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-01, UI-08"
+        },
+        {
+          "label": "Reference:",
+          "value": "VP-2, VP-3"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "예: 사용자가 S3에서 데이터셋을 바꾸면 S4 코드, S5 결과, S6 초안의 실험 섹션이 ‘오래됨’으로 표시된다. 사용자가 다시 생성할 항목을 고르면 시스템은 의존 순서대로 재생성하고 각 체크포인트를 다시 거친다."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "—"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "상위 새 버전 승인 시 결과가 있는 모든 하위 Stage를 stale로 표시. 섹션별·필드별 영향 계산과 자동 재생성 제외.",
+        "acceptance_ids": [
+          "AC-05",
+          "AC-14",
+          "AC-16"
+        ]
+      }
+    },
+    {
+      "id": "RQ-11",
+      "original_id": "RQ-11",
+      "source_identity": "RQ-11",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-11"
+        },
+        {
+          "label": "Title:",
+          "value": "지도교수 공유 및 코멘트"
+        },
+        {
+          "label": "Priority:",
+          "value": "Low"
+        },
+        {
+          "label": "Description:",
+          "value": "사용자는 프로젝트 또는 특정 산출물을 지도교수에게 읽기·코멘트 권한으로 공유한다. 코멘트는 해당 산출물에 연결되어 다음 재생성 때 입력으로 쓰인다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "공유 대상 이메일과 공유 범위\n지도교수 코멘트"
+        },
+        {
+          "label": "Source(s):",
+          "value": "사용자 입력, 검토자 입력"
+        },
+        {
+          "label": "Output(s):",
+          "value": "공유 링크\n산출물에 연결된 코멘트"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "공유·코멘트 화면, 연구 맥락 저장소"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "공유할 산출물이 있다."
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "사용자가 공유를 해제하면 접근 권한이 즉시 사라진다."
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-09"
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-4, VP-5, SH-1"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "사용자가 공유를 요청하면 지도교수에게 링크가 전달되고, 지도교수는 로그인 후 산출물을 읽고 문단 단위로 코멘트를 남긴다. 사용자는 코멘트를 반영해 재생성하거나 직접 수정한다."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "—"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "단일 사용자 localhost 범위이므로 지도교수 계정·공유·코멘트 권한 제외.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "RQ-12",
+      "original_id": "RQ-12",
+      "source_identity": "RQ-12",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-12"
+        },
+        {
+          "label": "Title:",
+          "value": "의사결정 근거 설명"
+        },
+        {
+          "label": "Priority:",
+          "value": "High"
+        },
+        {
+          "label": "Description:",
+          "value": "각 단계 산출물의 주요 결정(예: 데이터셋, 베이스라인, 평가 지표 선택)마다 이유와 근거 자료(관련 논문, 실험 로그)를 함께 제시하여, 연구 경험이 적은 사용자도 결과를 이해하고 판단할 수 있게 한다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "단계 에이전트의 결정과 사용한 근거"
+        },
+        {
+          "label": "Source(s):",
+          "value": "단계 에이전트, 연구 맥락 저장소"
+        },
+        {
+          "label": "Output(s):",
+          "value": "결정별 이유와 근거 링크\n고를 수 있는 대안과 장단점(해당하는 경우)"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "단계 검토 화면의 근거 영역"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "단계 산출물이 생성되었다."
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "—"
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-03 ~ UI-07 근거 영역"
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-1, PS-5, VP-4"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "사용자가 산출물의 결정 항목을 선택하면 ‘왜 이렇게 했는지’와 근거 자료가 표시되고, 대안이 있으면 대안과 장단점이 함께 표시된다. 사용자가 대안을 고르면 산출물이 수정된다(RQ-10 적용)."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "근거 자료를 찾지 못한 결정은 ‘근거 없음: 사용자 확인 필요’로 표시한다."
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "주요 결정별 이유·알려진 근거 ID·대안 표시. 근거에서 논문·원본 지표·산출물 열람. 빈 근거는 사용자 확인 필요 표시. 모든 문장 의미 검증·대안 자동 적용 제외.",
+        "acceptance_ids": [
+          "AC-19"
+        ]
+      }
+    },
+    {
+      "id": "RQ-13",
+      "original_id": "RQ-13",
+      "source_identity": "RQ-13",
+      "category": "capability",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.1 Nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "RQ-13"
+        },
+        {
+          "label": "Title:",
+          "value": "계정 및 연구 프로젝트 관리"
+        },
+        {
+          "label": "Priority:",
+          "value": "High"
+        },
+        {
+          "label": "Description:",
+          "value": "회원가입·로그인, 연구 프로젝트 생성·조회·삭제, 프로젝트별 진행 상태 대시보드를 제공한다."
+        },
+        {
+          "label": "Input(s):",
+          "value": "계정 정보\n프로젝트 이름과 설명"
+        },
+        {
+          "label": "Source(s):",
+          "value": "사용자 입력"
+        },
+        {
+          "label": "Output(s):",
+          "value": "프로젝트 목록과 단계별 상태(대기 / 진행 중 / 검토 필요 / 승인 / 오래됨)\n프로젝트별 비용 사용량"
+        },
+        {
+          "label": "Destination(s):",
+          "value": "대시보드"
+        },
+        {
+          "label": "Precondition(s):",
+          "value": "—"
+        },
+        {
+          "label": "Postcondition(s):",
+          "value": "프로젝트를 삭제하면 관련 데이터가 LOR-7 기준으로 삭제된다."
+        },
+        {
+          "label": "Proposed Activity:",
+          "value": ""
+        },
+        {
+          "label": "WinWin Agreement(s):",
+          "value": ""
+        },
+        {
+          "label": "Related UI:",
+          "value": "UI-01, UI-10"
+        },
+        {
+          "label": "Reference:",
+          "value": "TD"
+        },
+        {
+          "label": "Mainstream Scenario:",
+          "value": "사용자는 로그인 후 대시보드에서 프로젝트를 만들거나 이어서 진행한다. 각 프로젝트의 단계 진행 상태와 사용 비용이 표시된다."
+        },
+        {
+          "label": "Exception Handling Scenario:",
+          "value": "로그인에 실패하면 오류 메시지를 표시하고, 5회 연속 실패하면 계정을 30분 동안 일시 잠금."
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "로컬 단일 사용자 프로젝트 생성·목록·조회와 단계 상태 제공. 회원가입·로그인·공유·프로젝트 삭제 제외.",
+        "acceptance_ids": [
+          "AC-01"
+        ]
+      }
+    },
+    {
+      "id": "ONRQ-1",
+      "original_id": "ONRQ-1",
+      "source_identity": "ONRQ-1",
+      "category": "off_nominal",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.2 Off-nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "ONRQ-1"
+        },
+        {
+          "label": "Title:",
+          "value": "존재하지 않거나 메타데이터가 맞지 않는 인용"
+        },
+        {
+          "label": "Priority:",
+          "value": "Very High"
+        },
+        {
+          "label": "Description:",
+          "value": "생성된 인용이 학술 DB에서 확인되지 않거나 제목·저자·연도가 일치하지 않으면, 해당 인용을 관련 연구 목록과 초안에서 제외하고 사용자에게 ‘미검증’으로 표시한다. 시스템은 확인되지 않은 인용을 다른 논문으로 임의 대체하지 않는다."
+        },
+        {
+          "label": "Traceability:",
+          "value": "RQ-2, RQ-7, LOR-1"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "확인된 참고문헌만 evidence에 포함. 일부 제외 시 대상·이유 경고, 0편이면 작업 실패와 사유 표시. 미검증 논문을 임의 대체하거나 인용 허용하지 않음.",
+        "acceptance_ids": [
+          "AC-08"
+        ]
+      }
+    },
+    {
+      "id": "ONRQ-2",
+      "original_id": "ONRQ-2",
+      "source_identity": "ONRQ-2",
+      "category": "off_nominal",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.2 Off-nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "ONRQ-2"
+        },
+        {
+          "label": "Title:",
+          "value": "차별성(novelty) 부족"
+        },
+        {
+          "label": "Priority:",
+          "value": "High"
+        },
+        {
+          "label": "Description:",
+          "value": "관련 연구 중 Brief의 핵심 기여와 매우 유사한 논문이 발견되면 진행을 멈추고 겹치는 부분을 비교해 보여 준다. 사용자는 (a) S1로 돌아가 아이디어 수정, (b) 차별점을 보완하고 계속, (c) 확인 후 그대로 계속 중 하나를 선택한다."
+        },
+        {
+          "label": "Traceability:",
+          "value": "RQ-2, RQ-10"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "자동 novelty 부족 탐지·중단 판정 제외. S2 차별점은 검토용 제안으로만 표시.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "ONRQ-3",
+      "original_id": "ONRQ-3",
+      "source_identity": "ONRQ-3",
+      "category": "off_nominal",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.2 Off-nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "ONRQ-3"
+        },
+        {
+          "label": "Title:",
+          "value": "코드 실행 오류의 자동 수정 실패"
+        },
+        {
+          "label": "Priority:",
+          "value": "High"
+        },
+        {
+          "label": "Description:",
+          "value": "smoke test 또는 실험 실행 중 오류가 자동 수정 3회 후에도 해결되지 않으면 실행을 멈추고 오류 로그, 추정 원인, 수정 제안을 보여 준다. 사용자는 코드를 직접 수정하거나 실험 설계를 축소할 수 있다."
+        },
+        {
+          "label": "Traceability:",
+          "value": "RQ-4, RQ-5"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "서비스가 생성 코드를 실행하지 않으므로 자동 실행 오류 수정 제외.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "ONRQ-4",
+      "original_id": "ONRQ-4",
+      "source_identity": "ONRQ-4",
+      "category": "off_nominal",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.2 Off-nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "ONRQ-4"
+        },
+        {
+          "label": "Title:",
+          "value": "실행 시간·비용 상한 초과"
+        },
+        {
+          "label": "Priority:",
+          "value": "High"
+        },
+        {
+          "label": "Description:",
+          "value": "실험이 실험별 상한(60분 또는 $5)에 도달하면 안전하게 중단하고 그때까지의 로그를 저장한 뒤 축소안을 제안한다. 프로젝트 누적 비용이 프로젝트 상한의 80%에 도달하면 사용자에게 경고한다."
+        },
+        {
+          "label": "Traceability:",
+          "value": "RQ-3, RQ-5, PR-1, LOR-5"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "서비스 내 실험이 없어 실험별 GPU 시간·비용 중단 제외. LLM timeout은 별도 규칙.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "ONRQ-5",
+      "original_id": "ONRQ-5",
+      "source_identity": "ONRQ-5",
+      "category": "off_nominal",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.2 Off-nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "ONRQ-5"
+        },
+        {
+          "label": "Title:",
+          "value": "가설을 지지하지 않는 실험 결과"
+        },
+        {
+          "label": "Priority:",
+          "value": "High"
+        },
+        {
+          "label": "Description:",
+          "value": "실험 결과가 가설을 지지하지 않으면 결과를 감추거나 바꾸지 않고 ‘기각’으로 기록한다. 이어서 확인할 원인 후보(구현 오류, 하이퍼파라미터, 가설 자체)와 선택지(추가 실험, 가설 수정, negative result로 작성)를 제시한다."
+        },
+        {
+          "label": "Traceability:",
+          "value": "RQ-6, RQ-7, LOR-2, LOR-8"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "불리하거나 같은 결과도 표시. 단일 split·미수렴 등 근거가 부족하면 inconclusive 허용. 자동 가설 수정 제외.",
+        "acceptance_ids": [
+          "AC-10"
+        ]
+      }
+    },
+    {
+      "id": "ONRQ-6",
+      "original_id": "ONRQ-6",
+      "source_identity": "ONRQ-6",
+      "category": "off_nominal",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.2 Off-nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "ONRQ-6"
+        },
+        {
+          "label": "Title:",
+          "value": "초안 수치와 실험 로그 불일치"
+        },
+        {
+          "label": "Priority:",
+          "value": "High"
+        },
+        {
+          "label": "Description:",
+          "value": "초안의 모든 정량 수치를 실험 로그와 대조하여, 불일치하거나 출처가 없는 수치가 있는 문장을 표시하고 로그 값으로 수정을 제안한다."
+        },
+        {
+          "label": "Traceability:",
+          "value": "RQ-7, LOR-2"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "알려진 metric/cite 토큰 유효성 검사와 로그 기반 표 렌더링. 모든 자유 서술 숫자의 의미 검증은 제외.",
+        "acceptance_ids": [
+          "AC-11"
+        ]
+      }
+    },
+    {
+      "id": "ONRQ-7",
+      "original_id": "ONRQ-7",
+      "source_identity": "ONRQ-7",
+      "category": "off_nominal",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.2 Off-nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "ONRQ-7"
+        },
+        {
+          "label": "Title:",
+          "value": "LLM API 장애 또는 지연"
+        },
+        {
+          "label": "Priority:",
+          "value": "Medium"
+        },
+        {
+          "label": "Description:",
+          "value": "LLM 호출이 실패하거나 응답이 60초 이상 지연되면 지수 백오프로 재시도하고, 계속 실패하면 대체 제공자로 전환하거나 작업을 일시 중지한다. 진행 중인 단계는 마지막 저장 시점부터 재개하며 승인된 산출물은 유실되지 않는다."
+        },
+        {
+          "label": "Traceability:",
+          "value": "SIR-3, LOR-6"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "명시적 요청 timeout, JSON 보정 최대 1회, 실패 상태·수동 재시도. 제공자 자동 전환·무제한 재시도 제외.",
+        "acceptance_ids": [
+          "AC-15"
+        ]
+      }
+    },
+    {
+      "id": "ONRQ-8",
+      "original_id": "ONRQ-8",
+      "source_identity": "ONRQ-8",
+      "category": "off_nominal",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "3.2.2 Off-nominal Requirements"
+      },
+      "fields": [
+        {
+          "label": "Requirement:",
+          "value": "ONRQ-8"
+        },
+        {
+          "label": "Title:",
+          "value": "사용자 세션 중단"
+        },
+        {
+          "label": "Priority:",
+          "value": "Medium"
+        },
+        {
+          "label": "Description:",
+          "value": "사용자가 브라우저를 닫거나 연결이 끊겨도 서버에서 진행 중인 생성·실험 작업은 계속된다. 다시 접속하면 진행 상태와 결과가 복원되고, 완료된 작업은 대시보드에 알림으로 표시된다."
+        },
+        {
+          "label": "Traceability:",
+          "value": "RQ-5, RQ-13, LOR-6"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "브라우저를 닫아도 서버 프로세스의 작업은 계속. 재접속 시 DB 조회. 서버 재시작은 interrupted 처리 후 수동 재시도.",
+        "acceptance_ids": [
+          "AC-06",
+          "AC-07"
+        ]
+      }
+    },
+    {
+      "id": "SIR-1",
+      "original_id": "SIR-1",
+      "source_identity": "SIR-1",
+      "category": "interface",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "4.1 User Interface Requirements"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "SIR-1"
+        },
+        {
+          "label": "Description:",
+          "value": "연구 경험이 적은 사용자도 별도 교육 없이 사용할 수 있어야 한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "평가 참가자의 70% 이상이 온보딩 가이드만 보고 도움 없이 S1을 완료한다. SUS 기준은 LOR-3을 따른다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "모든 단계에서 같은 검토 화면 구조를 쓰고, 대시보드에 단계 진행 상태를 항상 표시한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "사용성"
+        },
+        {
+          "label": "Specific:",
+          "value": "핵심 고객은 연구 실행 경험이 적은 대학원생이다."
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-1, CS"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "공통 검토 화면, 한국어 안내와 단계 상태, 이해 가능한 오류. SUS나 70% 온보딩 성공률 평가는 범위 밖.",
+        "acceptance_ids": [
+          "AC-01"
+        ]
+      }
+    },
+    {
+      "id": "SIR-2",
+      "original_id": "SIR-2",
+      "source_identity": "SIR-2",
+      "category": "interface",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "4.1 User Interface Requirements"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "SIR-2"
+        },
+        {
+          "label": "Description:",
+          "value": "UI는 한국어를 기본으로 하고, 산출물 언어는 사용자가 정한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "모든 UI 문구를 한국어로 제공한다. 논문 초안은 영어가 기본이며, 단계 산출물(Brief, 설계서, 분석)은 한국어·영어 중 선택할 수 있다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "UI 문구를 리소스 파일로 분리한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "사용성"
+        },
+        {
+          "label": "Specific:",
+          "value": "핵심 고객은 국내 대학원생이고, 투고 대상은 주로 영어 학회·저널이다."
+        },
+        {
+          "label": "Reference:",
+          "value": "TD (INT 검증 예정)"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "UI·S1~S5 산출물 한국어, S6 논문 초안 영어. 언어 선택 설정은 제외.",
+        "acceptance_ids": [
+          "AC-20"
+        ]
+      }
+    },
+    {
+      "id": "SIR-3",
+      "original_id": "SIR-3",
+      "source_identity": "SIR-3",
+      "category": "interface",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "4.4 Other Software Interface Requirements"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "SIR-3"
+        },
+        {
+          "label": "Description:",
+          "value": "모든 LLM 호출은 LLM Gateway를 통해 이루어진다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "제공자를 바꾸거나 추가할 때 단계 에이전트 코드는 수정하지 않는다. 모든 호출의 모델명, 토큰 수, 비용, 지연 시간을 기록한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "공통 인터페이스(메시지, 도구 정의, 생성 파라미터 → 응답)와 제공자별 어댑터. 상세 인터페이스는 SSAD에서 정의한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "비용, 진화, 보안"
+        },
+        {
+          "label": "Specific:",
+          "value": "PR-7의 데이터 사용 조건을 만족하는 제공자만 등록한다."
+        },
+        {
+          "label": "Reference:",
+          "value": "SH-3, PR-7"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "모든 live 호출은 공통 Gateway. 모델·토큰·시간·사용량 기록과 LLM_DATA_POLICY.md의 조건 확인 상태를 구분. 다중 제공자·자동 모델 라우팅 제외.",
+        "acceptance_ids": [
+          "AC-15",
+          "AC-18"
+        ]
+      }
+    },
+    {
+      "id": "SIR-4",
+      "original_id": "SIR-4",
+      "source_identity": "SIR-4",
+      "category": "interface",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "4.4 Other Software Interface Requirements"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "SIR-4"
+        },
+        {
+          "label": "Description:",
+          "value": "논문 검색, 메타데이터 조회, 인용 검증에 학술 DB API를 사용한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "Semantic Scholar Academic Graph API, arXiv API, Crossref REST API를 연동하고 각 API의 이용 한도(rate limit)를 넘지 않는다. 같은 논문의 조회 결과는 캐시한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "공식 공개 API와 API 키를 사용한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "정확성(LOR-1)"
+        },
+        {
+          "label": "Specific:",
+          "value": "인용 검증(ONRQ-1)의 기준 데이터다."
+        },
+        {
+          "label": "Reference:",
+          "value": "RQ-2, LOR-1"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "arXiv API만 사용. 단일 연결·요청 간격 최소 3초. 메타데이터와 검증 근거를 산출물에 저장·재사용.",
+        "acceptance_ids": [
+          "AC-08"
+        ]
+      }
+    },
+    {
+      "id": "SIR-5",
+      "original_id": "SIR-5",
+      "source_identity": "SIR-5",
+      "category": "interface",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "4.4 Other Software Interface Requirements"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "SIR-5"
+        },
+        {
+          "label": "Description:",
+          "value": "생성된 코드는 격리된 컨테이너에서만 실행한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "실험마다 독립 컨테이너를 쓰고 CPU·GPU·메모리·실행 시간 상한을 설정한다. 외부 네트워크는 허용 목록(데이터셋·패키지 저장소)으로 제한한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "Docker와 GPU 컨테이너 런타임을 사용한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "보안, 비용"
+        },
+        {
+          "label": "Specific:",
+          "value": "생성 코드의 오류나 위험한 동작이 서버와 다른 사용자에게 영향을 주지 않아야 한다."
+        },
+        {
+          "label": "Reference:",
+          "value": "RQ-4, RQ-5, LOR-7"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "서비스 내 코드 실행 전체 제외. 생성 코드는 외부에서 사용자가 실행.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "SIR-6",
+      "original_id": "SIR-6",
+      "source_identity": "SIR-6",
+      "category": "interface",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "4.4 Other Software Interface Requirements"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "SIR-6"
+        },
+        {
+          "label": "Description:",
+          "value": "산출물을 외부 도구로 내보낸다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "코드 저장소를 GitHub 저장소로 push하거나 zip으로 내려받을 수 있다. 논문 초안은 Overleaf에 올릴 수 있는 LaTeX 프로젝트 zip과 BibTeX로 내려받을 수 있다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "GitHub API, 표준 LaTeX 프로젝트 구조"
+        },
+        {
+          "label": "Relevant:",
+          "value": "사용자 주도권"
+        },
+        {
+          "label": "Specific:",
+          "value": "사용자는 시스템 밖에서도 연구를 이어갈 수 있어야 한다."
+        },
+        {
+          "label": "Reference:",
+          "value": "VP-3"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "S4 코드 zip, S6 Markdown, 참고문헌 BibTeX 다운로드. GitHub push·Overleaf 동기화 제외.",
+        "acceptance_ids": [
+          "AC-12",
+          "AC-13"
+        ]
+      }
+    },
+    {
+      "id": "SIR-7",
+      "original_id": "SIR-7",
+      "source_identity": "SIR-7",
+      "category": "interface",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "4.4 Other Software Interface Requirements"
+      },
+      "fields": [
+        {
+          "label": "Project requirement:",
+          "value": "SIR-7"
+        },
+        {
+          "label": "Description:",
+          "value": "사용자가 외부에서 실행한 실험 결과를 업로드한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "부록 A.II 형식의 JSON 또는 CSV 파일을 업로드하면 RQ-6 분석에 사용할 수 있다. 형식 오류가 있으면 오류 위치를 표시한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "공개된 형식 정의와 예제 파일을 제공한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "비용, 유연성"
+        },
+        {
+          "label": "Specific:",
+          "value": "GPU 비용을 줄이고, 연구실 자원을 쓰는 사용자를 지원한다."
+        },
+        {
+          "label": "Reference:",
+          "value": "RQ-5, PR-1"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "1 MiB 이하 prototype_json_v1 업로드. 원문 A.II와 추가 필수 필드가 달라 무변환 호환은 지원하지 않음. 원문 규격·차이를 보존. 필수 필드·수치·ID 검사. CSV 제외.",
+        "acceptance_ids": [
+          "AC-09"
+        ]
+      }
+    },
+    {
+      "id": "LOR-1",
+      "original_id": "LOR-1",
+      "source_identity": "LOR-1  인용 정확성",
+      "category": "service_level",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "5 Level of Service Requirements"
+      },
+      "fields": [
+        {
+          "label": "Level of service:",
+          "value": "LOR-1  인용 정확성"
+        },
+        {
+          "label": "Description:",
+          "value": "시스템이 제시하는 모든 참고문헌은 실존하고 정확해야 한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "관련 연구 목록과 초안의 참고문헌 100%가 DOI 또는 arXiv ID로 실존 확인되고 제목·저자·연도가 일치한다(미검증 인용 0건). 측정: 평가 중 생성된 모든 참고문헌 전수 검사."
+        },
+        {
+          "label": "Achievable:",
+          "value": "생성 직후 Citation Verifier가 학술 DB(SIR-4)와 대조하고, 실패하면 ONRQ-1을 적용한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "연구 윤리, 지도교수의 신뢰"
+        },
+        {
+          "label": "Specific:",
+          "value": "RQ-2, RQ-7"
+        },
+        {
+          "label": "Reference:",
+          "value": "SH-1, VP-5"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "live는 arXiv 확인, demo는 출처·확인일 있는 동봉 snapshot만 사용. 원문 전체의 인용 정확성 100% 달성 주장은 하지 않음.",
+        "acceptance_ids": [
+          "AC-08"
+        ]
+      }
+    },
+    {
+      "id": "LOR-2",
+      "original_id": "LOS-2",
+      "source_identity": "LOS-2  수치 정확성",
+      "category": "service_level",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "5 Level of Service Requirements"
+      },
+      "fields": [
+        {
+          "label": "Level of service:",
+          "value": "LOS-2  수치 정확성"
+        },
+        {
+          "label": "Description:",
+          "value": "분석 결과와 초안의 수치는 실험 로그와 일치해야 한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "분석 결과와 초안의 정량 수치 100%가 원본 로그 값과 일치하고 출처 링크를 가진다(불일치 0건). 측정: 평가 프로젝트별 수치 전수 대조."
+        },
+        {
+          "label": "Achievable:",
+          "value": "수치는 로그에서 직접 불러와 삽입하고, 초안을 저장할 때마다 ONRQ-6 검사를 실행한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "연구 윤리"
+        },
+        {
+          "label": "Specific:",
+          "value": "RQ-6, RQ-7"
+        },
+        {
+          "label": "Reference:",
+          "value": "SH-1, TD"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "원본 metric binding으로 표와 토큰을 렌더링. 자유 서술 전체의 정량 수치 정확성 100%는 미검증.",
+        "acceptance_ids": [
+          "AC-10",
+          "AC-11"
+        ]
+      }
+    },
+    {
+      "id": "LOR-3",
+      "original_id": "LOR-3",
+      "source_identity": "LOR-3  사용성",
+      "category": "service_level",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "5 Level of Service Requirements"
+      },
+      "fields": [
+        {
+          "label": "Level of service:",
+          "value": "LOR-3  사용성"
+        },
+        {
+          "label": "Description:",
+          "value": "핵심 고객이 쉽게 배우고 쓸 수 있어야 한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "SUS 점수 평균 목표 70점, 허용 68점(일반적인 평균선) 이상. 측정: 사용자 평가 직후 SUS 설문(참고문헌 8)."
+        },
+        {
+          "label": "Achievable:",
+          "value": "SIR-1의 공통 화면 구조와 온보딩 가이드"
+        },
+        {
+          "label": "Relevant:",
+          "value": "사용성, 도입 가능성(SH-2)"
+        },
+        {
+          "label": "Specific:",
+          "value": "전체 시스템, 특히 UI-01 ~ UI-07"
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-1, CS"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "SUS 사용자 평가를 수행하지 않음.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "LOR-4",
+      "original_id": "LOR-4",
+      "source_identity": "LOR-4  맥락 일관성",
+      "category": "service_level",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "5 Level of Service Requirements"
+      },
+      "fields": [
+        {
+          "label": "Level of service:",
+          "value": "LOR-4  맥락 일관성"
+        },
+        {
+          "label": "Description:",
+          "value": "각 단계 산출물은 처음 아이디어와 Research Brief에서 벗어나지 않아야 한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "참가자 평가 문항 ‘이 단계의 결과는 처음 아이디어와 일관된다’(5점 척도)의 단계별 평균: 목표 3.5, 허용 3.0 이상. 지도교수 검토에서 ‘맥락 이탈’로 지적된 단계가 프로젝트당 1개 이하."
+        },
+        {
+          "label": "Achievable:",
+          "value": "RQ-8의 Brief 공유와 버전 참조, RQ-9의 체크포인트"
+        },
+        {
+          "label": "Relevant:",
+          "value": "핵심 차별점 검증"
+        },
+        {
+          "label": "Specific:",
+          "value": "RQ-8, 모든 단계 산출물"
+        },
+        {
+          "label": "Reference:",
+          "value": "PS-2, PS-3, VP-2"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "Brief·상위 승인 버전·사용자 코멘트가 실제 프롬프트에 들어가는지 검사. 사람의 일관성 평가는 별도.",
+        "acceptance_ids": [
+          "AC-03"
+        ]
+      }
+    },
+    {
+      "id": "LOR-5",
+      "original_id": "LOR-5",
+      "source_identity": "LOR-5  처리 시간 및 비용",
+      "category": "service_level",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "5 Level of Service Requirements"
+      },
+      "fields": [
+        {
+          "label": "Level of service:",
+          "value": "LOR-5  처리 시간 및 비용"
+        },
+        {
+          "label": "Description:",
+          "value": "예제 규모 연구 1건을 합리적인 시간과 비용으로 처리해야 한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "실험 실행 시간을 제외한 전체 단계 생성 시간 ≤ 1시간\n연구 1건당 LLM·컴퓨팅 비용: 목표 ≤ $20, 허용 ≤ $30\n화면 전환·저장 응답 ≤ 2초, 생성 결과의 첫 출력(스트리밍 시작) ≤ 5초\n측정: 시스템 로그(SIR-3 호출 기록, 실행 메타데이터)"
+        },
+        {
+          "label": "Achievable:",
+          "value": "작업 난이도에 따라 모델을 나눠 쓰고(가벼운 작업은 저가 모델), 결과를 캐시하며, 실험 규모 상한(ONRQ-4)을 둔다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "비용(PR-1), 기관 도입 시 운영 비용(SH-2)"
+        },
+        {
+          "label": "Specific:",
+          "value": "예제 규모 연구(7장 정의) 기준"
+        },
+        {
+          "label": "Reference:",
+          "value": "SH-2, SH-3, PR-1"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "작업 시간·토큰·설정된 단가의 비용 추정 기록. SSE·첫 출력 5초·전체 1시간·비용 목표 보장은 제외.",
+        "acceptance_ids": [
+          "AC-18"
+        ]
+      }
+    },
+    {
+      "id": "LOR-6",
+      "original_id": "LOR-6",
+      "source_identity": "LOR-6  가용성 및 작업 보존",
+      "category": "service_level",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "5 Level of Service Requirements"
+      },
+      "fields": [
+        {
+          "label": "Level of service:",
+          "value": "LOR-6  가용성 및 작업 보존"
+        },
+        {
+          "label": "Description:",
+          "value": "평가 기간 중 서비스가 안정적으로 동작하고 사용자 작업이 유실되지 않아야 한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "평가 기간 가동률 ≥ 90%. 장애나 세션 중단이 생겨도 승인된 산출물 유실 0건, 진행 중 작업은 마지막 저장 시점부터 재개."
+        },
+        {
+          "label": "Achievable:",
+          "value": "산출물 저장 후 상태 전이, 작업 큐 기반 실행, 일일 백업"
+        },
+        {
+          "label": "Relevant:",
+          "value": "신뢰성"
+        },
+        {
+          "label": "Specific:",
+          "value": "ONRQ-7, ONRQ-8"
+        },
+        {
+          "label": "Reference:",
+          "value": "TD"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "SQLite에 결과와 상태 보존, 재시작 중단 작업 표시. 정식 가용률·백업·중간 토큰 복구는 제외.",
+        "acceptance_ids": [
+          "AC-06",
+          "AC-07"
+        ]
+      }
+    },
+    {
+      "id": "LOR-7",
+      "original_id": "LOR-7",
+      "source_identity": "LOR-7  미공개 아이디어 보호",
+      "category": "service_level",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "5 Level of Service Requirements"
+      },
+      "fields": [
+        {
+          "label": "Level of service:",
+          "value": "LOR-7  미공개 아이디어 보호"
+        },
+        {
+          "label": "Description:",
+          "value": "사용자의 미공개 연구 아이디어와 데이터는 소유자가 허용한 사람만 접근할 수 있어야 한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "프로젝트 데이터 접근은 소유자와 공유받은 검토자로 제한한다(권한 시험에서 무단 접근 0건).\n전송 구간 암호화(TLS)와 저장 데이터 암호화를 적용한다.\n입력 데이터를 학습에 쓰지 않는 LLM API만 사용한다(PR-7).\n사용자가 프로젝트 삭제를 요청하면 7일 이내 백업까지 완전히 삭제한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "프로젝트 단위 접근 제어, 클라우드 저장소 암호화 기능, 삭제 작업 로그"
+        },
+        {
+          "label": "Relevant:",
+          "value": "보안, 기관 도입 결정(SH-2)"
+        },
+        {
+          "label": "Specific:",
+          "value": "RQ-11, RQ-13, SIR-5"
+        },
+        {
+          "label": "Reference:",
+          "value": "TD (INT 검증 예정)"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "기관용 접근 제어·TLS·저장 암호화·7일 백업 삭제는 제외. localhost 전용, API 키 서버 보관은 기본 적용.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "LOR-8",
+      "original_id": "LOR-8",
+      "source_identity": "LOR-8  생성 이력 투명성",
+      "category": "service_level",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "5 Level of Service Requirements"
+      },
+      "fields": [
+        {
+          "label": "Level of service:",
+          "value": "LOR-8  생성 이력 투명성"
+        },
+        {
+          "label": "Description:",
+          "value": "어떤 내용을 AI가 만들고 사용자가 고쳤는지 추적할 수 있어야 한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "모든 산출물과 초안 섹션에 생성 주체(AI / 사용자), 사용 모델, 참조한 산출물 버전, 사용자 결정이 기록된다. 사용자는 이를 ‘AI 사용 내역 보고서’로 내보낼 수 있다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "모든 쓰기 작업을 생성 이력 로그(Provenance Log)에 연결한다."
+        },
+        {
+          "label": "Relevant:",
+          "value": "학회·저널의 AI 사용 고지 정책 대응, 연구 주도권"
+        },
+        {
+          "label": "Specific:",
+          "value": "RQ-7, RQ-9"
+        },
+        {
+          "label": "Reference:",
+          "value": "VP-3, SH-1, SH-2"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "Artifact에 생성 주체·모델·입력 참조·시각, Job에 사용량 저장. 모든 쓰기의 별도 감사 로그·보고서 제외.",
+        "acceptance_ids": [
+          "AC-04",
+          "AC-18"
+        ]
+      }
+    },
+    {
+      "id": "LOR-9",
+      "original_id": "LOR-9",
+      "source_identity": "LOR-9  실험 재현성",
+      "category": "service_level",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "5 Level of Service Requirements"
+      },
+      "fields": [
+        {
+          "label": "Level of service:",
+          "value": "LOR-9  실험 재현성"
+        },
+        {
+          "label": "Description:",
+          "value": "시스템이 수행한 실험은 같은 조건에서 다시 실행할 수 있어야 한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "모든 실험에 코드 버전, 설정, 시드, 컨테이너 이미지를 기록한다. 같은 조건으로 재실행했을 때 주요 지표 차이가 ±1.5%p 이내(GPU 연산의 비결정성 허용 범위)."
+        },
+        {
+          "label": "Achievable:",
+          "value": "컨테이너 이미지 고정, 시드 고정, 실행 메타데이터 저장(RQ-5)"
+        },
+        {
+          "label": "Relevant:",
+          "value": "연구 신뢰성"
+        },
+        {
+          "label": "Specific:",
+          "value": "RQ-5"
+        },
+        {
+          "label": "Reference:",
+          "value": "TD"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "서버 실험 재실행과 ±1.5%p 판정 제외. 참조 실험 조건과 측정 파일은 제공.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "LOR-10",
+      "original_id": "LOS-10",
+      "source_identity": "LOS-10  유지보수성 및 확장성",
+      "category": "service_level",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "5 Level of Service Requirements"
+      },
+      "fields": [
+        {
+          "label": "Level of service:",
+          "value": "LOS-10  유지보수성 및 확장성"
+        },
+        {
+          "label": "Description:",
+          "value": "새 단계 에이전트나 LLM 제공자를 쉽게 추가하고 운영할 수 있어야 한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "새 단계 에이전트 또는 LLM 어댑터를 기존 단계 코드 수정 없이 추가할 수 있다. 운영자가 운영 가이드만으로 새 환경에 1시간 이내에 배포할 수 있다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "단계 에이전트 공통 인터페이스, LLM Gateway, 컨테이너 기반 배포"
+        },
+        {
+          "label": "Relevant:",
+          "value": "유지보수 비용, 진화(6장)"
+        },
+        {
+          "label": "Specific:",
+          "value": "SIR-3, CR-1, CR-8"
+        },
+        {
+          "label": "Reference:",
+          "value": "TD"
+        }
+      ],
+      "prototype": {
+        "status": "partial",
+        "behavior": "단계별 함수와 Gateway·Verifier를 모듈 분리. 플러그인 설치·기관 배포·운영 1시간 목표 검증은 제외.",
+        "acceptance_ids": [
+          "AC-20"
+        ]
+      }
+    },
+    {
+      "id": "CR-1",
+      "original_id": "CR-1",
+      "source_identity": "CR-1",
+      "category": "evolution",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "6.1 Capability Evolution Requirements"
+      },
+      "fields": [
+        {
+          "label": "Evolution requirement:",
+          "value": "CR-1"
+        },
+        {
+          "label": "Description:",
+          "value": "비ML 연구 분야(예: 시뮬레이션, 통계 분석)로 확장한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "분야별 단계 에이전트(S3~S5)를 플러그인으로 추가하면 해당 분야 예제 연구가 6단계를 통과한다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "LOR-10의 단계 에이전트 공통 인터페이스"
+        },
+        {
+          "label": "Relevant:",
+          "value": "확장 고객(학부 연구생, 기업 R&D 연구자)"
+        },
+        {
+          "label": "Reference:",
+          "value": "CS"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "CR-2",
+      "original_id": "CR-2",
+      "source_identity": "CR-2",
+      "category": "evolution",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "6.1 Capability Evolution Requirements"
+      },
+      "fields": [
+        {
+          "label": "Evolution requirement:",
+          "value": "CR-2"
+        },
+        {
+          "label": "Description:",
+          "value": "여러 연구자가 한 프로젝트를 함께 진행하고, 연구실의 기존 코드·논문을 지식으로 연결한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "프로젝트당 편집자 2명 이상, 연구실 공용 자료 저장소 연결"
+        },
+        {
+          "label": "Achievable:",
+          "value": "RQ-11의 권한 모델 확장"
+        },
+        {
+          "label": "Relevant:",
+          "value": "연구실 생산성"
+        },
+        {
+          "label": "Reference:",
+          "value": "SH-1"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "CR-3",
+      "original_id": "CR-3",
+      "source_identity": "CR-3",
+      "category": "evolution",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "6.1 Capability Evolution Requirements"
+      },
+      "fields": [
+        {
+          "label": "Evolution requirement:",
+          "value": "CR-3"
+        },
+        {
+          "label": "Description:",
+          "value": "투고 준비를 지원한다: 모의 리뷰, 학회별 형식·분량 검사, 리뷰 대응(rebuttal) 초안."
+        },
+        {
+          "label": "Measurable:",
+          "value": "학회 템플릿 2종 이상의 형식 검사 통과"
+        },
+        {
+          "label": "Achievable:",
+          "value": "S6 이후 단계 에이전트 추가"
+        },
+        {
+          "label": "Relevant:",
+          "value": "첫 논문까지 시간 단축"
+        },
+        {
+          "label": "Reference:",
+          "value": "VP-4"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "CR-4",
+      "original_id": "CR-4",
+      "source_identity": "CR-4",
+      "category": "evolution",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "6.1 Capability Evolution Requirements"
+      },
+      "fields": [
+        {
+          "label": "Evolution requirement:",
+          "value": "CR-4"
+        },
+        {
+          "label": "Description:",
+          "value": "국내 학회 한국어 템플릿과 한국어 초안 작성을 지원한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "한국어 초안 생성과 국내 학회 템플릿 1종 이상 지원"
+        },
+        {
+          "label": "Achievable:",
+          "value": "SIR-2 언어 설정 확장"
+        },
+        {
+          "label": "Relevant:",
+          "value": "핵심 고객"
+        },
+        {
+          "label": "Reference:",
+          "value": "TD"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "CR-5",
+      "original_id": "CR-5",
+      "source_identity": "CR-5",
+      "category": "evolution",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "6.2 Interface Evolution Requirements"
+      },
+      "fields": [
+        {
+          "label": "Evolution requirement:",
+          "value": "CR-5"
+        },
+        {
+          "label": "Description:",
+          "value": "연구실 GPU로 실험한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "외부 실행 결과 업로드(SIR-7) 없이 연구실 자원에서 실험이 실행되고 결과가 자동 수집된다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "SIR-5 실행 환경 인터페이스 확장"
+        },
+        {
+          "label": "Relevant:",
+          "value": "비용, 연구실 자원 활용"
+        },
+        {
+          "label": "Reference:",
+          "value": "SH-1, SH-3"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "CR-6",
+      "original_id": "CR-6",
+      "source_identity": "CR-6",
+      "category": "evolution",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "6.2 Interface Evolution Requirements"
+      },
+      "fields": [
+        {
+          "label": "Evolution requirement:",
+          "value": "CR-6"
+        },
+        {
+          "label": "Description:",
+          "value": "Overleaf, Zotero, GitHub와 양방향으로 동기화한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "외부에서 수정한 초안·참고문헌·코드가 시스템의 산출물 새 버전으로 반영된다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "SIR-6 내보내기 확장"
+        },
+        {
+          "label": "Relevant:",
+          "value": "사용자 주도권"
+        },
+        {
+          "label": "Reference:",
+          "value": "VP-3"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "CR-7",
+      "original_id": "CR-7",
+      "source_identity": "CR-7",
+      "category": "evolution",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "6.2 Interface Evolution Requirements"
+      },
+      "fields": [
+        {
+          "label": "Evolution requirement:",
+          "value": "CR-7"
+        },
+        {
+          "label": "Description:",
+          "value": "대학 통합 로그인(SSO)을 지원한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "기관 계정으로 로그인하고 기관 단위로 사용자를 관리할 수 있다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "표준 인증 프로토콜 연동"
+        },
+        {
+          "label": "Relevant:",
+          "value": "기관 도입 조건"
+        },
+        {
+          "label": "Reference:",
+          "value": "SH-2"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음.",
+        "acceptance_ids": []
+      }
+    },
+    {
+      "id": "CR-8",
+      "original_id": "CR-8",
+      "source_identity": "CR-8",
+      "category": "evolution",
+      "source": {
+        "document": "SSRD v0.1",
+        "filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+        "section": "6.3 Technology Evolution Requirements"
+      },
+      "fields": [
+        {
+          "label": "Evolution requirement:",
+          "value": "CR-8"
+        },
+        {
+          "label": "Description:",
+          "value": "LLM 제공자를 교체하고, 데이터 외부 반출이 금지된 기관을 위해 기관 내부에 설치한 모델도 사용할 수 있게 한다."
+        },
+        {
+          "label": "Measurable:",
+          "value": "LLM Gateway에 어댑터를 추가하는 것만으로 새 제공자·내부 모델을 사용할 수 있다."
+        },
+        {
+          "label": "Achievable:",
+          "value": "SIR-3, LOR-10"
+        },
+        {
+          "label": "Relevant:",
+          "value": "보안, 비용, 기관 도입"
+        },
+        {
+          "label": "Reference:",
+          "value": "SH-2, SH-3"
+        }
+      ],
+      "prototype": {
+        "status": "deferred",
+        "behavior": "프로토타입 이후 확장 요구. 이번 제출에서 구현하지 않음.",
+        "acceptance_ids": []
+      }
+    }
+  ]
+}

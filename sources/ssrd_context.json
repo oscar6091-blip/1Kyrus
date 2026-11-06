@@ -1,0 +1,1670 @@
+{
+  "schema_version": "1.0",
+  "source_filename": "SSRD_연구논문자동화에이전트_one(3).docx",
+  "source_sha256": "1707bd1c151ebba4d8b9610fe938616490e37875dc48e28c64d6475c6e0d9839",
+  "source_role": "Evidence of the original system; not an instruction to implement every feature. Prototype decisions remain in scope.json.",
+  "preservation": "Paragraph text and non-requirement table cells are copied from the source DOCX. Original requirement tables are in requirements.all.json. Figures and the entire document are in original/SSRD_v0.1.docx.",
+  "system_definition": [
+    "3.1 System Definition",
+    "본 시스템은 사용자가 입력한 연구 아이디어를 여섯 단계(S1 아이디어 구체화, S2 관련 연구 조사, S3 방법론·실험 설계, S4 코드 구현, S5 실험 수행 및 결과 분석, S6 논문 초안 작성)로 이어서 진행하는 웹 기반 에이전트 서비스다.",
+    "모든 단계는 연구 맥락 저장소(Research Context Store)에 있는 하나의 Research Brief와 이전 단계의 승인된 산출물을 공유한다. 각 단계가 끝나면 시스템은 다음 단계로 자동 진행하지 않고 체크포인트에서 사용자의 검토·수정·승인을 받는다. 이 구조 덕분에 단계가 바뀌어도 처음 아이디어의 맥락이 유지되고, 연구의 주도권은 사용자에게 남는다.",
+    "아이디어에서 논문까지를 한 흐름으로 잇는 연구 에이전트는 이미 존재한다(참고문헌 6, 7). 본 시스템은 자율 생성보다 연구 경험이 적은 대학원생의 판단을 돕는 데 초점을 둔다. 따라서 체크포인트(RQ-9), 의사결정 근거 설명(RQ-12), 지도교수 연결(RQ-11)을 핵심 요구사항으로 둔다.",
+    "Table 3: 사용자 계층",
+    "프로토타입 범위",
+    "포함: ML/딥러닝 분야의 ‘예제 규모 연구’(공개 데이터셋, PyTorch, 단일 GPU 12시간 이내 실험). 논문 초안은 영문 학회 LaTeX 템플릿 1종.",
+    "제외: 실제 논문 투고, 비ML 분야, 대규모 학습, 사람 대상 연구(연구윤리 심의가 필요한 연구), 비공개 대용량 데이터셋 업로드.",
+    "Figure 1: 시스템 블록 다이어그램과 시스템 경계"
+  ],
+  "customer_classes": [
+    {
+      "사용자 계층": "연구자 (핵심 고객)",
+      "설명": "석사·초기 박사과정 대학원생. 프로젝트 소유자",
+      "주요 요구사항": "RQ-1 ~ RQ-13"
+    },
+    {
+      "사용자 계층": "검토자 (지도교수)",
+      "설명": "공유받은 프로젝트·산출물을 읽고 코멘트",
+      "주요 요구사항": "RQ-11"
+    },
+    {
+      "사용자 계층": "운영자",
+      "설명": "배포, 비용·사용량 모니터링, 계정 관리",
+      "주요 요구사항": "PR-9, LOR-10"
+    }
+  ],
+  "requirement_sources": [
+    {
+      "ID": "PS-1",
+      "내용": "아이디어는 있지만 구체화·실험으로 옮기지 못한 대학원생은 독자적으로 논문을 완성하기 어렵다.",
+      "출처": "Problem Statement"
+    },
+    {
+      "ID": "PS-2",
+      "내용": "학생들이 가장 많이 막히는 곳은 각 단계 자체보다 단계와 단계 사이의 연결이다.",
+      "출처": "Problem Statement"
+    },
+    {
+      "ID": "PS-3",
+      "내용": "기존 도구(코딩·문헌 검색·글쓰기 보조)는 단계별로 분리되어 처음 아이디어의 맥락이 중간에 끊긴다.",
+      "출처": "Problem Statement"
+    },
+    {
+      "ID": "PS-4",
+      "내용": "지도교수의 피드백은 시간과 빈도에 한계가 있다.",
+      "출처": "Problem Statement"
+    },
+    {
+      "ID": "PS-5",
+      "내용": "학생은 아이디어가 실제 논문으로 완성된다는 확신이 필요하다.",
+      "출처": "Problem Statement"
+    },
+    {
+      "ID": "VP-1",
+      "내용": "아이디어 입력부터 관련 연구, 방법론, 코드, 실험·분석, 논문 초안까지 하나의 흐름으로 진행한다.",
+      "출처": "Value Proposition"
+    },
+    {
+      "ID": "VP-2",
+      "내용": "모든 단계가 처음 아이디어의 맥락을 공유한다.",
+      "출처": "Value Proposition"
+    },
+    {
+      "ID": "VP-3",
+      "내용": "중간 결과를 사용자가 확인·수정할 수 있어 연구의 주도권은 사용자에게 남는다.",
+      "출처": "Value Proposition"
+    },
+    {
+      "ID": "VP-4",
+      "내용": "연구 경험이 적은 학생이 첫 논문에 도달하는 시간을 줄인다.",
+      "출처": "Value Proposition"
+    },
+    {
+      "ID": "VP-5",
+      "내용": "지도교수는 반복적인 기초 지도 대신 연구의 핵심 판단에 집중한다.",
+      "출처": "Value Proposition"
+    },
+    {
+      "ID": "SH-1",
+      "내용": "지도교수·연구실: 학생의 연구 생산성 향상, 지도 부담 감소",
+      "출처": "Stakeholders"
+    },
+    {
+      "ID": "SH-2",
+      "내용": "대학·연구기관: 연구 성과 증대, 도입·구매 결정 주체",
+      "출처": "Stakeholders"
+    },
+    {
+      "ID": "SH-3",
+      "내용": "컴퓨팅 인프라·LLM 제공자: 실험 수행과 에이전트 운영 자원 공급",
+      "출처": "Stakeholders"
+    },
+    {
+      "ID": "CS",
+      "내용": "핵심 고객: 아이디어는 있지만 실행 경험이 부족한 석사·초기 박사과정 대학원생 (확장 고객: 학부 연구생, 기업 R&D 연구자)",
+      "출처": "Customers"
+    },
+    {
+      "ID": "INT-xx",
+      "내용": "핵심 고객 인터뷰 기록 (1주차 진행 예정)",
+      "출처": "고객 인터뷰"
+    },
+    {
+      "ID": "ADV-xx",
+      "내용": "지도교수 인터뷰 기록 (1주차 진행 예정)",
+      "출처": "지도교수 인터뷰"
+    },
+    {
+      "ID": "TD",
+      "내용": "팀 도출 요구사항: 위 근거에 직접 대응하지 않으며 인터뷰로 검증이 필요하다.",
+      "출처": "개발팀"
+    }
+  ],
+  "ui_definitions": [
+    {
+      "화면 ID": "UI-01",
+      "화면": "대시보드",
+      "주요 내용": "프로젝트 목록, 6단계 진행 상태, 비용 사용량, 알림",
+      "관련 요구사항": "RQ-10, RQ-13"
+    },
+    {
+      "화면 ID": "UI-02",
+      "화면": "아이디어 구체화",
+      "주요 내용": "대화 영역과 Research Brief 미리보기",
+      "관련 요구사항": "RQ-1"
+    },
+    {
+      "화면 ID": "UI-03",
+      "화면": "관련 연구 검토",
+      "주요 내용": "논문 목록·요약, 차별점 비교표, 포함/제외",
+      "관련 요구사항": "RQ-2"
+    },
+    {
+      "화면 ID": "UI-04",
+      "화면": "실험 설계 검토",
+      "주요 내용": "가설–실험 대응표, 데이터셋·베이스라인·지표, 예상 비용",
+      "관련 요구사항": "RQ-3"
+    },
+    {
+      "화면 ID": "UI-05",
+      "화면": "코드 검토",
+      "주요 내용": "파일 트리, 코드·diff, smoke test 결과",
+      "관련 요구사항": "RQ-4"
+    },
+    {
+      "화면 ID": "UI-06",
+      "화면": "실험·분석",
+      "주요 내용": "실행 진행 상황, 결과 표·그래프, 가설 판정",
+      "관련 요구사항": "RQ-5, RQ-6"
+    },
+    {
+      "화면 ID": "UI-07",
+      "화면": "논문 에디터",
+      "주요 내용": "섹션별 편집, 문장별 근거 링크, PDF 미리보기",
+      "관련 요구사항": "RQ-7"
+    },
+    {
+      "화면 ID": "UI-08",
+      "화면": "연구 맥락 패널",
+      "주요 내용": "모든 화면 측면에 Brief 최신본과 변경 이력 표시",
+      "관련 요구사항": "RQ-8, RQ-10"
+    },
+    {
+      "화면 ID": "UI-09",
+      "화면": "공유·코멘트",
+      "주요 내용": "공유 설정, 산출물별 코멘트",
+      "관련 요구사항": "RQ-11"
+    },
+    {
+      "화면 ID": "UI-10",
+      "화면": "로그인·계정",
+      "주요 내용": "가입, 로그인, 계정 설정",
+      "관련 요구사항": "RQ-13"
+    }
+  ],
+  "external_upload_original": {
+    "source_section": "A.II Interface Specifications: External Result Upload Format",
+    "fields": [
+      {
+        "필드": "experiment_id",
+        "형식": "문자열",
+        "필수": "예",
+        "설명": "실험 설계서의 실험 ID (예: E1)"
+      },
+      {
+        "필드": "code_version",
+        "형식": "문자열",
+        "필수": "예",
+        "설명": "Git 커밋 해시"
+      },
+      {
+        "필드": "config",
+        "형식": "객체",
+        "필수": "예",
+        "설명": "하이퍼파라미터 등 실행 설정"
+      },
+      {
+        "필드": "seed",
+        "형식": "정수",
+        "필수": "예",
+        "설명": "난수 시드"
+      },
+      {
+        "필드": "environment",
+        "형식": "객체",
+        "필수": "아니오",
+        "설명": "GPU, 프레임워크 버전 등"
+      },
+      {
+        "필드": "metrics",
+        "형식": "배열",
+        "필수": "예",
+        "설명": "{name, split, value, step} 목록"
+      },
+      {
+        "필드": "started_at",
+        "형식": "문자열",
+        "필수": "아니오",
+        "설명": "시작 시각 (ISO 8601)"
+      },
+      {
+        "필드": "duration_sec",
+        "형식": "숫자",
+        "필수": "아니오",
+        "설명": "소요 시간(초)"
+      }
+    ],
+    "json_example_verbatim": "{\n  \"experiment_id\": \"E1\",\n  \"code_version\": \"a1b2c3d\",\n  \"config\": {\"lr\": 0.001, \"batch_size\": 64, \"epochs\": 20},\n  \"seed\": 42,\n  \"environment\": {\"gpu\": \"RTX 4090\", \"torch\": \"2.4\"},\n  \"metrics\": [\n    {\"name\": \"accuracy\", \"split\": \"test\", \"value\": 0.873, \"step\": 20}\n  ],\n  \"started_at\": \"2026-12-15T10:00:00+09:00\",\n  \"duration_sec\": 2410\n}",
+    "json_example": {
+      "experiment_id": "E1",
+      "code_version": "a1b2c3d",
+      "config": {
+        "lr": 0.001,
+        "batch_size": 64,
+        "epochs": 20
+      },
+      "seed": 42,
+      "environment": {
+        "gpu": "RTX 4090",
+        "torch": "2.4"
+      },
+      "metrics": [
+        {
+          "name": "accuracy",
+          "split": "test",
+          "value": 0.873,
+          "step": 20
+        }
+      ],
+      "started_at": "2026-12-15T10:00:00+09:00",
+      "duration_sec": 2410
+    }
+  },
+  "customer_assumptions": [
+    {
+      "ID": "A-1",
+      "가정": "학생들은 각 단계보다 단계 사이의 연결에서 더 많이 막힌다.",
+      "관련 요구사항": "RQ-8, RQ-9",
+      "확인 질문 (예)": "최근 연구에서 가장 오래 멈춰 있던 때는 언제였고, 어느 단계에서 다음 단계로 넘어갈 때였나요?",
+      "validation_status": "not_validated_in_supplied_sources"
+    },
+    {
+      "ID": "A-2",
+      "가정": "학생들은 전부 자동화보다 단계마다 검토하며 주도권을 갖기를 원한다.",
+      "관련 요구사항": "RQ-9, RQ-12",
+      "확인 질문 (예)": "AI가 실험까지 알아서 끝낸다면 그 결과를 논문에 쓰겠어요? 무엇을 직접 확인하고 싶나요?",
+      "validation_status": "not_validated_in_supplied_sources"
+    },
+    {
+      "ID": "A-3",
+      "가정": "미공개 아이디어를 외부 서비스에 입력하는 데 대한 우려가 도입의 장벽이다.",
+      "관련 요구사항": "LOR-7, PR-7",
+      "확인 질문 (예)": "아이디어를 외부 AI 서비스에 입력할 때 어떤 조건이면 안심할 수 있나요?",
+      "validation_status": "not_validated_in_supplied_sources"
+    },
+    {
+      "ID": "A-4",
+      "가정": "지도교수는 중간 산출물을 공유받으면 지도 부담이 줄어든다고 본다.",
+      "관련 요구사항": "RQ-11",
+      "확인 질문 (예)": "(지도교수) 학생 지도 시간 중 반복되는 기초 지도는 어떤 것들인가요?",
+      "validation_status": "not_validated_in_supplied_sources"
+    },
+    {
+      "ID": "A-5",
+      "가정": "인용·수치 오류가 AI 연구 도구를 신뢰하지 못하는 가장 큰 이유다.",
+      "관련 요구사항": "LOR-1, LOR-2",
+      "확인 질문 (예)": "AI 도구의 결과를 믿지 못했던 경험이 있나요? 어떤 오류였나요?",
+      "validation_status": "not_validated_in_supplied_sources"
+    },
+    {
+      "ID": "A-6",
+      "가정": "연구 1건당 $20 이하 비용이면 학생·연구실이 지불할 의향이 있다.",
+      "관련 요구사항": "LOR-5, SH-2",
+      "확인 질문 (예)": "이런 도구에 개인이나 연구실이 비용을 낸다면 얼마까지 낼 수 있나요?",
+      "validation_status": "not_validated_in_supplied_sources"
+    },
+    {
+      "ID": "A-7",
+      "가정": "ML 분야 예제 규모 연구로 범위를 좁혀도 핵심 고객의 문제를 대표한다.",
+      "관련 요구사항": "3.1 범위",
+      "확인 질문 (예)": "당신의 아이디어는 1시간 이내의 실험으로 1차 검증이 가능한가요?",
+      "validation_status": "not_validated_in_supplied_sources"
+    }
+  ],
+  "glossary": [
+    {
+      "용어": "Research Brief",
+      "정의": "연구 문제, 가설, 예상 기여, 평가 계획, 제약 조건, 결과 및 결론을 담은 구조화 문서. 모든 단계가 공유하는 연구 맥락의 기준이며 버전으로 관리된다."
+    },
+    {
+      "용어": "단계 (Stage)",
+      "정의": "연구 진행의 6개 구간: S1 아이디어 구체화, S2 관련 연구 조사, S3 방법론·실험 설계, S4 코드 구현, S5 실험 수행 및 결과 분석, S6 논문 초안 작성."
+    },
+    {
+      "용어": "단계 산출물 (Stage Artifact)",
+      "정의": "각 단계의 결과물(관련 연구 목록, 실험 설계서, 코드, 실험 로그, 분석 결과, 초안). 버전으로 관리되며 참조한 Brief 버전을 기록한다."
+    },
+    {
+      "용어": "체크포인트 (Checkpoint)",
+      "정의": "단계가 끝난 뒤 사용자가 산출물을 검토하고 승인·직접 수정·재생성 요청·이전 단계로 돌아가기 중 하나를 결정하는 지점."
+    },
+    {
+      "용어": "오래됨 (Stale)",
+      "정의": "상위 산출물이나 Brief가 바뀌어 다시 생성해야 하는 하위 산출물의 상태."
+    },
+    {
+      "용어": "연구 맥락 저장소 (Research Context Store)",
+      "정의": "Research Brief와 단계 산출물, 그 버전과 의존 관계를 저장하는 시스템 구성요소."
+    },
+    {
+      "용어": "생성 이력 (Provenance)",
+      "정의": "산출물의 각 부분을 누가(AI / 사용자), 어떤 모델과 입력으로 만들었는지에 대한 기록."
+    },
+    {
+      "용어": "실행 샌드박스 (Execution Sandbox)",
+      "정의": "생성된 코드를 자원·네트워크 제한 아래 격리 실행하는 컨테이너 환경."
+    },
+    {
+      "용어": "LLM Gateway",
+      "정의": "모든 LLM 호출을 받아 제공자별 API로 전달하고 사용량·비용을 기록하는 구성요소."
+    },
+    {
+      "용어": "Citation Verifier",
+      "정의": "참고문헌의 실존 여부와 메타데이터 일치를 학술 DB로 확인하는 구성요소."
+    },
+    {
+      "용어": "예제 규모 연구 (Toy-scale study)",
+      "정의": "공개 데이터셋과 PyTorch를 사용하고 단일 GPU에서 12시간 이내에 실행되는 실험으로 이루어진 ML 연구. 프로토타입 평가의 기준 단위."
+    },
+    {
+      "용어": "Smoke test",
+      "정의": "전체 실험 전에 소량 데이터로 코드가 끝까지 실행되는지만 확인하는 짧은 시험."
+    },
+    {
+      "용어": "차별성 (Novelty)",
+      "정의": "관련 연구 대비 제안 아이디어의 새로운 점."
+    },
+    {
+      "용어": "Negative result",
+      "정의": "가설을 지지하지 않는 실험 결과."
+    },
+    {
+      "용어": "SUS",
+      "정의": "System Usability Scale. 10개 문항으로 사용성을 0~100점으로 측정하는 표준 설문."
+    },
+    {
+      "용어": "M.A.R.S.",
+      "정의": "Measurable, Achievable, Relevant, Specific. 요구사항 작성 기준."
+    },
+    {
+      "용어": "DOI / arXiv ID",
+      "정의": "학술 문헌의 고유 식별자."
+    },
+    {
+      "용어": "BibTeX / LaTeX",
+      "정의": "참고문헌 관리 형식 / 논문 조판 시스템."
+    },
+    {
+      "용어": "SSE",
+      "정의": "Server-Sent Events. 서버가 클라이언트로 실시간 데이터를 보내는 웹 표준."
+    },
+    {
+      "용어": "INT / ADV",
+      "정의": "핵심 고객 인터뷰 기록 / 지도교수 인터뷰 기록의 ID 접두어."
+    }
+  ],
+  "non_requirement_blocks": [
+    {
+      "kind": "paragraph",
+      "section": "1 Introduction",
+      "text": "1 Introduction"
+    },
+    {
+      "kind": "paragraph",
+      "section": "1 Introduction",
+      "text": "본 SSRD는 사용자가 제시한 연구 아이디어를 관련 연구 조사, 방법론 설계, 코드 구현, 실험 및 결과 분석, 논문 초안 작성까지 하나의 흐름으로 이어 주는 ‘연구 및 논문 작성 자동화 에이전트’(이하 본 시스템)의 요구사항을 정의한다. v0.1의 요구사항은 팀의 Problem Statement, Value Proposition, Customers and Stakeholders 분석에서 도출했으며, 핵심 고객(대학원생)과 지도교수 인터뷰를 거쳐 v1.0에서 확정한다. 요구사항은 프로젝트, 기능(Capability), 인터페이스, 서비스 수준(Level of Service), 진화(Evolution)의 다섯 범주로 나누어 기술한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.1 Purpose of SSRD",
+      "text": "1.1 Purpose of SSRD"
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.1 Purpose of SSRD",
+      "text": "본 문서의 목적은 세 가지다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.1 Purpose of SSRD",
+      "text": "개발팀이 무엇을, 어떤 제약 아래에서 만들어야 하는지를 검증 가능한 형태로 정의한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.1 Purpose of SSRD",
+      "text": "UI/UX 기획안, SSAD, 프로토타입, 사용자 평가 리포트가 같은 요구사항 ID를 참조하도록 하여 산출물 간 추적성을 확보한다(부록 A.I)."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.1 Purpose of SSRD",
+      "text": "5장의 서비스 수준 요구사항(LOR)을 사용자 평가의 판정 기준으로 쓴다. 평가 리포트는 ‘LOR 요구사항을 실제 사용자에게서 달성했는가’를 보고한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.1 Purpose of SSRD",
+      "text": "본 시스템의 차별점은 각 단계의 자동화 자체보다 단계 사이의 연결에 있다. 따라서 요구사항도 단계별 기능(RQ-1 ~ RQ-7)과 단계를 잇는 기능(RQ-8 ~ RQ-12)으로 나누며, 후자를 프로토타입의 최우선 검증 대상으로 둔다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.2 References",
+      "text": "1.2 References"
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.2 References",
+      "text": "Team 팀 번호, 프로젝트 제안서: Problem Statement, Value Proposition, Customers and Stakeholders, 2026-11."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.2 References",
+      "text": "UI/UX 기획안 v0.1 (MBOX 참조): 작성 예정."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.2 References",
+      "text": "System and Software Architecture Description (SSAD) v0.1: 작성 예정."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.2 References",
+      "text": "고객 인터뷰 기록 INT-01 ~ INT-08, 지도교수 인터뷰 기록 ADV-01 ~ ADV-02: 진행 예정."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.2 References",
+      "text": "USC CSCI 577, System and Software Requirements Definition (SSRD), LCA template v2.0 (Team 17 Web mail 예시)."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.2 References",
+      "text": "C. Lu et al., “The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery,” arXiv:2408.06292, 2024."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.2 References",
+      "text": "S. Schmidgall et al., “Agent Laboratory: Using LLM Agents as Research Assistants,” arXiv:2501.04227, 2025."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.2 References",
+      "text": "J. Brooke, “SUS: A ‘quick and dirty’ usability scale,” in Usability Evaluation in Industry, Taylor & Francis, 1996."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.2 References",
+      "text": "Semantic Scholar Academic Graph API, arXiv API, Crossref REST API 공식 문서."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.3 Requirement Sources and Traceability",
+      "text": "1.3 Requirement Sources and Traceability"
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.3 Requirement Sources and Traceability",
+      "text": "템플릿 예시에서 WinWin 합의(Win-AGRE)와 고객 회의록이 하던 역할을 본 문서에서는 아래 근거 ID가 맡는다. 각 요구사항의 Reference 칸에는 근거 ID를, Related UI 칸에는 UI/UX 기획안의 화면 ID를 적는다. ‘INT 검증 예정’으로 표시한 요구사항은 고객 인터뷰 결과에 따라 수정하거나 삭제한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "1.3 Requirement Sources and Traceability",
+      "text": "Table 1: 요구사항 근거 ID"
+    },
+    {
+      "kind": "table",
+      "section": "1.3 Requirement Sources and Traceability",
+      "document_table_index": 4,
+      "rows": [
+        [
+          "ID",
+          "내용",
+          "출처"
+        ],
+        [
+          "PS-1",
+          "아이디어는 있지만 구체화·실험으로 옮기지 못한 대학원생은 독자적으로 논문을 완성하기 어렵다.",
+          "Problem Statement"
+        ],
+        [
+          "PS-2",
+          "학생들이 가장 많이 막히는 곳은 각 단계 자체보다 단계와 단계 사이의 연결이다.",
+          "Problem Statement"
+        ],
+        [
+          "PS-3",
+          "기존 도구(코딩·문헌 검색·글쓰기 보조)는 단계별로 분리되어 처음 아이디어의 맥락이 중간에 끊긴다.",
+          "Problem Statement"
+        ],
+        [
+          "PS-4",
+          "지도교수의 피드백은 시간과 빈도에 한계가 있다.",
+          "Problem Statement"
+        ],
+        [
+          "PS-5",
+          "학생은 아이디어가 실제 논문으로 완성된다는 확신이 필요하다.",
+          "Problem Statement"
+        ],
+        [
+          "VP-1",
+          "아이디어 입력부터 관련 연구, 방법론, 코드, 실험·분석, 논문 초안까지 하나의 흐름으로 진행한다.",
+          "Value Proposition"
+        ],
+        [
+          "VP-2",
+          "모든 단계가 처음 아이디어의 맥락을 공유한다.",
+          "Value Proposition"
+        ],
+        [
+          "VP-3",
+          "중간 결과를 사용자가 확인·수정할 수 있어 연구의 주도권은 사용자에게 남는다.",
+          "Value Proposition"
+        ],
+        [
+          "VP-4",
+          "연구 경험이 적은 학생이 첫 논문에 도달하는 시간을 줄인다.",
+          "Value Proposition"
+        ],
+        [
+          "VP-5",
+          "지도교수는 반복적인 기초 지도 대신 연구의 핵심 판단에 집중한다.",
+          "Value Proposition"
+        ],
+        [
+          "SH-1",
+          "지도교수·연구실: 학생의 연구 생산성 향상, 지도 부담 감소",
+          "Stakeholders"
+        ],
+        [
+          "SH-2",
+          "대학·연구기관: 연구 성과 증대, 도입·구매 결정 주체",
+          "Stakeholders"
+        ],
+        [
+          "SH-3",
+          "컴퓨팅 인프라·LLM 제공자: 실험 수행과 에이전트 운영 자원 공급",
+          "Stakeholders"
+        ],
+        [
+          "CS",
+          "핵심 고객: 아이디어는 있지만 실행 경험이 부족한 석사·초기 박사과정 대학원생 (확장 고객: 학부 연구생, 기업 R&D 연구자)",
+          "Customers"
+        ],
+        [
+          "INT-xx",
+          "핵심 고객 인터뷰 기록 (1주차 진행 예정)",
+          "고객 인터뷰"
+        ],
+        [
+          "ADV-xx",
+          "지도교수 인터뷰 기록 (1주차 진행 예정)",
+          "지도교수 인터뷰"
+        ],
+        [
+          "TD",
+          "팀 도출 요구사항: 위 근거에 직접 대응하지 않으며 인터뷰로 검증이 필요하다.",
+          "개발팀"
+        ]
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "section": "2 Project Requirements",
+      "text": "2 Project Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "2 Project Requirements",
+      "text": "프로젝트 요구사항은 개발팀에 부과되는 일반 제약과 협상할 수 없는 전역 제약이다. 이를 충족하지 못하면 핵심 이해관계자가 결과물을 받아들일 수 없다. 모든 항목은 M.A.R.S.(Measurable, Achievable, Relevant, Specific) 형식으로 기술한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "2.1 Budget and Schedule",
+      "text": "2.1 Budget and Schedule"
+    },
+    {
+      "kind": "paragraph",
+      "section": "2.1 Budget and Schedule",
+      "text": "일정은 8주를 기준으로 하며, 일정을 독립 변수로 두고 범위를 조정한다. 일정이 부족하면 우선순위가 낮은 요구사항(Low → Medium)부터 제외한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "2.2 Development Requirements",
+      "text": "2.2 Development Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "2.3 Packaging Requirements",
+      "text": "2.3 Packaging Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "2.4 Implementation Requirements",
+      "text": "2.4 Implementation Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "2.4 Implementation Requirements",
+      "text": "프로토타입 운영과 평가에 필요한 환경은 다음과 같다. 최종 사양은 SSAD에서 확정한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "2.4 Implementation Requirements",
+      "text": "Table 2: 운영 환경 요구사항"
+    },
+    {
+      "kind": "table",
+      "section": "2.4 Implementation Requirements",
+      "document_table_index": 14,
+      "rows": [
+        [
+          "항목",
+          "요구사항"
+        ],
+        [
+          "하드웨어",
+          "웹·API 서버 1대(RAM 32GB 이상), 실험 실행 노드 1대(GPU 1장, VRAM 16GB 이상) 또는 사용자 외부 실행(SIR-7)"
+        ],
+        [
+          "소프트웨어",
+          "Docker, PostgreSQL, 객체 저장소, LaTeX 컴파일러"
+        ],
+        [
+          "인력",
+          "개발팀 N명, 평가 기간 중 운영 담당 1명"
+        ],
+        [
+          "교육",
+          "평가 참가자용 10분 분량 온보딩 가이드·영상"
+        ],
+        [
+          "전환",
+          "평가 종료 후 코드 저장소, 운영 가이드, 익명화한 평가 데이터를 인계"
+        ]
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "section": "2.5 Support Requirements",
+      "text": "2.5 Support Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "2.5 Support Requirements",
+      "text": "지원 기간: 프로토타입 배포부터 평가 종료까지 개발팀이 지원한다. 이후 정식 지원은 없으며 운영 가이드로 대체한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "2.5 Support Requirements",
+      "text": "문제 접수: 앱 안의 피드백 버튼과 GitHub Issues로 접수하고 추적한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "2.5 Support Requirements",
+      "text": "대응 수준: 평가 기간 중 서비스 중단·데이터 유실 관련 문제는 24시간 안에 대응한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "2.5 Support Requirements",
+      "text": "평가 데이터: 평가 종료 후 참가자 데이터는 1년 안에 삭제하며, 리포트에는 익명화한 데이터만 사용한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "3 Capability Requirements",
+      "text": "3 Capability Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "3 Capability Requirements",
+      "text": "이 장은 본 시스템을 정의하고 기능 요구사항을 기술한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.1 System Definition",
+      "text": "3.1 System Definition"
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.1 System Definition",
+      "text": "본 시스템은 사용자가 입력한 연구 아이디어를 여섯 단계(S1 아이디어 구체화, S2 관련 연구 조사, S3 방법론·실험 설계, S4 코드 구현, S5 실험 수행 및 결과 분석, S6 논문 초안 작성)로 이어서 진행하는 웹 기반 에이전트 서비스다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.1 System Definition",
+      "text": "모든 단계는 연구 맥락 저장소(Research Context Store)에 있는 하나의 Research Brief와 이전 단계의 승인된 산출물을 공유한다. 각 단계가 끝나면 시스템은 다음 단계로 자동 진행하지 않고 체크포인트에서 사용자의 검토·수정·승인을 받는다. 이 구조 덕분에 단계가 바뀌어도 처음 아이디어의 맥락이 유지되고, 연구의 주도권은 사용자에게 남는다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.1 System Definition",
+      "text": "아이디어에서 논문까지를 한 흐름으로 잇는 연구 에이전트는 이미 존재한다(참고문헌 6, 7). 본 시스템은 자율 생성보다 연구 경험이 적은 대학원생의 판단을 돕는 데 초점을 둔다. 따라서 체크포인트(RQ-9), 의사결정 근거 설명(RQ-12), 지도교수 연결(RQ-11)을 핵심 요구사항으로 둔다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.1 System Definition",
+      "text": "Table 3: 사용자 계층"
+    },
+    {
+      "kind": "table",
+      "section": "3.1 System Definition",
+      "document_table_index": 15,
+      "rows": [
+        [
+          "사용자 계층",
+          "설명",
+          "주요 요구사항"
+        ],
+        [
+          "연구자 (핵심 고객)",
+          "석사·초기 박사과정 대학원생. 프로젝트 소유자",
+          "RQ-1 ~ RQ-13"
+        ],
+        [
+          "검토자 (지도교수)",
+          "공유받은 프로젝트·산출물을 읽고 코멘트",
+          "RQ-11"
+        ],
+        [
+          "운영자",
+          "배포, 비용·사용량 모니터링, 계정 관리",
+          "PR-9, LOR-10"
+        ]
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.1 System Definition",
+      "text": "프로토타입 범위"
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.1 System Definition",
+      "text": "포함: ML/딥러닝 분야의 ‘예제 규모 연구’(공개 데이터셋, PyTorch, 단일 GPU 12시간 이내 실험). 논문 초안은 영문 학회 LaTeX 템플릿 1종."
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.1 System Definition",
+      "text": "제외: 실제 논문 투고, 비ML 분야, 대규모 학습, 사람 대상 연구(연구윤리 심의가 필요한 연구), 비공개 대용량 데이터셋 업로드."
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.1 System Definition",
+      "text": "Figure 1: 시스템 블록 다이어그램과 시스템 경계"
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.2 System Requirements",
+      "text": "3.2 System Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.2 System Requirements",
+      "text": "시스템 요구사항은 주된 사용 흐름을 다루는 기본(nominal) 요구사항과 예외·오류 상황을 다루는 예외(off-nominal) 요구사항으로 나눈다. 모든 요구사항은 프로토타입과 사용자 평가에서 시험할 수 있도록 기술한다. 우선순위는 Very High(프로토타입 필수), High(평가 전 구현 목표), Medium, Low(범위 조정 시 우선 제외)로 구분한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.2 System Requirements",
+      "text": "Table 4: 기본 요구사항 요약"
+    },
+    {
+      "kind": "table",
+      "section": "3.2 System Requirements",
+      "document_table_index": 16,
+      "rows": [
+        [
+          "ID",
+          "제목",
+          "구분",
+          "우선순위"
+        ],
+        [
+          "RQ-1",
+          "아이디어 구체화 및 Research Brief 생성",
+          "단계 기능 (S1)",
+          "Very High"
+        ],
+        [
+          "RQ-2",
+          "관련 연구 조사 및 차별점 분석",
+          "단계 기능 (S2)",
+          "Very High"
+        ],
+        [
+          "RQ-3",
+          "방법론 및 실험 설계",
+          "단계 기능 (S3)",
+          "Very High"
+        ],
+        [
+          "RQ-4",
+          "실험 코드 구현",
+          "단계 기능 (S4)",
+          "High"
+        ],
+        [
+          "RQ-5",
+          "실험 수행 및 로그 수집",
+          "단계 기능 (S5)",
+          "High"
+        ],
+        [
+          "RQ-6",
+          "결과 분석",
+          "단계 기능 (S5)",
+          "High"
+        ],
+        [
+          "RQ-7",
+          "논문 초안 작성",
+          "단계 기능 (S6)",
+          "High"
+        ],
+        [
+          "RQ-8",
+          "단계 간 연구 맥락 공유",
+          "단계 연결 기능",
+          "Medium"
+        ],
+        [
+          "RQ-9",
+          "단계별 체크포인트 (검토·수정·승인)",
+          "단계 연결 기능",
+          "Medium"
+        ],
+        [
+          "RQ-10",
+          "상위 단계 변경의 영향 표시 및 재생성",
+          "단계 연결 기능",
+          "Medium"
+        ],
+        [
+          "RQ-11",
+          "지도교수 공유 및 코멘트",
+          "단계 연결 기능",
+          "Low"
+        ],
+        [
+          "RQ-12",
+          "의사결정 근거 설명",
+          "단계 연결 기능",
+          "High"
+        ],
+        [
+          "RQ-13",
+          "계정 및 연구 프로젝트 관리",
+          "단계 연결 기능",
+          "High"
+        ]
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.2 System Requirements",
+      "text": "Figure 2: 단계 흐름과 연구 맥락 공유 (기본 요구사항 구조)"
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.2.1 Nominal Requirements",
+      "text": "3.2.1 Nominal Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.2.2 Off-nominal Requirements",
+      "text": "3.2.2 Off-nominal Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "3.2.2 Off-nominal Requirements",
+      "text": "이 서비스에서 예외 상황은 연구의 신뢰성과 직결된다. 특히 허위 인용(ONRQ-1), 결과와 다른 수치(ONRQ-6), 가설을 지지하지 않는 결과의 처리(ONRQ-5)는 연구 윤리 문제이므로 높은 우선순위로 다룬다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "4 System Interface Requirements",
+      "text": "4 System Interface Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "4 System Interface Requirements",
+      "text": "이 장은 본 시스템이 사용자 및 외부 시스템과 어떻게 상호작용하는지를 기술한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "4.1 User Interface Requirements",
+      "text": "4.1 User Interface Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "4.1 User Interface Requirements",
+      "text": "본 시스템은 웹 기반 그래픽 사용자 인터페이스를 제공하며, 화면 구성은 다음과 같다. 상세 화면 설계는 UI/UX 기획안(MBOX 참조)에서 정의한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "4.1 User Interface Requirements",
+      "text": "Table 5: 화면 구성"
+    },
+    {
+      "kind": "table",
+      "section": "4.1 User Interface Requirements",
+      "document_table_index": 40,
+      "rows": [
+        [
+          "화면 ID",
+          "화면",
+          "주요 내용",
+          "관련 요구사항"
+        ],
+        [
+          "UI-01",
+          "대시보드",
+          "프로젝트 목록, 6단계 진행 상태, 비용 사용량, 알림",
+          "RQ-10, RQ-13"
+        ],
+        [
+          "UI-02",
+          "아이디어 구체화",
+          "대화 영역과 Research Brief 미리보기",
+          "RQ-1"
+        ],
+        [
+          "UI-03",
+          "관련 연구 검토",
+          "논문 목록·요약, 차별점 비교표, 포함/제외",
+          "RQ-2"
+        ],
+        [
+          "UI-04",
+          "실험 설계 검토",
+          "가설–실험 대응표, 데이터셋·베이스라인·지표, 예상 비용",
+          "RQ-3"
+        ],
+        [
+          "UI-05",
+          "코드 검토",
+          "파일 트리, 코드·diff, smoke test 결과",
+          "RQ-4"
+        ],
+        [
+          "UI-06",
+          "실험·분석",
+          "실행 진행 상황, 결과 표·그래프, 가설 판정",
+          "RQ-5, RQ-6"
+        ],
+        [
+          "UI-07",
+          "논문 에디터",
+          "섹션별 편집, 문장별 근거 링크, PDF 미리보기",
+          "RQ-7"
+        ],
+        [
+          "UI-08",
+          "연구 맥락 패널",
+          "모든 화면 측면에 Brief 최신본과 변경 이력 표시",
+          "RQ-8, RQ-10"
+        ],
+        [
+          "UI-09",
+          "공유·코멘트",
+          "공유 설정, 산출물별 코멘트",
+          "RQ-11"
+        ],
+        [
+          "UI-10",
+          "로그인·계정",
+          "가입, 로그인, 계정 설정",
+          "RQ-13"
+        ]
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "section": "4.1 User Interface Requirements",
+      "text": "UI-03 ~ UI-07의 단계 검토 화면은 공통 구조를 따른다. 왼쪽에 산출물, 오른쪽에 결정 근거(RQ-12), 아래쪽에 ‘승인 / 직접 수정 / 재생성 요청 / 이전 단계로’ 버튼(RQ-9)을 두고, 연구 맥락 패널(UI-08)은 모든 화면 측면에 표시한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "4.2 Hardware Interface Requirements",
+      "text": "4.2 Hardware Interface Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "4.2 Hardware Interface Requirements",
+      "text": "사용자 측에는 특수 하드웨어가 필요 없다. 서버 측 GPU 실행 노드는 4.4절의 코드 실행 환경 인터페이스(SIR-5)를 통해서만 사용한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "4.3 Communications Interface Requirements",
+      "text": "4.3 Communications Interface Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "4.3 Communications Interface Requirements",
+      "text": "모든 통신은 HTTPS(TLS 1.2 이상)를 사용한다. 실험 진행률과 생성 결과를 실시간으로 보여 주기 위해 서버에서 클라이언트로의 스트리밍(SSE 또는 WebSocket)을 사용한다. 그 밖의 특수 통신 장비는 필요 없다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "4.4 Other Software Interface Requirements",
+      "text": "4.4 Other Software Interface Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "5 Level of Service Requirements",
+      "text": "5 Level of Service Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "5 Level of Service Requirements",
+      "text": "이 장은 시스템이 요구사항을 ‘얼마나 잘’ 수행해야 하는지를 정의한다. 각 요구사항에는 목표 수준과 허용 수준, 측정 방법을 함께 적는다. 사용자 평가 리포트는 이 장의 요구사항별 달성 여부를 보고한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "5 Level of Service Requirements",
+      "text": "Table 6: 서비스 수준 요구사항 요약"
+    },
+    {
+      "kind": "table",
+      "section": "5 Level of Service Requirements",
+      "document_table_index": 46,
+      "rows": [
+        [
+          "ID",
+          "서비스 품질 유형",
+          "제목"
+        ],
+        [
+          "LOR-1",
+          "Dependability: Correctness",
+          "인용 정확성"
+        ],
+        [
+          "LOR-2",
+          "Dependability: Correctness",
+          "수치 정확성"
+        ],
+        [
+          "LOR-3",
+          "Usability",
+          "사용성"
+        ],
+        [
+          "LOR-4",
+          "Dependability: Correctness",
+          "맥락 일관성"
+        ],
+        [
+          "LOR-5",
+          "Performance (Efficiency)",
+          "처리 시간 및 비용"
+        ],
+        [
+          "LOR-6",
+          "Dependability: Survivability / Availability",
+          "가용성 및 작업 보존"
+        ],
+        [
+          "LOR-7",
+          "Dependability: Integrity (Security)",
+          "미공개 아이디어 보호"
+        ],
+        [
+          "LOR-8",
+          "Dependability: Verifiability",
+          "생성 이력 투명성"
+        ],
+        [
+          "LOR-9",
+          "Dependability: Verifiability",
+          "실험 재현성"
+        ],
+        [
+          "LOR-10",
+          "Adaptability: Maintainability / Expandability",
+          "유지보수성 및 확장성"
+        ]
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "section": "6 Evolution Requirements",
+      "text": "6 Evolution Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "6 Evolution Requirements",
+      "text": "프로토타입 이후 예상되는 확장 방향과, 이를 위해 프로토타입 단계부터 지켜야 할 설계 조건을 기술한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "6.1 Capability Evolution Requirements",
+      "text": "6.1 Capability Evolution Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "6.2 Interface Evolution Requirements",
+      "text": "6.2 Interface Evolution Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "6.3 Technology Evolution Requirements",
+      "text": "6.3 Technology Evolution Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "6.4 Workload Evolution Requirements",
+      "text": "6.4 Workload Evolution Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "6.4 Workload Evolution Requirements",
+      "text": "워크로드 증가는 없을 것으로 예상되며 연구실 라이선스 도입 시 재검토한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "6.5 Level of Service Evolution Requirements",
+      "text": "6.5 Level of Service Evolution Requirements"
+    },
+    {
+      "kind": "paragraph",
+      "section": "6.5 Level of Service Evolution Requirements",
+      "text": "현재 식별된 요구사항 없음. 주요 서비스 수준은 5장의 현재 요구사항으로 충분히 다뤄진다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "7 Common Definition Language",
+      "text": "7 Common Definition Language"
+    },
+    {
+      "kind": "paragraph",
+      "section": "7 Common Definition Language",
+      "text": "요구사항 정의 과정에서 쓰거나 새로 만든 용어를 정의한다. SSAD와 UI/UX 기획안도 같은 용어를 사용한다."
+    },
+    {
+      "kind": "table",
+      "section": "7 Common Definition Language",
+      "document_table_index": 65,
+      "rows": [
+        [
+          "용어",
+          "정의"
+        ],
+        [
+          "Research Brief",
+          "연구 문제, 가설, 예상 기여, 평가 계획, 제약 조건, 결과 및 결론을 담은 구조화 문서. 모든 단계가 공유하는 연구 맥락의 기준이며 버전으로 관리된다."
+        ],
+        [
+          "단계 (Stage)",
+          "연구 진행의 6개 구간: S1 아이디어 구체화, S2 관련 연구 조사, S3 방법론·실험 설계, S4 코드 구현, S5 실험 수행 및 결과 분석, S6 논문 초안 작성."
+        ],
+        [
+          "단계 산출물 (Stage Artifact)",
+          "각 단계의 결과물(관련 연구 목록, 실험 설계서, 코드, 실험 로그, 분석 결과, 초안). 버전으로 관리되며 참조한 Brief 버전을 기록한다."
+        ],
+        [
+          "체크포인트 (Checkpoint)",
+          "단계가 끝난 뒤 사용자가 산출물을 검토하고 승인·직접 수정·재생성 요청·이전 단계로 돌아가기 중 하나를 결정하는 지점."
+        ],
+        [
+          "오래됨 (Stale)",
+          "상위 산출물이나 Brief가 바뀌어 다시 생성해야 하는 하위 산출물의 상태."
+        ],
+        [
+          "연구 맥락 저장소 (Research Context Store)",
+          "Research Brief와 단계 산출물, 그 버전과 의존 관계를 저장하는 시스템 구성요소."
+        ],
+        [
+          "생성 이력 (Provenance)",
+          "산출물의 각 부분을 누가(AI / 사용자), 어떤 모델과 입력으로 만들었는지에 대한 기록."
+        ],
+        [
+          "실행 샌드박스 (Execution Sandbox)",
+          "생성된 코드를 자원·네트워크 제한 아래 격리 실행하는 컨테이너 환경."
+        ],
+        [
+          "LLM Gateway",
+          "모든 LLM 호출을 받아 제공자별 API로 전달하고 사용량·비용을 기록하는 구성요소."
+        ],
+        [
+          "Citation Verifier",
+          "참고문헌의 실존 여부와 메타데이터 일치를 학술 DB로 확인하는 구성요소."
+        ],
+        [
+          "예제 규모 연구 (Toy-scale study)",
+          "공개 데이터셋과 PyTorch를 사용하고 단일 GPU에서 12시간 이내에 실행되는 실험으로 이루어진 ML 연구. 프로토타입 평가의 기준 단위."
+        ],
+        [
+          "Smoke test",
+          "전체 실험 전에 소량 데이터로 코드가 끝까지 실행되는지만 확인하는 짧은 시험."
+        ],
+        [
+          "차별성 (Novelty)",
+          "관련 연구 대비 제안 아이디어의 새로운 점."
+        ],
+        [
+          "Negative result",
+          "가설을 지지하지 않는 실험 결과."
+        ],
+        [
+          "SUS",
+          "System Usability Scale. 10개 문항으로 사용성을 0~100점으로 측정하는 표준 설문."
+        ],
+        [
+          "M.A.R.S.",
+          "Measurable, Achievable, Relevant, Specific. 요구사항 작성 기준."
+        ],
+        [
+          "DOI / arXiv ID",
+          "학술 문헌의 고유 식별자."
+        ],
+        [
+          "BibTeX / LaTeX",
+          "참고문헌 관리 형식 / 논문 조판 시스템."
+        ],
+        [
+          "SSE",
+          "Server-Sent Events. 서버가 클라이언트로 실시간 데이터를 보내는 웹 표준."
+        ],
+        [
+          "INT / ADV",
+          "핵심 고객 인터뷰 기록 / 지도교수 인터뷰 기록의 ID 접두어."
+        ]
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "section": "7 Common Definition Language",
+      "text": "Appendix"
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.I Requirements Traceability Matrix",
+      "text": "A.I Requirements Traceability Matrix"
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.I Requirements Traceability Matrix",
+      "text": "각 요구사항이 어디서 왔고(근거), 어디에 반영되며(UI, SSAD), 어떻게 검증되는지(평가 지표)를 정리한다. SSAD 구성요소 이름은 SSAD v1.0에서 확정한다. 문제 정의의 PS-5(완성에 대한 확신)는 특정 요구사항이 아니라 평가 전후의 자기 평가 변화로 측정한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.I Requirements Traceability Matrix",
+      "text": "Table 7: 요구사항 추적 매트릭스"
+    },
+    {
+      "kind": "table",
+      "section": "A.I Requirements Traceability Matrix",
+      "document_table_index": 66,
+      "rows": [
+        [
+          "ID",
+          "근거",
+          "UI",
+          "SSAD 구성요소 (예정)",
+          "평가 지표"
+        ],
+        [
+          "RQ-1",
+          "PS-1, PS-5, VP-1",
+          "UI-02",
+          "S1 에이전트, 맥락 저장소",
+          "S1 완료율·소요 시간, Brief 수정 횟수"
+        ],
+        [
+          "RQ-2",
+          "PS-3, VP-1",
+          "UI-03",
+          "S2 에이전트, Citation Verifier",
+          "관련도 평가(5점), 인용 검증 통과율"
+        ],
+        [
+          "RQ-3",
+          "PS-2, VP-1",
+          "UI-04",
+          "S3 에이전트",
+          "승인까지 재생성 횟수, 지도교수 평가"
+        ],
+        [
+          "RQ-4",
+          "PS-1, VP-1",
+          "UI-05",
+          "S4 에이전트, 실행 샌드박스",
+          "smoke test 통과율, 자동 수정 횟수"
+        ],
+        [
+          "RQ-5",
+          "PS-1, VP-1",
+          "UI-06",
+          "실행 샌드박스, 작업 큐",
+          "실험 완료율, 실행 시간·비용"
+        ],
+        [
+          "RQ-6",
+          "PS-2, VP-1",
+          "UI-06",
+          "S5 분석 에이전트",
+          "가설 판정에 대한 사용자 동의율"
+        ],
+        [
+          "RQ-7",
+          "PS-1, VP-1, VP-4",
+          "UI-07",
+          "S6 에이전트, Citation Verifier",
+          "지도교수 초안 품질 평가, 수치 불일치 건수"
+        ],
+        [
+          "RQ-8",
+          "PS-2, PS-3, VP-2",
+          "UI-08",
+          "맥락 저장소",
+          "LOR-4 맥락 일관성 점수"
+        ],
+        [
+          "RQ-9",
+          "VP-3",
+          "UI-03~07",
+          "오케스트레이터(상태 머신)",
+          "체크포인트별 결정 분포, 주도권 인식(5점)"
+        ],
+        [
+          "RQ-10",
+          "VP-2, VP-3",
+          "UI-01, UI-08",
+          "맥락 저장소(의존 관계)",
+          "‘오래됨’ 표시 정확도"
+        ],
+        [
+          "RQ-11",
+          "PS-4, VP-5, SH-1",
+          "UI-09",
+          "공유·권한 모듈",
+          "지도교수 사용 의향(5점)"
+        ],
+        [
+          "RQ-12",
+          "PS-1, PS-5, VP-4",
+          "UI-03~07",
+          "각 단계 에이전트",
+          "근거 이해도(5점)"
+        ],
+        [
+          "RQ-13",
+          "TD",
+          "UI-01, UI-10",
+          "계정·프로젝트 모듈",
+          "오류 건수"
+        ],
+        [
+          "LOR-1",
+          "SH-1, VP-5",
+          "UI-03, UI-07",
+          "Citation Verifier",
+          "미검증 인용 0건"
+        ],
+        [
+          "LOR-2",
+          "SH-1",
+          "UI-06, UI-07",
+          "수치 검사 모듈",
+          "수치 불일치 0건"
+        ],
+        [
+          "LOR-3",
+          "PS-1, CS",
+          "전체",
+          "—",
+          "SUS 평균 ≥ 68"
+        ],
+        [
+          "LOR-4",
+          "PS-2, VP-2",
+          "전체",
+          "맥락 저장소",
+          "단계별 일관성 평균 ≥ 3.5"
+        ],
+        [
+          "LOR-5",
+          "SH-2, SH-3",
+          "UI-01",
+          "LLM Gateway, 실행 샌드박스",
+          "연구 1건당 시간·비용 로그"
+        ],
+        [
+          "LOR-6",
+          "TD",
+          "—",
+          "작업 큐, 백업",
+          "가동률, 유실 건수"
+        ],
+        [
+          "LOR-7",
+          "TD",
+          "UI-09",
+          "권한 모듈, 저장소",
+          "권한 시험 결과, 삭제 처리 기록"
+        ],
+        [
+          "LOR-8",
+          "VP-3, SH-1",
+          "UI-07",
+          "생성 이력 로그",
+          "보고서 내보내기 완전성"
+        ],
+        [
+          "LOR-9",
+          "TD",
+          "UI-06",
+          "실행 샌드박스",
+          "재실행 지표 차이"
+        ],
+        [
+          "LOR-10",
+          "TD",
+          "—",
+          "LLM Gateway, 에이전트 인터페이스",
+          "어댑터 추가 시 변경 파일 수"
+        ]
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "A.II Interface Specifications: External Result Upload Format"
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "사용자가 외부에서 실행한 실험 결과(SIR-7)는 아래 JSON 형식으로 업로드한다. 필수 필드가 없으면 업로드가 거부되고 오류 위치가 표시된다. CSV로 올릴 때는 metrics 부분만 name, split, value, step 열로 담고, 나머지 필드는 업로드 화면에서 입력한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "Table 8: 외부 실행 결과 업로드 형식"
+    },
+    {
+      "kind": "table",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "document_table_index": 67,
+      "rows": [
+        [
+          "필드",
+          "형식",
+          "필수",
+          "설명"
+        ],
+        [
+          "experiment_id",
+          "문자열",
+          "예",
+          "실험 설계서의 실험 ID (예: E1)"
+        ],
+        [
+          "code_version",
+          "문자열",
+          "예",
+          "Git 커밋 해시"
+        ],
+        [
+          "config",
+          "객체",
+          "예",
+          "하이퍼파라미터 등 실행 설정"
+        ],
+        [
+          "seed",
+          "정수",
+          "예",
+          "난수 시드"
+        ],
+        [
+          "environment",
+          "객체",
+          "아니오",
+          "GPU, 프레임워크 버전 등"
+        ],
+        [
+          "metrics",
+          "배열",
+          "예",
+          "{name, split, value, step} 목록"
+        ],
+        [
+          "started_at",
+          "문자열",
+          "아니오",
+          "시작 시각 (ISO 8601)"
+        ],
+        [
+          "duration_sec",
+          "숫자",
+          "아니오",
+          "소요 시간(초)"
+        ]
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "{"
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "  \"experiment_id\": \"E1\","
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "  \"code_version\": \"a1b2c3d\","
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "  \"config\": {\"lr\": 0.001, \"batch_size\": 64, \"epochs\": 20},"
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "  \"seed\": 42,"
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "  \"environment\": {\"gpu\": \"RTX 4090\", \"torch\": \"2.4\"},"
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "  \"metrics\": ["
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "    {\"name\": \"accuracy\", \"split\": \"test\", \"value\": 0.873, \"step\": 20}"
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "  ],"
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "  \"started_at\": \"2026-12-15T10:00:00+09:00\","
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "  \"duration_sec\": 2410"
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.II Interface Specifications: External Result Upload Format",
+      "text": "}"
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.III Assumptions to Validate in Customer Interviews",
+      "text": "A.III Assumptions to Validate in Customer Interviews"
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.III Assumptions to Validate in Customer Interviews",
+      "text": "v0.1의 요구사항 중 다음 가정은 1주차 고객 인터뷰에서 우선 확인한다. 가정이 틀리면 관련 요구사항의 우선순위를 바꾸거나 삭제한다."
+    },
+    {
+      "kind": "paragraph",
+      "section": "A.III Assumptions to Validate in Customer Interviews",
+      "text": "Table 9: 고객 인터뷰로 검증할 핵심 가정"
+    },
+    {
+      "kind": "table",
+      "section": "A.III Assumptions to Validate in Customer Interviews",
+      "document_table_index": 68,
+      "rows": [
+        [
+          "ID",
+          "가정",
+          "관련 요구사항",
+          "확인 질문 (예)"
+        ],
+        [
+          "A-1",
+          "학생들은 각 단계보다 단계 사이의 연결에서 더 많이 막힌다.",
+          "RQ-8, RQ-9",
+          "최근 연구에서 가장 오래 멈춰 있던 때는 언제였고, 어느 단계에서 다음 단계로 넘어갈 때였나요?"
+        ],
+        [
+          "A-2",
+          "학생들은 전부 자동화보다 단계마다 검토하며 주도권을 갖기를 원한다.",
+          "RQ-9, RQ-12",
+          "AI가 실험까지 알아서 끝낸다면 그 결과를 논문에 쓰겠어요? 무엇을 직접 확인하고 싶나요?"
+        ],
+        [
+          "A-3",
+          "미공개 아이디어를 외부 서비스에 입력하는 데 대한 우려가 도입의 장벽이다.",
+          "LOR-7, PR-7",
+          "아이디어를 외부 AI 서비스에 입력할 때 어떤 조건이면 안심할 수 있나요?"
+        ],
+        [
+          "A-4",
+          "지도교수는 중간 산출물을 공유받으면 지도 부담이 줄어든다고 본다.",
+          "RQ-11",
+          "(지도교수) 학생 지도 시간 중 반복되는 기초 지도는 어떤 것들인가요?"
+        ],
+        [
+          "A-5",
+          "인용·수치 오류가 AI 연구 도구를 신뢰하지 못하는 가장 큰 이유다.",
+          "LOR-1, LOR-2",
+          "AI 도구의 결과를 믿지 못했던 경험이 있나요? 어떤 오류였나요?"
+        ],
+        [
+          "A-6",
+          "연구 1건당 $20 이하 비용이면 학생·연구실이 지불할 의향이 있다.",
+          "LOR-5, SH-2",
+          "이런 도구에 개인이나 연구실이 비용을 낸다면 얼마까지 낼 수 있나요?"
+        ],
+        [
+          "A-7",
+          "ML 분야 예제 규모 연구로 범위를 좁혀도 핵심 고객의 문제를 대표한다.",
+          "3.1 범위",
+          "당신의 아이디어는 1시간 이내의 실험으로 1차 검증이 가능한가요?"
+        ]
+      ]
+    }
+  ],
+  "original_files": [
+    {
+      "path": "original/SSRD_v0.1.docx",
+      "sha256": "1707bd1c151ebba4d8b9610fe938616490e37875dc48e28c64d6475c6e0d9839"
+    },
+    {
+      "path": "original/SSAD_v0.1.pdf",
+      "sha256": "2dbfc267cc5fbdcffb7f7956ffbeee3e32e93a1ce48feb219bd5aad95d429df0"
+    }
+  ]
+}

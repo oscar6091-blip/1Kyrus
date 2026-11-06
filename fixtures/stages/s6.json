@@ -1,0 +1,43 @@
+{
+  "stage_no": 6,
+  "content": {
+    "sections": [
+      {
+        "key": "abstract",
+        "body_md": "This classroom prototype connects a research brief, literature review, experiment design, exported code, uploaded measurements, and a draft. In the bundled reference run, SGD accuracy was {{metric:m0}} and Adam accuracy was {{metric:m2}}. The values were equal; the run does not establish optimizer superiority."
+      },
+      {
+        "key": "introduction",
+        "body_md": "The objective is to demonstrate a traceable research workflow with explicit user approval between stages. This draft is an educational artifact, not a novel optimization result."
+      },
+      {
+        "key": "related_work",
+        "body_md": "Adam uses adaptive moment estimates {{cite:arxiv_1412_6980}}. Decoupled weight decay addresses a different regularization issue {{cite:arxiv_1711_05101}}. Hyperparameter choices require care {{cite:arxiv_1803_09820}}. These references do not validate performance claims on the present dataset."
+      },
+      {
+        "key": "methods",
+        "body_md": "The exported CPU script compares SGD and Adam MLP classifiers on Iris using a shared stratified split and a scaler fitted on training data. Execution configuration and environment are retained in the uploaded result file."
+      },
+      {
+        "key": "experiments",
+        "body_md": "The uploaded run reports SGD accuracy {{metric:m0}}, SGD macro F1 {{metric:m1}}, Adam accuracy {{metric:m2}}, and Adam macro F1 {{metric:m3}}. Both fits reported convergence warnings. This is a single-seed, single-split integration example."
+      },
+      {
+        "key": "conclusion",
+        "body_md": "The workflow preserves approved inputs and connects measurements to a draft. The reference run provides no observed accuracy advantage for Adam. Repeated seeds and convergence checks would be needed before broader conclusions."
+      }
+    ]
+  },
+  "rationale": [
+    {
+      "decision_key": "main",
+      "reason": "초안의 수치는 업로드 결과의 지표 ID로 연결하고, 관측하지 않은 우위는 주장하지 않는다.",
+      "evidence_refs": [
+        "metric:m0",
+        "metric:m2",
+        "ref:arxiv_1412_6980"
+      ],
+      "alternatives": []
+    }
+  ]
+}

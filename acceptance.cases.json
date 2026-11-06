@@ -1,0 +1,196 @@
+{
+  "schema_version": "1.0",
+  "cases": [
+    {
+      "id": "AC-01",
+      "requirements": [
+        "PR-3",
+        "PR-8",
+        "RQ-13",
+        "SIR-1"
+      ],
+      "name": "오프라인 시작",
+      "expected": "키와 네트워크 없이 demo 서버·UI 시작. 프로젝트 생성·목록·선택 가능. 화면·내보내기에 demo 표시."
+    },
+    {
+      "id": "AC-02",
+      "requirements": [
+        "RQ-1",
+        "RQ-9"
+      ],
+      "name": "승인 전 차단",
+      "expected": "S1 결과를 생성했어도 승인 전 S2 run은 409. S1 필수 Brief를 채워 승인하면 S2가 활성화."
+    },
+    {
+      "id": "AC-03",
+      "requirements": [
+        "RQ-8",
+        "LOR-4"
+      ],
+      "name": "입력 연결",
+      "expected": "S3 승인본을 수정·새로 승인 후 S4 요청. Gateway spy로 실제 프롬프트에 새 내용·정확한 상위 ID·코멘트가 포함됨을 확인."
+    },
+    {
+      "id": "AC-04",
+      "requirements": [
+        "RQ-9",
+        "LOR-8",
+        "RQ-8"
+      ],
+      "name": "편집과 승인 분리",
+      "expected": "편집은 새 ArtifactVersion과 Decision을 남기지만 자동 승인하지 않음. 사용자가 다시 승인해야 함. 두 번의 S1 승인 후 Decision 목록의 S1 approve를 통해 두 승인 Brief를 읽기 전용으로 열람. 열람은 현재 포인터·상태·Decision 수를 바꾸지 않음."
+    },
+    {
+      "id": "AC-05",
+      "requirements": [
+        "RQ-10"
+      ],
+      "name": "변경 전파",
+      "expected": "S1~S6 승인 후 S3 새 버전 승인. S4~S6만 stale, 기존 버전·승인 기록 유지. S4 재승인 전 S5 실행 거부."
+    },
+    {
+      "id": "AC-06",
+      "requirements": [
+        "ONRQ-8",
+        "LOR-6"
+      ],
+      "name": "재접속 보존",
+      "expected": "지연 FakeGateway 실행 중 브라우저를 닫고 다시 접속. 같은 Job을 조회하며 결과가 하나만 생성됨."
+    },
+    {
+      "id": "AC-07",
+      "requirements": [
+        "ONRQ-8",
+        "LOR-6"
+      ],
+      "name": "서버 재시작",
+      "expected": "진행 중 서버 종료 후 재시작. Job interrupted, Stage needs_review, 기존 승인 결과 보존. 수동 재시도 가능."
+    },
+    {
+      "id": "AC-08",
+      "requirements": [
+        "RQ-2",
+        "ONRQ-1",
+        "SIR-4",
+        "LOR-1"
+      ],
+      "name": "인용 경계",
+      "expected": "미확인 후보 제외, 남는 확인 논문이 없으면 실패. 알려지지 않은 cite 토큰 저장·승인 거부. live 실패가 fixture 성공으로 바뀌지 않음. 일부 후보만 미검증이면 검증 통과 목록과 별도로 제외 대상·사유 경고를 표시. 0편 실패에도 사용자에게 사유를 제공."
+    },
+    {
+      "id": "AC-09",
+      "requirements": [
+        "RQ-5",
+        "SIR-7"
+      ],
+      "name": "실험 업로드",
+      "expected": "valid JSON 수락. invalid JSON은 422와 경로. NaN/Infinity·중복 metric 키·미등록 실험 ID·타 프로젝트 run 거부. sources/ssrd_context.json의 원문 A.II 예시는 prototype 전용 필드가 없어 422. 필드 위치와 현재 정상 예시를 안내하며 원문 호환이라고 보고하지 않음."
+    },
+    {
+      "id": "AC-10",
+      "requirements": [
+        "RQ-6",
+        "ONRQ-5",
+        "LOR-2"
+      ],
+      "name": "실측 값 분석",
+      "expected": "동봉 실측 Run의 네 값을 그대로 표시하고 두 accuracy가 같다는 사실과 미수렴·단일 seed 한계를 유지. Brief의 모든 H ID를 중복 없이 판정. 선택 Run에 대응하지 않는 가설은 미실행/근거 부족 사유와 inconclusive만 허용."
+    },
+    {
+      "id": "AC-11",
+      "requirements": [
+        "ONRQ-6",
+        "LOR-2",
+        "RQ-7"
+      ],
+      "name": "지표 토큰",
+      "expected": "S5·S6 표와 {{metric:m0}}는 Artifact evidence에서 렌더링. 존재하지 않는 토큰은 422. 새 업로드가 과거 초안의 숫자를 바꾸지 않음."
+    },
+    {
+      "id": "AC-12",
+      "requirements": [
+        "RQ-4",
+        "SIR-6"
+      ],
+      "name": "코드 내보내기",
+      "expected": "S4 승인 후 zip이 정상 열림. 상대 경로 파일만 포함. ../../escape.py 거부. 서비스가 생성 코드를 실행하지 않음."
+    },
+    {
+      "id": "AC-13",
+      "requirements": [
+        "RQ-7",
+        "SIR-6"
+      ],
+      "name": "초안 내보내기",
+      "expected": "S6 승인 후 여섯 섹션·검증 참고문헌·로그 표가 있는 paper.md와 references.bib 다운로드. demo 표식 유지."
+    },
+    {
+      "id": "AC-14",
+      "requirements": [
+        "RQ-9",
+        "RQ-10"
+      ],
+      "name": "중복 요청",
+      "expected": "동일 request_id 재전송은 같은 Job/Decision 반환. 승인 중복으로 버전·결정이 추가되지 않음. 다른 내용으로 ID 재사용은 409."
+    },
+    {
+      "id": "AC-15",
+      "requirements": [
+        "PR-7",
+        "SIR-3",
+        "ONRQ-7"
+      ],
+      "name": "LLM Gateway",
+      "expected": "전 단계의 live 모델 호출이 한 Gateway 경유. timeout·거절·토큰 잘림·JSON 오류는 failed. 보정 1회 상한."
+    },
+    {
+      "id": "AC-16",
+      "requirements": [
+        "RQ-9",
+        "RQ-10"
+      ],
+      "name": "프로젝트 작업 잠금",
+      "expected": "한 프로젝트의 작업 실행 중 다른 쓰기·실행 요청은 409. 조회·다른 프로젝트 사용은 가능. 실패 시 잠금 해제."
+    },
+    {
+      "id": "AC-17",
+      "requirements": [
+        "RQ-9"
+      ],
+      "name": "이전 단계 이동",
+      "expected": "back Decision 기록과 이전 화면 이동만 수행. 승인본·Brief·Stage 상태는 바꾸지 않음. S1 back은 422."
+    },
+    {
+      "id": "AC-18",
+      "requirements": [
+        "PR-1",
+        "LOR-5",
+        "LOR-8",
+        "PR-7",
+        "SIR-3"
+      ],
+      "name": "사용량",
+      "expected": "live 토큰·모델·호출 수·시간 기록. 단가 미설정 비용 null. demo의 사용량은 미호출로 표시. LLM_DATA_POLICY.md에 확인 근거 또는 NOT_CHECKED 상태를 사실대로 기록. 미확인을 약관 확인 PASS로 보고하지 않음."
+    },
+    {
+      "id": "AC-19",
+      "requirements": [
+        "RQ-3",
+        "RQ-12"
+      ],
+      "name": "계획·이유",
+      "expected": "S3에 실험 ID·Brief 가설 ID·필수 지표 이름과 계획 Markdown. 모든 단계에 이유 표시. 모르는 evidence ID는 거부. 모든 Brief 가설에 최소 한 실험이 대응해야 하며 누락·중복 가설 판정은 거부. S3에 ablation 계획 또는 해당 없음 사유 포함. ref/metric/artifact 근거를 원본으로 열 수 있고 빈 근거에는 근거 없음: 사용자 확인 필요 표시."
+    },
+    {
+      "id": "AC-20",
+      "requirements": [
+        "PR-6",
+        "PR-9",
+        "SIR-2",
+        "LOR-10"
+      ],
+      "name": "제출 재현",
+      "expected": "깨끗한 설치 절차·lockfile·환경 예시·검사 결과 문서. UI 한국어, S6 영어. Docker/Redis/DB 서버 없이 demo 구동."
+    }
+  ]
+}
