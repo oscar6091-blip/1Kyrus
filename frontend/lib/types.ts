@@ -225,7 +225,7 @@ export interface ExperimentRun {
 export const STAGE_NAMES: Record<number, string> = {
   1: "연구 Brief",
   2: "관련 연구",
-  3: "실험 설계",
+  3: "방법론·실험 설계",
   4: "실행 코드",
   5: "결과 분석",
   6: "논문 초안",
