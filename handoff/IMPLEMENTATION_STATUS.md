@@ -1,6 +1,6 @@
 # 구현 상태
 
-현재 상태 (2026-11-07 갱신): **T01~T08 구현 완료. demo 경로는 API 테스트와 헤드리스 브라우저 조작으로 확인. live는 Fake/Recorder Gateway로만 오프라인 검사했고 실제 API 키 호출은 NOT RUN (키는 설정했지만 아직 실행하지 않음).**
+현재 상태 (2026-11-08 갱신): **T01~T08 구현 완료. demo 경로는 API 테스트와 헤드리스 브라우저 조작으로 확인. live는 2026-11-08 실제 API 키로 여섯 단계를 한 번 끝까지 수행해 PASS (아래 "live 검사"). 그 과정에서 찾은 문제는 DEVIATIONS D-09~D-11로 고쳤다.**
 
 아래 문단은 배포한 계획팩의 초기 설명이다. 기존 작업 폴더에 구현이 있다면 현재 코드·검사 결과를 확인해 갱신하고 이어서 작업한다. source-completion 개정으로 원문 자료와 N-01~N-09 구현 지시를 보완했으며, 이것이 앱 구현 완료라는 뜻은 아니다. LLM 입력 데이터 조건의 확인 상태는 LLM_DATA_POLICY.md의 NOT_CHECKED에서 시작한다.
 
@@ -15,8 +15,8 @@
 | T03 demo 실행·업로드·내보내기 | DONE | `pytest tests/test_smoke_flow.py tests/test_jobs.py tests/test_uploads.py tests/test_exports.py` PASS. API만으로 S1~S6 생성·승인, valid JSON 업로드, code.zip·paper.md·references.bib 다운로드. 참조 수치 4개가 `expected_reference_metrics.json`과 정확히 일치. zip의 train.py는 원본과 바이트 동일 |
 | T04 공통 UI | DONE | `npm run build` PASS (Next.js 16.4.5, TypeScript). `scripts/browser_demo_check.py`로 헤드리스 Chromium에서 5분 시연과 변경 전파 시연 전 과정 PASS. 2026-11-07 UI/UX 기획안 v0.2 디자인 반영 후 `npm run typecheck`·`npm run build`·`browser_demo_check.py`(별도 demo 서버, 새 버튼 문구·Brief 탭 열기 반영) 다시 PASS |
 | T05 live Gateway·arXiv | DONE (오프라인) | `pytest tests/test_gateway.py tests/test_references.py` PASS. timeout·거절·잘림·HTTP 오류는 failed로 끝나고 SDK 재시도 0회, 보정은 최대 1회, fixture 대체 없음. 기록된 Atom 응답으로 버전 접미사 정규화, 첫 제출 연도, 미검증 후보 경고, 0편 실패 확인. arXiv 실제 응답 형식은 컨테이너에서 한 번 조회해 확인. `LLM_DATA_POLICY.md`는 DOCUMENTS_REVIEWED |
-| T06 단계별 live 생성 | DONE (오프라인) | `pytest tests/test_context_handoff.py tests/test_evidence.py` PASS. 수정·재승인한 S3 본문, 정확한 상위 ID, 코멘트가 S4 요청 인자에 들어감 (AC-03). S5는 서버 metric binding을 받음. 모델이 만든 미등록 cite는 채택하지 않음. 실제 키 live 실행은 NOT RUN |
-| T07 필수 동작 검증 | DONE | 최종(2026-11-07): `ANTHROPIC_API_KEY= LLM_MODEL= .venv/bin/python -m pytest -q` → **57 passed**. 처음 T07을 마쳤을 때는 49개였고 D-04(삭제)·D-05(생성 시 모드 선택)·CORS 테스트로 늘었다. 실제 키가 든 `.env` 그대로 돌리면 `test_health`가 live_configured=false를 기대해 실패한다(환경 차이, 코드 문제 아님). `cd frontend && npm run build` → PASS. 브라우저 시연 PASS(삭제 단계 포함). AC별 결과는 아래 "앱 검사 결과" |
+| T06 단계별 live 생성 | DONE (오프라인) | `pytest tests/test_context_handoff.py tests/test_evidence.py` PASS. 수정·재승인한 S3 본문, 정확한 상위 ID, 코멘트가 S4 요청 인자에 들어감 (AC-03). S5는 서버 metric binding을 받음. 모델이 만든 미등록 cite는 채택하지 않음. 2026-11-08 실제 키 live 여섯 단계 PASS (아래 "live 검사") |
+| T07 필수 동작 검증 | DONE | 최종(2026-11-07): `ANTHROPIC_API_KEY= LLM_MODEL= .venv/bin/python -m pytest -q` → **57 passed**. 처음 T07을 마쳤을 때는 49개였고 D-04(삭제)·D-05(생성 시 모드 선택)·CORS 테스트로 늘었다. 2026-11-08: **66 passed** (D-07 여러 Run 테스트 5개, D-11 arXiv 재검색 테스트 4개 추가). 실제 키가 든 `.env` 그대로 돌리면 `test_health`가 live_configured=false를 기대해 실패한다(환경 차이, 코드 문제 아님). `cd frontend && npm run build` → PASS. 브라우저 시연 PASS(삭제 단계 포함). AC별 결과는 아래 "앱 검사 결과" |
 | T08 제출 정리 | DONE | 루트 `README.md`(설치·실행·demo/live·5분 시연·변경 전파·제한·검사 결과), 이 문서, `LLM_DATA_POLICY.md`, `DEVIATIONS.md` 작성. 깨끗한 설치 재현 결과는 아래 "깨끗한 설치 재현" |
 
 ## 구현 선택
@@ -49,7 +49,7 @@
 | 2026-11-07 | T04 | 폰트 | Pretendard(본문)·Outfit(로고·단계 코드)·JetBrains Mono(버전·코드)를 `frontend/public/fonts/`에 직접 포함 (기획안 캔버스에 들어 있던 파일, SIL OFL 1.1, 라이선스 원문 동봉) | 기획안 폰트를 오프라인 localhost에서도 같게 보이도록. 외부 CDN 의존 없음 |
 | 2026-11-07 | T04 | 화면 문구 | 상태 "승인됨"→"승인", "생성 중"→"진행 중", 버튼 "코멘트로 재생성"→"재생성 요청" (기획안 표기). Research Brief 패널은 기본 접힘, 여닫은 상태는 브라우저 localStorage에만 저장 | 기획안 p.07 상태 표기와 CheckpointBar 문구. `scripts/browser_demo_check.py`와 README 시연 문구도 같이 바꿈 |
 | 2026-11-07 | T01 | CORS 허용 origin | 3000번 두 이름에 더해 `FRONTEND_ORIGIN`과 그 `localhost`/`127.0.0.1` 짝을 허용 | 공용 서버에서 웹 포트를 바꿨을 때 어느 주소로 열어도 API 호출이 되도록. 다른 호스트 origin은 그대로 거부 |
-| 2026-11-08 | T04 | Markdown의 SVG 그림 표시 | 본문 Markdown의 ```` ```svg ```` 코드 블록(루트가 `<svg>`인 것만)을 `data:image/svg+xml` `<img>`로 그림으로 보여 주고, 원본 코드는 "SVG 코드 보기"에 접어 둠. 그림을 읽지 못하면 경고와 코드를 펼쳐 보임. 다른 코드 블록·HTML은 그대로 글자로 표시 | D-06의 S3 아키텍처 그림이 코드로만 보였음. `<img>` 안의 SVG는 브라우저가 스크립트와 외부 리소스를 막으므로 rehype-raw·sanitizer 같은 새 의존성 없이 표시만 바뀜. 헤드리스 브라우저로 그림 표시, `<script>` 미실행 확인 |
+| 2026-11-08 | T04 | Markdown의 SVG 그림 표시 | 본문 Markdown에서 언어 표시가 `svg`인 코드 블록(루트가 `<svg>`인 것만)을 `data:image/svg+xml` `<img>`로 그림으로 보여 주고, 원본 코드는 "SVG 코드 보기"에 접어 둠. 그림을 읽지 못하면 경고와 코드를 펼쳐 보임. 다른 코드 블록·HTML은 그대로 글자로 표시 | D-06의 S3 아키텍처 그림이 코드로만 보였음. `<img>` 안의 SVG는 브라우저가 스크립트와 외부 리소스를 막으므로 rehype-raw·sanitizer 같은 새 의존성 없이 표시만 바뀜. 헤드리스 브라우저로 그림 표시, `<script>` 미실행 확인 |
 
 ## 계획 자료 검사
 
@@ -103,10 +103,10 @@ python scripts/check_handoff.py
 | AC-12 코드 내보내기 | PASS | zip 정상, `../../escape.py`·절대경로·역슬래시·.env·NUL 거부, 앱 코드에 실행 경로 없음 (자동). 브라우저에서 zip 다운로드 |
 | AC-13 초안 내보내기 | PASS | 여섯 섹션·참고문헌·지표 표·demo 표식이 있는 paper.md와 references.bib (자동·브라우저) |
 | AC-14 중복 요청 | PASS | run·approve·edit·regenerate 재전송 시 같은 결과, 다른 내용이면 409 (자동) |
-| AC-15 LLM Gateway | PASS (오프라인) / live NOT RUN | 모든 live 호출이 `llm_gateway.py` 하나만 거침 (anthropic import 1곳), timeout·거절·잘림·HTTP 오류 failed, 보정 1회 상한 (Fake client) |
+| AC-15 LLM Gateway | PASS (오프라인) / live PASS (2026-11-08) | 모든 live 호출이 `llm_gateway.py` 하나만 거침 (anthropic import 1곳), timeout·거절·잘림·HTTP 오류 failed, 보정 1회 상한 (Fake client) |
 | AC-16 작업 잠금 | PASS | 작업 중 같은 프로젝트 쓰기 409, 조회·다른 프로젝트 가능, 종료 후 해제 (자동) |
 | AC-17 이전 단계 이동 | PASS | back Decision과 navigate만, 상태 불변, S1 back 422 (자동) |
-| AC-18 사용량 | PASS (오프라인) / live NOT RUN | 토큰·호출 수·비용(단가 있을 때만)·모델 기록, demo calls=0·null (자동). LLM 데이터 조건은 DOCUMENTS_REVIEWED이며 계정 조건은 미확인 |
+| AC-18 사용량 | PASS (오프라인) / live PASS (2026-11-08) | 토큰·호출 수·비용(단가 있을 때만)·모델 기록, demo calls=0·null (자동). live 작업마다 실제 토큰·비용 기록 확인 (live 검사 절). LLM 데이터 조건은 DOCUMENTS_REVIEWED이며 계정 조건은 미확인 |
 | AC-19 계획·이유 | PASS | S3 가설 누락·중복·미등록 H·Ablation 누락 거부, 모르는 근거 ID 거부 (자동). 근거 칩으로 논문·지표 원본 행·버전 열람, 빈 근거에 "근거 없음 · 사용자 확인 필요" 표시 (UI/UX 디자인 반영 후 문구. UI 구현, 브라우저에서는 이력 모달만 조작) |
 | AC-20 제출 재현 | PASS | lockfile 두 개, `.env.example`, README, 이 문서. Docker/Redis/DB 서버 없이 실행 |
 
@@ -141,7 +141,7 @@ munich 호스트(Ubuntu 20.04, glibc 2.31, Python 3.8만 있고 Node 없음, 컨
 
 ## 아직 수행하지 않은 확인
 
-- 실제 API 키로 하는 live 생성(여섯 단계), 실제 arXiv 조회를 거친 S2 생성. 키는 `.env`에 설정했지만 아직 실행하지 않았다(NOT RUN).
+- live 여섯 단계는 한 주제로 한 번만 수행했다. 다른 주제, 반복 실행에 따른 결과 편차, 생성 결과의 과학적 타당성은 확인하지 않았다.
 - LLM 입력 데이터 사용 조건의 실제 계정 적용 여부. 공식 문서 검토까지만 했다 (`LLM_DATA_POLICY.md`).
 - 브라우저 창을 닫았다 다시 여는 AC-06 조작, 실제 프로세스를 죽이는 AC-07 재시작.
 - 사람이 직접 하는 브라우저 시연. 자동화한 헤드리스 조작만 수행했다.
@@ -149,4 +149,27 @@ munich 호스트(Ubuntu 20.04, glibc 2.31, Python 3.8만 있고 Node 없음, 컨
 
 ## live 검사
 
-NOT RUN. 2026-11-07 기준 키는 설정했지만 아직 실행하지 않았다. live 경로의 동작은 Fake/Recorder Gateway와 기록된 arXiv 응답으로만 오프라인 검사했으며, 이것을 실제 모델 품질이나 검색 성능 검증으로 보고하지 않는다. 키가 생기면 `.env`에 `APP_MODE=live`, `ANTHROPIC_API_KEY`, `LLM_MODEL`을 넣고 새 프로젝트에서 실행해 결과(모델명, 단계, PASS/FAIL)를 여기에 적는다. 키 값은 적지 않는다.
+2026-11-08, 모델 claude-sonnet-5-5, live 모드, `.env`의 `LLM_MAX_OUTPUT_TOKENS=32000`, `LLM_TIMEOUT_SECONDS=600`(D-10). 주제는 "INR 외삽: 학습 구간 밖 함수 예측"이다. 아이디어만 넣고 S1부터 S6까지 진행했고, S4 코드는 사용자가 Colab에서 실행해 묶음 결과 파일을 업로드했다(D-07). 결과: **PASS (여섯 단계 모두 승인까지 완료)**. 키 값은 적지 않는다.
+
+| 단계 | 호출 | 입력 토큰 | 출력 토큰 | 비용(USD) | 소요 | 비고 |
+| --- | --- | --- | --- | --- | --- | --- |
+| S1 | 1 | 2,411 | 3,449 | 0.039 | 30초 | 재생성 없이 승인 |
+| S2 | 2 | 15,942 | 4,746 | 0.079 | 37초 | 검색어 생성 + 본문 생성 |
+| S3 | 1 | 15,766 | 17,619 | 0.208 | 2분 7초 | 이전 한도 16,000이었으면 잘렸을 길이 |
+| S4 | 1 | 23,232 | 27,258 | 0.319 | 2분 45초 | 출력 한도의 85%. 이후 재생성 1회(입력 39,800, 출력 21,727, 0.297) |
+| S5 | 1 | 43,977 | 16,818 | 0.256 | 1분 56초 | 실험 결과 업로드 2회 |
+| S6 | 2 | 100,262 | 20,746 | 0.408 | 2분 13초 | 형식 보정 재요청 1회 포함 |
+
+합계 약 1.61달러, 첫 실행부터 S6 완료까지 약 38분.
+
+같은 날 앞선 live 시험에서 실패한 경우와 조치:
+
+| 실패 | 상황 | 조치 |
+| --- | --- | --- |
+| S4 `LLM_TRUNCATED` 2회 | SMOTE 주제, 출력 16,000토큰에서 잘림 | D-10(출력 32,000, timeout 600초) |
+| S2 `NO_VERIFIED_REFERENCES` 2회 | 검색어 다섯 단어 AND로 arXiv 0편 | D-11(검색어를 줄여 재검색) |
+| S3 `LLM_TRUNCATED` 1회 | INR 주제, 출력 16,000토큰에서 잘림 | D-09(S3 분량 규칙), D-10 |
+| S1 확인 질문 반복 | 재생성마다 질문 3개, 점점 S3 세부를 물음 | D-09(S1 질문 범위) |
+| S4 결과 업로드 422 | 결과 JSON 형식이 서버 규칙과 다름 | D-06(S4에 결과 형식 직접 명시, 팀원 수정) |
+
+이 검사는 live 경로가 끝까지 동작하는지를 확인한 것이다. 생성된 방법론·실험·논문의 과학적 타당성, 다른 주제에서의 재현성은 검증하지 않았다. S4 출력이 한도의 85%까지 찼으므로 실험 수가 많은 주제에서는 다시 잘릴 수 있다.

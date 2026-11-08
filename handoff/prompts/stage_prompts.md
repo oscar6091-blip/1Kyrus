@@ -78,24 +78,6 @@ arXiv 요청과 서지 정보 확정은 서버가 수행한다. 이 검색어 �
 - 모든 Brief 가설 H ID를 적어도 한 experiments 항목에 연결한다. 한 실험의 hypothesis_ids에서 같은 H ID를 중복하지 않는다.
 - body_md에 정확한 제목 `## Ablation 계획`과 계획 또는 해당 없음 사유를 쓴다. 통합 시연용 예제라 ablation을 하지 않는다면 그 한계를 명시한다. 수행하지 않은 실험을 수행했다고 주장하지 않는다.
 
-- Stage3의 body_md와 experiments를 모두 작성한다.
-- **body_md는 `## 방법론` 절로 시작하고, 그다음에 실험 설계를 쓴다. 방법론이 무엇을 제안하는지 먼저 설명하고, 실험은 그것을 어떻게 검증하는지 설명한다.**
-- **`## 방법론` 절에는 다음 하위 절을 이 순서로 쓴다.**
-  - **`### 아이디어에서 방법론으로`: 사용자의 아이디어와 승인된 Brief의 연구 문제·가설이 어떤 설계 결정을 거쳐 구체적인 방법으로 바뀌었는지 단계적으로 설명한다. 각 결정에 왜 그렇게 정했는지를 쓴다.**
-  - **`### 전체 구조': 논문 Figure 1 스타일의 아키텍처 그림을 ```svg 코드 블록 하나로 그린다. 입력에서 출력까지 왼쪽에서 오른쪽으로 배치하고, 제안 방법의 핵심 모듈은 색을 다르게 강조하며, 기존 구성 요소는 회색으로 구분한다. 크기는 가로 900 세로 400 이내, 글자는 영어 또는 한국어 짧은 라벨로 쓰고, 스크립트나 외부 이미지·폰트는 쓰지 않는다.
-  - **`### 구성 요소`: 각 구성 요소의 역할, 입력과 출력, 핵심 계산(필요하면 수식), 그리고 어떤 가설 H ID를 검증하는 데 쓰이는지 쓴다.**
-  - **`### 기존 방법과의 차이`: 승인된 S2 관련 연구와 비교해 무엇이 새로운지 쓰고, 제공된 논문은 {{cite:ID}}로 인용한다. 차이가 작으면 그 사실을 그대로 쓴다.**
-  - **`### 구현 방식`: 각 구성 요소를 어떤 라이브러리·함수·모듈로 구현할지 S4가 그대로 따를 수 있을 만큼 구체적으로 쓴다.**
-- **방법론은 승인된 Brief와 S2 관련 연구에 근거한다. 아이디어에 없는 기법을 핵심 기여처럼 추가하지 않는다. 사용자 아이디어가 모호해서 정해지지 않은 부분은 가정으로 밝히고 rationale에 대안을 적는다.**
-- 실험 설계 부분에는 가설–실험 대응, 데이터셋, 베이스라인, 평가 지표, 실행 절차, 예상 비용·시간을 설명한다.
-- experiments의 id는 E1부터, hypothesis_ids는 Brief의 허용 H ID, metric_names는 결과 JSON에 쓸 정확한 이름이다.
-- CPU 소규모 외부 실행을 전제로 한다. 웹 서버가 실험을 수행한다는 계획을 쓰지 않는다.
-- 반복·표본·수렴 검사가 부족한 경우 어떤 결론을 낼 수 없는지 적는다.
-- 사용자 코멘트로 설정이 바뀌면 새 계획에 반영한다.
-- 모든 Brief 가설 H ID를 적어도 한 experiments 항목에 연결한다. 한 실험의 hypothesis_ids에서 같은 H ID를 중복하지 않는다.
-- body_md에 정확한 제목 `## Ablation 계획`과 계획 또는 해당 없음 사유를 쓴다. **Ablation은 `### 구성 요소`에 적은 구성 요소를 하나씩 빼거나 바꾸는 방식으로 설계하고, 어떤 구성 요소를 확인하는지 이름으로 연결한다.** 통합 시연용 예제라 ablation을 하지 않는다면 그 한계를 명시한다. 수행하지 않은 실험을 수행했다고 주장하지 않는다.
-
-
 ## S4
 
 - Stage4의 files에 Python 코드, requirements.txt, README.md를 넣는다.
@@ -106,27 +88,6 @@ arXiv 요청과 서지 정보 확정은 서버가 수행한다. 이 검색어 �
 - README는 설치·실행 명령, 입력 데이터 조건과 서버에서 미실행임을 설명한다.
 - 실제 측정값을 코드나 README에 미리 하드코딩하지 않는다. 측정값은 외부 실행에서 계산한다.
 - 기본 data_origin은 실제 실행 결과인 measured다. code_version은 실행 소스의 해시 등 식별자를 기록한다.
-- 실행 결과는 아래 예시와 정확히 같은 구조의 JSON 파일 하나로 저장한다. 최상위 필드는 schema_version, experiment_id, code_version, config, seed, environment, metrics, started_at, duration_sec, data_origin만 쓰고 다른 최상위 필드는 추가하지 않는다.
-- experiment_id는 승인된 S3의 실험 ID, metrics[].name은 승인된 S3의 지표 이름을 글자 그대로 쓴다. metrics의 각 항목은 name, split, value, step, unit 다섯 키만 가진다. value는 유한한 숫자, step은 정수 또는 null, unit은 ratio·percent·seconds·count·loss·other 중 하나다.
-- 여러 조건·seed의 결과는 중첩 객체로 묶지 않고, 평균과 표준편차를 각각 별도 metrics 항목으로 기록한다. seed 목록과 조건 설정은 config에 넣고, seed에는 대표 seed 정수 하나를 쓴다.
-- 예시:
-```json
-{
-  "schema_version": "1.0",
-  "experiment_id": "E1",
-  "code_version": "<실행 소스 파일의 sha256>",
-  "config": {"dataset": "...", "seeds": [0, 1, 2, 3, 4]},
-  "seed": 0,
-  "environment": {"python": "3.11", "sklearn": "1.5"},
-  "metrics": [
-    {"name": "smote_f1_mean", "split": "test", "value": 0.81, "step": null, "unit": "ratio"},
-    {"name": "smote_f1_std", "split": "test", "value": 0.02, "step": null, "unit": "ratio"}
-  ],
-  "started_at": "2026-11-08T08:00:00+09:00",
-  "duration_sec": 12.3,
-  "data_origin": "measured"
-}
-```
 
 ## S5
 

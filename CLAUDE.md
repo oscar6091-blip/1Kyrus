@@ -11,6 +11,7 @@ Research-to-Paper 웹 프로토타입(수업 과제, 제출일 **2026-11-08 Asia
 | `handoff/` | 배포받은 계획팩 원본 (`handoff/manifest.json`에 40개 파일의 SHA-256). 문서만이 아니라 **실행에도 쓰인다**: 백엔드가 `contracts/database.sql`(DB 생성), `contracts/artifacts.schema.json`(결과 검사), `fixtures/`(demo 결과), `prompts/stage_prompts.md`(live 지시)를 실행 중에 직접 읽는다 (`backend/app/config.py`). 지우면 앱이 돌지 않는다 | **수정 금지.** 예외: `IMPLEMENTATION_STATUS.md`, `LLM_DATA_POLICY.md`. 계획팩이 작업하면서 갱신하라고 지시한 기록 파일이라, 구현하는 쪽(Claude)이 T 작업을 마칠 때마다 갱신한다 |
 | `backend/` | FastAPI 백엔드. `app/`(api 라우터, services, stages, schemas), `tests/`(pytest, `tests/data/`에 기록된 arXiv 응답) | 자유 |
 | `frontend/` | Next.js 화면. `app/`(페이지), `components/`, `lib/`(API 클라이언트·타입), `public/fonts/`(기획안 폰트, SIL OFL) | 자유 |
+| `prompts/` | live 단계 지시문 사본 (D-06, D-09). 앱은 이것을 먼저 읽고, 없을 때만 `handoff/prompts/` 원본을 읽는다 | 자유. 바꾸면 `DEVIATIONS.md`에 기록 |
 | `README.md`, `.gitignore`, `.gitattributes` | 제출 README, git 제외 규칙, 제출 zip 제외 규칙 | 자유 |
 | `scripts/` | 개발 검사 도구 (`browser_demo_check.py`: 헤드리스 브라우저 시연 검사). 앱 실행에는 필요 없음 | 자유 |
 | `.env`, `data/` | 실행할 때 생기는 로컬 파일. `.env`는 `handoff/.env.example`을 복사해 만들고(API 키 포함), `data/prototype.db`는 SQLite DB. 둘 다 git과 제출 zip에 들어가지 않는다 | 로컬 전용 |
@@ -59,4 +60,5 @@ Research-to-Paper 웹 프로토타입(수업 과제, 제출일 **2026-11-08 Asia
   - `M CLAUDE.md`, `A handoff/CLAUDE.md`: 원본 안내를 `handoff/`로 옮기고(내용 동일) 루트에 이 안내를 새로 둠
   - `IMPLEMENTATION_STATUS.md`, `LLM_DATA_POLICY.md`의 `D`/`A` 짝: 갱신이 허용된 두 파일
   - `A scripts/browser_demo_check.py`: 옛 팩의 `scripts/`와 이름이 겹치는 우리 검사 도구
+  - `A handoff/prompts/stage_prompts.md`, `M prompts/stage_prompts.md`: D-06으로 루트에 생긴 프롬프트 사본이 옛 팩의 `prompts/stage_prompts.md`와 경로가 겹쳐 생기는 짝. 원본이 그대로인지는 `handoff/manifest.json`의 SHA-256과 `handoff/prompts/stage_prompts.md`를 비교해 확인한다
 - 원격 저장소: GitHub `oscar6091-blip/1Kyrus` (팀 공유용, munich의 저장소 전용 deploy key로 push). 제출물은 여전히 위 `git archive` zip이다.

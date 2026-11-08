@@ -549,11 +549,12 @@ UI/UX 기획안 v0.2(UI-01~UI-10)는 SSRD·SSAD 전체를 기준으로 그렸고
 ├── README.md                이 문서 (설치·실행·시연·제한·검사 결과)
 ├── CLAUDE.md                작업 규칙 원문 (폴더 구분, 기록 위치, 제출 방법)
 ├── DEVIATIONS.md            계획팩과 다르게 한 것 (D-01, D-02 …)
+├── prompts/                 live 단계 지시문 사본. 앱이 실행 중에 읽음 (D-06, D-09)
 │
 ├── handoff/                 배포받은 계획팩 원본. 계획·계약·원문·demo 자료
 │   ├── contracts/           API·DB·결과 형식·상태 규칙 (앱이 실행 중에 읽음)
 │   ├── fixtures/            demo 단계 결과, 예시 업로드 파일 (앱이 실행 중에 읽음)
-│   ├── prompts/             live 단계 지시문 (앱이 실행 중에 읽음)
+│   ├── prompts/             live 단계 지시문 원본 (루트 prompts/가 없을 때만 앱이 읽음)
 │   ├── sources/             SSRD·SSAD 원문(v0.1)과 추출본, 외부 참고 자료
 │   ├── reference_experiment/  동봉 CPU 참조 실험 (서비스 밖에서 실행)
 │   ├── scripts/             계획 자료 검사 (check_handoff.py)
@@ -595,7 +596,7 @@ UI/UX 기획안 v0.2(UI-01~UI-10)는 SSRD·SSAD 전체를 기준으로 그렸고
                                            └── live 모드만 ──▶ Anthropic API, arXiv
 ```
 
-- **handoff → backend:** 계획팩이 "무엇을 만들지"를 정하고, 백엔드는 그 계약을 구현합니다. 실행 중에도 `contracts/database.sql`(DB 생성), `contracts/artifacts.schema.json`(결과 형식 검사), `fixtures/`(demo 결과), `prompts/stage_prompts.md`(live 지시문)를 직접 읽습니다. 그래서 `handoff/`는 문서 폴더이면서 실행에 꼭 필요한 폴더입니다.
+- **handoff → backend:** 계획팩이 "무엇을 만들지"를 정하고, 백엔드는 그 계약을 구현합니다. 실행 중에도 `contracts/database.sql`(DB 생성), `contracts/artifacts.schema.json`(결과 형식 검사), `fixtures/`(demo 결과)를 직접 읽습니다. live 지시문은 루트 `prompts/stage_prompts.md` 사본을 읽고, 사본이 없을 때만 `handoff/prompts/`의 원본을 읽습니다(`DEVIATIONS.md` D-06). 그래서 `handoff/`는 문서 폴더이면서 실행에 꼭 필요한 폴더입니다.
 - **frontend → backend:** 화면은 브라우저에서 API만 호출합니다. DB와 API 키에는 접근하지 않습니다. API 주소는 `frontend/.env.local`의 `NEXT_PUBLIC_API_BASE_URL`로 바꿉니다.
 - **backend → data/:** 모든 프로젝트·단계 결과·결정 기록·업로드가 `data/prototype.db` 파일 하나에 저장됩니다. 별도 DB 서버는 없습니다.
 - **docs → 앱:** `docs/`는 계속 개정되는 팀 문서입니다. 새 버전을 앱에 반영할 때만 코드가 바뀌고, 그 기록은 `DEVIATIONS.md`나 `IMPLEMENTATION_STATUS.md`에 남깁니다. `handoff/`는 v0.1 기준 계획으로 고정되어 있습니다.
@@ -626,9 +627,9 @@ UI/UX 기획안 v0.2(UI-01~UI-10)는 SSRD·SSAD 전체를 기준으로 그렸고
 
 | 검사 | 결과 |
 | --- | --- |
-| 백엔드 pytest 57개 (실제 임시 SQLite 파일, live 설정을 비운 상태) | PASS |
+| 백엔드 pytest 66개 (실제 임시 SQLite 파일, live 설정을 비운 상태) | PASS |
 | 깨끗한 Ubuntu 20.04 서버에서 위 "root·Docker 없이" 절차로 설치, 포트 3200/8200으로 실행, S1 실행, 테스트·build | PASS |
 | `npm run build` | PASS |
 | 헤드리스 Chromium으로 5분 시연과 변경 전파 시연 수행 (`scripts/browser_demo_check.py`) | PASS |
-| 실제 API 키를 쓴 live 호출 | **NOT RUN** (키는 설정했지만 아직 실행하지 않음). live 경로는 Fake/Recorder Gateway와 기록된 arXiv 응답으로만 검사 |
+| 실제 API 키를 쓴 live 여섯 단계 (2026-11-08, claude-sonnet-5-5, INR 외삽 주제, 실험은 Colab에서 실행 후 업로드) | PASS (1회 전 과정). 단계별 토큰·비용은 `handoff/IMPLEMENTATION_STATUS.md` "live 검사". 연구 결과의 과학적 타당성까지 검증한 것은 아님 |
 | LLM 입력 데이터 사용 조건 ([`handoff/LLM_DATA_POLICY.md`](handoff/LLM_DATA_POLICY.md)) | DOCUMENTS_REVIEWED. 실제 계정 조건은 미확인 |
