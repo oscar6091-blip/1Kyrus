@@ -327,13 +327,12 @@ demo의 재생성 본문은 사전 작성본이라 코멘트의 의미가 본문
    APP_MODE=live                 # 생성 화면의 기본 선택. demo로 두고 화면에서 live를 골라도 됨
    ANTHROPIC_API_KEY=<API 키>
    LLM_MODEL=claude-sonnet-5-5
-   LLM_TIMEOUT_SECONDS=300
-   LLM_MAX_OUTPUT_TOKENS=16000
+   LLM_TIMEOUT_SECONDS=600
+   LLM_MAX_OUTPUT_TOKENS=32000
    LLM_INPUT_USD_PER_MILLION=2
    LLM_OUTPUT_USD_PER_MILLION=10
    ```
-   - 출력이 긴 단계(S4·S6)는 1분을 넘길 수 있어 timeout을 300초로 둡니다.
-   - 출력 상한은 모델의 내부 추론까지 포함하므로 16000으로 둡니다.
+   - 출력이 긴 단계(S3·S4)는 16,000토큰에서도 잘린 적이 있어 출력 상한을 32000으로 둡니다. 다 쓰면 2~5분 걸릴 수 있어 timeout도 600초로 둡니다(`DEVIATIONS.md` D-10). 계획팩 `.env.example`의 기본값(60초, 8192)으로는 live S3·S4가 잘릴 가능성이 큽니다.
    
 2. 백엔드를 다시 시작하고 http://127.0.0.1:8000/api/health 에서 `"live_configured":true`인지 확인합니다. `default_mode`는 `APP_MODE` 값이라 demo여도 됩니다.
 
@@ -373,7 +372,7 @@ demo의 재생성 본문은 사전 작성본이라 코멘트의 의미가 본문
 
 ### 3. S2 관련 연구와 차별점 (실제 arXiv 조회)
 
-1. **S2 실행**: 모델이 영어 검색어를 만들고 → 서버가 arXiv에서 조회·확인한 논문 1~3편만 → 모델이 그 초록으로 정리합니다.
+1. **S2 실행**: 모델이 영어 검색어를 만들고 → 서버가 arXiv에서 조회·확인한 논문 1~3편만 → 모델이 그 초록으로 정리합니다. 결과가 3편보다 적으면 서버가 검색어 끝 단어를 하나씩 빼며 다시 찾고, 그때 쓴 검색어를 경고 상자에 남깁니다(`DEVIATIONS.md` D-11).
 
 2. 확인할 것
    - 논문 카드의 확인 출처가 `arxiv_live`이고 확인일이 오늘인지. 저자·연도·제목은 모델이 아니라 arXiv 응답에서 온 값입니다.
