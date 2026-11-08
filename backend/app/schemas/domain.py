@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 from .artifacts import Text
 
@@ -27,6 +27,8 @@ class RunRequest(Req):
     request_id: Id
     user_comments: Comment
     run_id: Id | None
+    # DEVIATIONS D-07: S5 may analyse several runs (one per experiment). run_ids wins over run_id.
+    run_ids: Annotated[list[Id], Field(min_length=1, max_length=10)] | None = None
 
 
 class DecisionRequest(Req):
@@ -35,6 +37,7 @@ class DecisionRequest(Req):
     artifact_id: Id
     comment: Comment
     run_id: Id | None
+    run_ids: Annotated[list[Id], Field(min_length=1, max_length=10)] | None = None
 
 
 class EditRequest(Req):

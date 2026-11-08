@@ -16,7 +16,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 HANDOFF_DIR = REPO_ROOT / "handoff"
 CONTRACTS_DIR = HANDOFF_DIR / "contracts"
 FIXTURES_DIR = HANDOFF_DIR / "fixtures"
-PROMPTS_FILE = HANDOFF_DIR / "prompts" / "stage_prompts.md"
+# DEVIATIONS D-06: handoff/ is read-only, so prompt changes live in a root copy.
+# The root copy wins when it exists; otherwise the original plan-pack prompts are used.
+_ROOT_PROMPTS = REPO_ROOT / "prompts" / "stage_prompts.md"
+PROMPTS_FILE = _ROOT_PROMPTS if _ROOT_PROMPTS.exists() else HANDOFF_DIR / "prompts" / "stage_prompts.md"
 
 load_dotenv(REPO_ROOT / ".env", override=False)
 

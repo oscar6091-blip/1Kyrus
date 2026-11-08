@@ -1,7 +1,7 @@
 // API client for http://127.0.0.1:8000/api. Never touches server secrets.
 import type {
   ApiErrorBody, ArtifactView, DecisionRecord, DecisionResponse, ExperimentRun, Health, JobView, Mode, Payload,
-  ProjectDetail, ProjectSummary, StageDetail,
+  ProjectDetail, ProjectSummary, StageDetail, UploadResult,
 } from "./types";
 
 export const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/api").replace(/\/$/, "");
@@ -58,6 +58,11 @@ const json = (body: unknown): RequestInit => ({
   body: JSON.stringify(body),
 });
 
+/** S5 runs: run_ids holds every selected run; run_id keeps the first one for older servers (DEVIATIONS D-07). */
+function runFields(runIds: string[] | null) {
+  return { run_id: runIds?.[0] ?? null, run_ids: runIds && runIds.length > 0 ? runIds : null };
+}
+
 export const api = {
   health: () => request<Health>("/health"),
   listProjects: () => request<ProjectSummary[]>("/projects"),
@@ -72,14 +77,14 @@ export const api = {
   job: (jobId: string) => request<JobView>(`/jobs/${jobId}`),
   runs: (id: string) => request<ExperimentRun[]>(`/projects/${id}/runs`),
 
-  run: (id: string, n: number, userComments: string, runId: string | null, requestId = newRequestId()) =>
+  run: (id: string, n: number, userComments: string, runIds: string[] | null, requestId = newRequestId()) =>
     request<JobView>(`/projects/${id}/stages/${n}/run`,
-      json({ request_id: requestId, user_comments: userComments, run_id: runId }), true),
+      json({ request_id: requestId, user_comments: userComments, ...runFields(runIds) }), true),
 
   decide: (id: string, n: number, action: "approve" | "regenerate" | "back", artifactId: string, comment: string,
-    runId: string | null = null, requestId = newRequestId()) =>
+    runIds: string[] | null = null, requestId = newRequestId()) =>
     request<DecisionResponse>(`/projects/${id}/stages/${n}/decisions`,
-      json({ request_id: requestId, action, artifact_id: artifactId, comment, run_id: runId }), true),
+      json({ request_id: requestId, action, artifact_id: artifactId, comment, ...runFields(runIds) }), true),
 
   edit: (id: string, n: number, baseId: string, payload: Payload, comment: string, requestId = newRequestId()) =>
     request<DecisionResponse>(`/projects/${id}/stages/${n}/edits`,
@@ -89,7 +94,7 @@ export const api = {
     const form = new FormData();
     form.append("file", file);
     form.append("client_upload_id", clientUploadId);
-    return request<ExperimentRun>(`/projects/${id}/runs`, { method: "POST", body: form }, true);
+    return request<UploadResult>(`/projects/${id}/runs`, { method: "POST", body: form }, true);
   },
 
   /** Download an export; errors come back as ApiError instead of a JSON page. */

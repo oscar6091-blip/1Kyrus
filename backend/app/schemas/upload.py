@@ -72,3 +72,14 @@ class ExperimentResult(BaseModel):
     started_at: Annotated[str, StringConstraints(min_length=1, max_length=80)] | None = None
     duration_sec: Annotated[Number, Field(ge=0)] | None = None
     data_origin: Literal["measured", "synthetic_demo"]
+
+
+MAX_BUNDLE_RUNS = 10
+
+
+class ExperimentBundle(BaseModel):
+    """DEVIATIONS D-07: one upload file holding several runs (one per experiment).
+    Each item is checked as an ExperimentResult and stored as its own ExperimentRun."""
+    model_config = ConfigDict(extra="forbid", strict=True)
+    schema_version: Literal["1.1"]
+    runs: list[dict[str, Any]] = Field(min_length=1, max_length=MAX_BUNDLE_RUNS)

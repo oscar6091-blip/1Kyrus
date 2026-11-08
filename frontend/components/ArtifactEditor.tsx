@@ -72,7 +72,7 @@ export default function ArtifactEditor({ initial, saving, onSave, onCancel }: {
     const setExp = (i: number, patch: object) => setContent({ experiments: exps.map((x, j) => (j === i ? { ...x, ...patch } : x)) });
     form = (
       <>
-        <label className="field">실험 계획 (Markdown, “## Ablation 계획” 절 필수)</label>
+        <label className="field">방법론·실험 계획 (Markdown, “## 방법론”·“## Ablation 계획” 절 포함)</label>
         <textarea className="mono" rows={14} value={p.content.body_md} onChange={(e) => setContent({ body_md: e.target.value })} />
         <label className="field">실험 목록</label>
         <table className="simple">

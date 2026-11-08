@@ -7,7 +7,7 @@ import { STAGE_NAMES } from "@/lib/types";
 import ArtifactEditor from "./ArtifactEditor";
 import CodeFiles from "./CodeFiles";
 import EvidenceViewer from "./EvidenceViewer";
-import RunUpload from "./RunUpload";
+import RunUpload, { latestRunPerExperiment } from "./RunUpload";
 import { ErrorBox, Markdown, StatusBadge, fmtTime } from "./common";
 
 const CREATED_BY: Record<string, string> = { ai: "AI 생성", user: "사용자 수정", fixture: "사전 작성(demo)" };
@@ -41,17 +41,24 @@ export default function StageReview({ projectId, projectName, mode, detail, stag
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [evidenceRef, setEvidenceRef] = useState<string | null>(null);
-  const [runId, setRunId] = useState<string | null>(null);
+  const [runIds, setRunIds] = useState<string[]>([]);
 
   useEffect(() => {
     setEditing(false); setShowApproved(false); setError(null); setComment("");
   }, [n, current?.id]);
 
+  const snapRuns = current?.input_snapshot.run_ids ?? (current?.input_snapshot.run_id ? [current.input_snapshot.run_id] : null);
+  const snapKey = snapRuns?.join(",") ?? "";
   useEffect(() => {
     if (n !== 5) return;
-    const fromSnapshot = current?.input_snapshot.run_id ?? null;
-    setRunId((prev) => prev && runs.some((r) => r.id === prev) ? prev : fromSnapshot ?? runs[runs.length - 1]?.id ?? null);
-  }, [n, runs, current?.input_snapshot.run_id]);
+    setRunIds((prev) => {
+      const known = prev.filter((id) => runs.some((r) => r.id === id));
+      if (known.length > 0) return known;
+      if (snapRuns && snapRuns.every((id) => runs.some((r) => r.id === id))) return snapRuns;
+      return latestRunPerExperiment(runs);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [n, runs, snapKey]);
 
   const viewed: ArtifactView | null = showApproved && approved ? approved : current;
   const isStale = stage.status === "stale";
@@ -83,7 +90,7 @@ export default function StageReview({ projectId, projectName, mode, detail, stag
   }
 
   const generate = () => act(async () => {
-    const rid = n === 5 ? runId : null;
+    const rid = n === 5 ? runIds : null;
     if (current) {
       const r = await api.decide(projectId, n, "regenerate", current.id, comment.trim(), rid);
       if (r.job) onJobStarted(r.job);
@@ -105,11 +112,11 @@ export default function StageReview({ projectId, projectName, mode, detail, stag
   const download = (f: "code.zip" | "paper.md" | "references.bib") => act(() => api.download(projectId, f));
 
   const regenerateNeedsComment = !!current;
-  const runDisabled = busy || working || !stage.can_run || (regenerateNeedsComment && !comment.trim()) || (n === 5 && !runId);
+  const runDisabled = busy || working || !stage.can_run || (regenerateNeedsComment && !comment.trim()) || (n === 5 && runIds.length === 0);
   const editDisabled = busy || working || isStale || showApproved || !["needs_review", "approved"].includes(stage.status);
 
   const hints: string[] = [];
-  if (n === 5 && !runId) hints.push("먼저 실험 결과를 업로드하고 Run을 선택하세요.");
+  if (n === 5 && runIds.length === 0) hints.push("먼저 실험 결과를 업로드하고 Run을 선택하세요.");
   if (!stage.can_run && !busy) hints.push("이전 단계를 모두 승인해야 실행할 수 있습니다.");
   if (current && !stage.can_approve && stage.status === "needs_review" && stage.current_artifact_id === stage.approved_artifact_id) {
     hints.push("기존 승인본과 다른 새 초안이 없어 승인할 수 없습니다.");
@@ -187,8 +194,13 @@ export default function StageReview({ projectId, projectName, mode, detail, stag
       <div className={`review-grid${viewed && !editing ? "" : " single"}`}>
         <div className="col">
           {n === 5 && (
-            <RunUpload projectId={projectId} runs={runs} selected={runId} onSelect={setRunId} disabled={busy || working}
-              onUploaded={(r) => { setRunId(r.id); onRunsChanged(r); }} />
+            <RunUpload projectId={projectId} runs={runs} selected={runIds} onSelect={setRunIds} disabled={busy || working}
+              onUploaded={(rs) => {
+                const fresh = new Set(rs.map((r) => r.payload.experiment_id));
+                const keep = runIds.filter((id) => !fresh.has(runs.find((r) => r.id === id)?.payload.experiment_id ?? ""));
+                setRunIds([...keep, ...rs.map((r) => r.id)]);
+                onRunsChanged(rs[rs.length - 1]);
+              }} />
           )}
 
           {current && (
@@ -220,8 +232,14 @@ export default function StageReview({ projectId, projectName, mode, detail, stag
                       <CodeFiles files={viewed.payload.content.files} />
                     </div>
                   )}
-                  {n === 5 && viewed.payload.stage_no === 5 && <VerdictCards verdicts={viewed.payload.content.hypothesis_verdicts} />}
-                  <Markdown text={viewed.rendered_markdown} />
+                  {n === 5 && viewed.payload.stage_no === 5 && splitByExperiment(viewed.rendered_markdown).tabs.length > 1
+                    ? <ExperimentTabs artifact={viewed} verdicts={viewed.payload.content.hypothesis_verdicts} />
+                    : (
+                      <>
+                        {n === 5 && viewed.payload.stage_no === 5 && <VerdictCards verdicts={viewed.payload.content.hypothesis_verdicts} />}
+                        <Markdown text={viewed.rendered_markdown} />
+                      </>
+                    )}
                   {mode === "demo" && <p className="small muted" style={{ margin: 0 }}>데모 생성 표시: 이 본문은 사전 작성본입니다. 실험 수치는 업로드한 실제 측정 파일에서 옵니다.</p>}
                 </div>
               )}
@@ -381,6 +399,60 @@ function RationaleCard({ artifact, onOpen }: { artifact: ArtifactView; onOpen: (
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+/**
+ * S5 over several runs (DEVIATIONS D-07): the server renders one "## E<n>" section per experiment.
+ * Split the rendered Markdown at those headings; everything else stays in the summary tab.
+ */
+function splitByExperiment(md: string): { summary: string; tabs: { id: string; md: string }[] } {
+  const blocks = md.split(/(?=^## )/m);
+  const tabs: { id: string; md: string }[] = [];
+  const rest: string[] = [];
+  for (const b of blocks) {
+    const m = /^## (E[1-9][0-9]*)\b/.exec(b);
+    if (m) tabs.push({ id: m[1], md: b });
+    else rest.push(b);
+  }
+  return { summary: rest.join(""), tabs };
+}
+
+function ExperimentTabs({ artifact, verdicts }: { artifact: ArtifactView; verdicts: Verdict[] }) {
+  const { summary, tabs } = splitByExperiment(artifact.rendered_markdown);
+  const [tab, setTab] = useState<string>("summary");
+  const active = tabs.find((t) => t.id === tab);
+  const rows = Object.entries(artifact.evidence.metrics).filter(([, b]) => b.experiment_id === tab);
+  return (
+    <div className="stack">
+      <div className="seg" role="tablist" style={{ margin: 0 }}>
+        <button role="tab" className={tab === "summary" ? "on" : ""} onClick={() => setTab("summary")}>전체 요약</button>
+        {tabs.map((t) => (
+          <button key={t.id} role="tab" className={tab === t.id ? "on" : ""} onClick={() => setTab(t.id)}>{t.id}</button>
+        ))}
+      </div>
+      {!active && (
+        <>
+          <VerdictCards verdicts={verdicts} />
+          <Markdown text={summary} />
+        </>
+      )}
+      {active && (
+        <>
+          {rows.length > 0 && (
+            <table className="simple">
+              <thead><tr><th>ID</th><th>지표</th><th>split</th><th>step</th><th>값</th><th>단위</th></tr></thead>
+              <tbody>
+                {rows.map(([id, b]) => (
+                  <tr key={id}><td>{id}</td><td>{b.name}</td><td>{b.split}</td><td>{b.step ?? "-"}</td><td><code>{String(b.value)}</code></td><td>{b.unit}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          <Markdown text={active.md} />
+        </>
+      )}
     </div>
   );
 }

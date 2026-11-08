@@ -18,7 +18,7 @@ from ..errors import AppError
 from ..models import ArtifactVersion, Decision, ExperimentRun, Job, Project, Stage
 from ..schemas.domain import DecisionRequest, EditRequest, ProjectCreate, RunRequest
 from . import jobs
-from .context import build_snapshot, snapshot_is_current, validation_context
+from .context import build_snapshot, snapshot_is_current, snapshot_run_ids, validation_context
 from .repository import (EMPTY_USAGE, active_job, add_artifact, artifact_view, decision_record, dumps,
                          fingerprint, get_artifact, get_project, get_run, get_stage, get_stages, job_view,
                          new_id, now, project_summary, stage_view, touch)
@@ -159,26 +159,43 @@ def get_job(job_id: str) -> dict:
 
 # ---------- run / regenerate ----------
 
-def _check_s5_run(s: Session, project_id: str, run_id: str | None, stages: list[Stage]) -> str:
-    if not run_id:
-        raise AppError("INVALID_RUN", "S5는 분석할 실험 결과(Run)를 선택해야 합니다.", [{"path": "run_id", "message": "필수"}])
-    run = get_run(s, project_id, run_id)
-    payload = json.loads(run.payload_json)
+def _check_s5_runs(s: Session, project_id: str, run_ids: list[str] | None, stages: list[Stage]) -> list[str]:
+    """S5 input runs (DEVIATIONS D-07: one or more, at most one run per experiment)."""
+    if not run_ids:
+        raise AppError("INVALID_RUN", "S5는 분석할 실험 결과(Run)를 선택해야 합니다.", [{"path": "run_ids", "message": "필수"}])
+    if len(set(run_ids)) != len(run_ids):
+        raise AppError("INVALID_RUN", "같은 Run을 두 번 선택했습니다.", [{"path": "run_ids", "message": "중복"}])
     s3 = get_artifact(s, project_id, stages[2].approved_artifact_id)
     exps = {e["id"]: e for e in json.loads(s3.payload_json)["content"]["experiments"]}
-    exp = exps.get(payload["experiment_id"])
-    if exp is None:
-        raise AppError("INVALID_RUN", "선택한 Run의 실험 ID가 현재 승인된 S3 계획에 없습니다.",
-                       [{"path": "experiment_id", "message": f"{payload['experiment_id']} 없음"}])
-    names = {m["name"] for m in payload["metrics"]}
-    missing = [n for n in exp["metric_names"] if n not in names]
-    if missing:
-        raise AppError("INVALID_RUN", "선택한 Run에 승인된 S3의 필수 지표가 없습니다.",
-                       [{"path": "metrics", "message": f"누락: {', '.join(missing)}"}])
-    return run_id
+    seen_exp: dict[str, str] = {}
+    for run_id in run_ids:
+        run = get_run(s, project_id, run_id)
+        payload = json.loads(run.payload_json)
+        exp = exps.get(payload["experiment_id"])
+        if exp is None:
+            raise AppError("INVALID_RUN", "선택한 Run의 실험 ID가 현재 승인된 S3 계획에 없습니다.",
+                           [{"path": "experiment_id", "message": f"{payload['experiment_id']} 없음"}])
+        if payload["experiment_id"] in seen_exp:
+            raise AppError("INVALID_RUN", "한 실험에는 Run을 하나만 선택할 수 있습니다.",
+                           [{"path": "run_ids", "message": f"{payload['experiment_id']} 중복 선택"}])
+        seen_exp[payload["experiment_id"]] = run_id
+        names = {m["name"] for m in payload["metrics"]}
+        missing = [n for n in exp["metric_names"] if n not in names]
+        if missing:
+            raise AppError("INVALID_RUN", "선택한 Run에 승인된 S3의 필수 지표가 없습니다.",
+                           [{"path": "metrics", "message": f"{payload['experiment_id']} 누락: {', '.join(missing)}"}])
+    # Keep S3 experiment order (E1, E2, ...) so tabs and metric IDs are stable.
+    order = list(exps)
+    return [seen_exp[e] for e in sorted(seen_exp, key=order.index)]
 
 
-def _enqueue(s: Session, p: Project, st: Stage, stages: list[Stage], comments: str, run_id: str | None,
+def _requested_runs(body) -> list[str] | None:
+    if body.run_ids:
+        return list(body.run_ids)
+    return [body.run_id] if body.run_id else None
+
+
+def _enqueue(s: Session, p: Project, st: Stage, stages: list[Stage], comments: str, run_ids: list[str] | None,
              request_id: str, request_key: str, fp: str) -> Job:
     if p.mode == "live" and not jobs.live_available():
         raise AppError("LIVE_NOT_CONFIGURED", "live 프로젝트지만 서버에 ANTHROPIC_API_KEY 또는 LLM_MODEL이 설정되지 않았습니다.")
@@ -186,10 +203,10 @@ def _enqueue(s: Session, p: Project, st: Stage, stages: list[Stage], comments: s
     if pred:
         raise AppError("PREDECESSOR_NOT_APPROVED", pred)
     if st.stage_no == 5:
-        run_id = _check_s5_run(s, p.id, run_id, stages)
+        run_ids = _check_s5_runs(s, p.id, run_ids, stages)
     else:
-        run_id = None
-    snapshot = build_snapshot(p, st, stages, comments, run_id)
+        run_ids = None
+    snapshot = build_snapshot(p, st, stages, comments, run_ids)
     job = Job(id=new_id(), request_id=request_id, request_key=request_key, request_fingerprint=fp,
               project_id=p.id, stage_no=st.stage_no, status="queued", input_snapshot_json=dumps(snapshot),
               result_artifact_id=None, usage_json=dumps(EMPTY_USAGE), error_json=None, created_at=now())
@@ -218,7 +235,7 @@ def run_stage(project_id: str, stage_no: int, body: RunRequest) -> dict:
         if active_job(s, project_id) is not None:
             raise AppError("PROJECT_BUSY", BUSY_MSG)
         stages = get_stages(s, project_id)
-        job = _enqueue(s, p, st, stages, body.user_comments, body.run_id, body.request_id, key, fp)
+        job = _enqueue(s, p, st, stages, body.user_comments, _requested_runs(body), body.request_id, key, fp)
         submit = job.id
         view = job_view(job)
     jobs.submit(submit)
@@ -295,10 +312,10 @@ def decide(project_id: str, stage_no: int, body: DecisionRequest) -> dict:
         elif body.action == "regenerate":
             if st.current_artifact_id != art.id:
                 raise AppError("ARTIFACT_NOT_CURRENT", "현재 결과를 기준으로만 재생성할 수 있습니다.")
-            run_id = body.run_id
-            if stage_no == 5 and not run_id:
-                run_id = json.loads(art.input_snapshot_json).get("run_id")
-            job = _enqueue(s, p, st, stages, body.comment, run_id, body.request_id,
+            run_ids = _requested_runs(body)
+            if stage_no == 5 and not run_ids:
+                run_ids = snapshot_run_ids(json.loads(art.input_snapshot_json))
+            job = _enqueue(s, p, st, stages, body.comment, run_ids, body.request_id,
                            f"regenerate-job:{project_id}:{stage_no}:{body.request_id}", fp)
             d.job_id = job.id
             submit = job.id

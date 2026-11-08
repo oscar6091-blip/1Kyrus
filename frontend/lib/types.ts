@@ -126,6 +126,8 @@ export interface ReferenceSnapshot {
 
 export interface MetricBinding {
   run_id: string;
+  /** Present only when S5 analysed several runs (DEVIATIONS D-07). */
+  experiment_id?: string;
   metric_index: number;
   name: string;
   split: string;
@@ -145,6 +147,8 @@ export interface ContextSnapshot {
   upstream_artifact_ids: Record<string, string>;
   previous_artifact_id: string | null;
   run_id: string | null;
+  /** S5 input runs (DEVIATIONS D-07). Older snapshots have only run_id. */
+  run_ids?: string[] | null;
   user_comments: string;
   idea_snapshot: string;
 }
@@ -238,3 +242,6 @@ export const STATUS_LABEL: Record<StageStatus, string> = {
   approved: "승인",
   stale: "오래됨",
 };
+
+/** Upload response: one run, or a bundle with one run per experiment (DEVIATIONS D-07). */
+export type UploadResult = ExperimentRun | { bundle: true; runs: ExperimentRun[] };

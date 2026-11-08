@@ -56,10 +56,14 @@ def metrics_table(evidence: dict, english: bool = False) -> str:
     metrics = evidence.get("metrics", {})
     if not metrics:
         return ""
-    head = "| ID | metric | split | step | value | unit |" if english else "| ID | 지표 | split | step | 값 | 단위 |"
-    rows = [head, "|---|---|---|---|---|---|"]
+    # Several runs (DEVIATIONS D-07): bindings carry experiment_id and get an extra column.
+    multi = any("experiment_id" in b for b in metrics.values())
+    exp_col = ("| experiment " if english else "| 실험 ") if multi else ""
+    head = f"| ID {exp_col}| metric | split | step | value | unit |" if english else f"| ID {exp_col}| 지표 | split | step | 값 | 단위 |"
+    rows = [head, "|---|" + ("---|" if multi else "") + "---|---|---|---|---|"]
     for key, b in metrics.items():
-        rows.append(f"| {key} | {_esc(b['name'])} | {_esc(b['split'])} | {'' if b['step'] is None else b['step']} "
+        exp = f"| {b.get('experiment_id', '')} " if multi else ""
+        rows.append(f"| {key} {exp}| {_esc(b['name'])} | {_esc(b['split'])} | {'' if b['step'] is None else b['step']} "
                     f"| {fmt_value(b['value'])} | {b['unit']} |")
     return "\n".join(rows)
 

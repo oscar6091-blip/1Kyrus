@@ -32,7 +32,8 @@ class ValidationContext:
     reference_ids: set[str] = field(default_factory=set)         # evidence.references keys
     metric_ids: set[str] = field(default_factory=set)            # evidence.metrics keys
     artifact_ids: set[str] = field(default_factory=set)          # IDs in input_snapshot
-    run_hypothesis_ids: set[str] | None = None                   # S5: H IDs of the selected run's experiment
+    run_hypothesis_ids: set[str] | None = None                   # S5: H IDs of the selected runs' experiments
+    run_experiment_ids: list[str] = field(default_factory=list)  # S5 with several runs: experiments needing "## E<n>" sections
 
 
 class _Collector:
@@ -189,6 +190,11 @@ def validate_payload(stage_no: int, payload: Any, ctx: ValidationContext) -> dic
 
     elif stage_no == 5:
         check_tokens(c["body_md"], "content.body_md", ctx, col)
+        if ctx.run_experiment_ids:  # DEVIATIONS D-07
+            heads = set(re.findall(r"^##[ \t]+(E[1-9][0-9]*)\b", c["body_md"], re.M))
+            for e in ctx.run_experiment_ids:
+                if e not in heads:
+                    col.bad("content.body_md", f"선택한 실험 {e}의 분석 절(`## {e}`)이 필요합니다")
         brief_h = list(ctx.hypothesis_ids)
         got = [v["hypothesis_id"] for v in c["hypothesis_verdicts"]]
         for i, v in enumerate(c["hypothesis_verdicts"]):

@@ -134,7 +134,7 @@ export default function ProjectList() {
         <form className="panel" id="new" onSubmit={create}>
           <h2>새 프로젝트</h2>
           <p className="small" style={{ marginTop: 0, color: "var(--ink-2)" }}>
-            연구 아이디어를 입력하면 Brief → 관련 연구 → 실험 설계 → 실행 코드 → 결과 분석 → 영어 논문 초안을 순서대로 만들고,
+            연구 아이디어를 입력하면 Brief → 관련 연구 → 방법론·실험 설계 → 실행 코드 → 결과 분석 → 영어 논문 초안을 순서대로 만들고,
             단계마다 직접 검토·수정·승인합니다. 지원 범위: 공개 데이터셋의 소규모 ML 비교 연구(외부 CPU 실행).
           </p>
           <label className="field" htmlFor="name">프로젝트 이름</label>
