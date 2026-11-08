@@ -3,6 +3,10 @@
 Bibliographic fields come from the arXiv Atom response, never from the model.
 One connection at a time, at least 3 seconds apart, 20 s timeout. Failures are
 reported (ARXIV_UNAVAILABLE / NO_VERIFIED_REFERENCES), never replaced by fixtures.
+
+Every term is ANDed, so a long model query can match almost nothing. When fewer
+than MAX_REFERENCES papers are found, the last term is dropped and arXiv is asked
+again (down to MIN_QUERY_TERMS terms); results are merged in query order.
 """
 from __future__ import annotations
 
@@ -18,6 +22,8 @@ from ..errors import AppError
 ARXIV_URL = "https://export.arxiv.org/api/query"
 NS = {"a": "http://www.w3.org/2005/Atom"}
 MAX_REFERENCES = 3
+MAX_QUERY_TERMS = 5
+MIN_QUERY_TERMS = 2
 
 _lock = threading.Lock()
 _last_call = [0.0]
@@ -49,12 +55,16 @@ def ref_key(arxiv_id: str) -> str:
     return "arxiv_" + re.sub(r"[^A-Za-z0-9]", "_", arxiv_id)
 
 
-def build_query(text: str) -> str:
-    terms = re.findall(r"[A-Za-z0-9][A-Za-z0-9\-]*", text)[:5]
+def query_terms(text: str) -> list[str]:
+    terms = re.findall(r"[A-Za-z0-9][A-Za-z0-9\-]*", text)[:MAX_QUERY_TERMS]
     if not terms:
         raise AppError("NO_VERIFIED_REFERENCES", "검색어에서 영문 검색 키워드를 찾지 못했습니다.",
                        [{"path": "search_query", "message": text[:200] or "(빈 검색어)"}], status=422)
-    return " AND ".join(f"all:{t}" for t in terms)
+    return terms
+
+
+def build_query(text: str) -> str:
+    return " AND ".join(f"all:{t}" for t in query_terms(text))
 
 
 def _text(el, path: str) -> str:
@@ -99,25 +109,37 @@ class CitationVerifier:
         self.http_get = http_get or default_http_get
 
     def search(self, query_text: str) -> tuple[dict, list[str]]:
-        params = {"search_query": build_query(query_text), "start": 0, "max_results": MAX_REFERENCES + 2,
-                  "sortBy": "relevance"}
-        try:
-            xml_text = self.http_get(ARXIV_URL, params)
-        except AppError:
-            raise
-        except Exception as exc:  # noqa: BLE001 - any network/HTTP failure
-            raise AppError("ARXIV_UNAVAILABLE", f"arXiv 조회에 실패했습니다: {type(exc).__name__}", status=502,
-                           retryable=True) from exc
+        terms = query_terms(query_text)
         verified_at = datetime.now(timezone.utc).date().isoformat()
-        refs, warnings = parse_atom(xml_text, verified_at)
-        seen, chosen = set(), []
-        for r in refs:
-            if r["id"] in seen:
-                continue
-            seen.add(r["id"])
-            chosen.append(r)
+        chosen: dict[str, dict] = {}
+        warnings: list[str] = []
+        tried: list[str] = []
+        for n in range(len(terms), min(MIN_QUERY_TERMS, len(terms)) - 1, -1):
+            query = " AND ".join(f"all:{t}" for t in terms[:n])
+            params = {"search_query": query, "start": 0, "max_results": MAX_REFERENCES + 2, "sortBy": "relevance"}
+            try:
+                xml_text = self.http_get(ARXIV_URL, params)
+            except AppError:
+                raise
+            except Exception as exc:  # noqa: BLE001 - any network/HTTP failure
+                if chosen:  # keep what earlier queries verified
+                    warnings.append(f"추가 검색 실패로 중단: {query} ({type(exc).__name__})")
+                    break
+                raise AppError("ARXIV_UNAVAILABLE", f"arXiv 조회에 실패했습니다: {type(exc).__name__}", status=502,
+                               retryable=True) from exc
+            tried.append(query)
+            refs, found_warnings = parse_atom(xml_text, verified_at)
+            warnings += [w for w in found_warnings if w not in warnings]
+            for r in refs:
+                if r["id"] not in chosen and len(chosen) < MAX_REFERENCES:
+                    chosen[r["id"]] = r
+            if len(chosen) >= MAX_REFERENCES:
+                break
         if not chosen:
             fields = [{"path": "references", "message": w} for w in warnings] or \
-                     [{"path": "search_query", "message": f"검색 결과 없음: {params['search_query']}"}]
+                     [{"path": "search_query", "message": f"검색 결과 없음: {' / '.join(tried)}"}]
             raise AppError("NO_VERIFIED_REFERENCES", "확인된 논문이 한 편도 없어 S2를 만들 수 없습니다.", fields, status=422)
-        return {r["id"]: r for r in chosen[:MAX_REFERENCES]}, warnings
+        if len(tried) > 1:
+            warnings.append(f"처음 검색어의 결과가 {MAX_REFERENCES}편보다 적어 끝 단어를 줄여 다시 찾았습니다: "
+                            + " → ".join(tried))
+        return chosen, warnings
