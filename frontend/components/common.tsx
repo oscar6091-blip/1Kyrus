@@ -1,16 +1,55 @@
 "use client";
 
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ApiError } from "@/lib/api";
 import type { Mode, StageStatus } from "@/lib/types";
 import { STATUS_LABEL } from "@/lib/types";
 
+type HastNode = { type: string; tagName?: string; value?: string; properties?: { className?: unknown }; children?: HastNode[] };
+
+function svgSource(pre: HastNode | undefined): string | null {
+  const code = pre?.children?.find((c) => c.type === "element" && c.tagName === "code");
+  const cls = code?.properties?.className;
+  if (!Array.isArray(cls) || !cls.includes("language-svg")) return null;
+  const text = (code?.children ?? []).map((c) => c.value ?? "").join("").trim();
+  return /^(<\?xml[^>]*>\s*)?<svg\b/i.test(text) ? text : null;
+}
+
+// S3 asks the model for one ```svg architecture figure (DEVIATIONS D-06). It is shown through <img>,
+// where the browser runs no scripts and loads no external files, so model output cannot execute.
+function SvgFigure({ source }: { source: string }) {
+  const [broken, setBroken] = useState(false);
+  const svg = /<svg\b[^>]*\sxmlns=/i.test(source) ? source : source.replace(/<svg\b/i, '<svg xmlns="http://www.w3.org/2000/svg"');
+  return (
+    <figure className="svg-figure">
+      {broken
+        ? <div className="notice warn small">그림을 표시하지 못했습니다. SVG 코드에 오류가 있을 수 있습니다.</div>
+        : <img src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`} alt="모델이 그린 구조 그림" onError={() => setBroken(true)} />}
+      <details open={broken}>
+        <summary>SVG 코드 보기</summary>
+        <pre><code>{source}</code></pre>
+      </details>
+    </figure>
+  );
+}
+
 export function Markdown({ text }: { text: string }) {
   // No rehype-raw: HTML inside Markdown is shown as text, never executed.
   return (
     <div className="markdown">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          pre({ node, children, ...rest }) {
+            const svg = svgSource(node as HastNode | undefined);
+            return svg ? <SvgFigure source={svg} /> : <pre {...rest}>{children}</pre>;
+          },
+        }}
+      >
+        {text}
+      </ReactMarkdown>
     </div>
   );
 }

@@ -49,6 +49,7 @@
 | 2026-11-07 | T04 | 폰트 | Pretendard(본문)·Outfit(로고·단계 코드)·JetBrains Mono(버전·코드)를 `frontend/public/fonts/`에 직접 포함 (기획안 캔버스에 들어 있던 파일, SIL OFL 1.1, 라이선스 원문 동봉) | 기획안 폰트를 오프라인 localhost에서도 같게 보이도록. 외부 CDN 의존 없음 |
 | 2026-11-07 | T04 | 화면 문구 | 상태 "승인됨"→"승인", "생성 중"→"진행 중", 버튼 "코멘트로 재생성"→"재생성 요청" (기획안 표기). Research Brief 패널은 기본 접힘, 여닫은 상태는 브라우저 localStorage에만 저장 | 기획안 p.07 상태 표기와 CheckpointBar 문구. `scripts/browser_demo_check.py`와 README 시연 문구도 같이 바꿈 |
 | 2026-11-07 | T01 | CORS 허용 origin | 3000번 두 이름에 더해 `FRONTEND_ORIGIN`과 그 `localhost`/`127.0.0.1` 짝을 허용 | 공용 서버에서 웹 포트를 바꿨을 때 어느 주소로 열어도 API 호출이 되도록. 다른 호스트 origin은 그대로 거부 |
+| 2026-11-08 | T04 | Markdown의 SVG 그림 표시 | 본문 Markdown의 ```` ```svg ```` 코드 블록(루트가 `<svg>`인 것만)을 `data:image/svg+xml` `<img>`로 그림으로 보여 주고, 원본 코드는 "SVG 코드 보기"에 접어 둠. 그림을 읽지 못하면 경고와 코드를 펼쳐 보임. 다른 코드 블록·HTML은 그대로 글자로 표시 | D-06의 S3 아키텍처 그림이 코드로만 보였음. `<img>` 안의 SVG는 브라우저가 스크립트와 외부 리소스를 막으므로 rehype-raw·sanitizer 같은 새 의존성 없이 표시만 바뀜. 헤드리스 브라우저로 그림 표시, `<script>` 미실행 확인 |
 
 ## 계획 자료 검사
 

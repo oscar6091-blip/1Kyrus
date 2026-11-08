@@ -271,6 +271,10 @@ table.simple th:last-child, .markdown th:last-child { border-top-right-radius: 1
 .markdown pre { background: var(--bg); padding: 14px; border-radius: var(--r-inner); overflow-x: auto; }
 .markdown code { background: var(--ghost); padding: 1px 6px; border-radius: 6px; }
 .markdown pre code { background: none; padding: 0; }
+.svg-figure { margin: 14px 0; }
+.svg-figure img { display: block; width: 100%; max-width: 900px; height: auto; background: #fff; border-radius: var(--r-inner); }
+.svg-figure details { margin-top: 6px; font-size: 13px; }
+.svg-figure summary { cursor: pointer; color: var(--muted, #6b6b76); }
 
 .refcard { border-radius: var(--r-inner); background: var(--ghost); padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
 .refcard + .refcard { margin-top: 10px; }
